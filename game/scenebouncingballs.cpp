@@ -64,10 +64,12 @@ SceneBouncingBalls::Draw(Renderer& renderer)
 
 void SceneBouncingBalls::DebugDraw()
 {
-	//ImGui::Text("Scene: Bouncing Balls");
+	ImGui::Text("Scene: Bouncing Balls");
 
+	 // Slider to show a certain amount of balls at a time out of 100
 	ImGui::SliderInt("Show Count", &m_iShowCount, 1, 100);
 
+	// Slider to pick a ball to modify it variables based on other sliders
 	static int editBallNumber = 0;
 	ImGui::SliderInt("Edit ball", &editBallNumber, 0, 99);
 

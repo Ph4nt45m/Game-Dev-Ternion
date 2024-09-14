@@ -7,6 +7,8 @@
 // Library includes: 
 #include <cassert>
 
+const int Scene::sm_iSegmentWidth = 402;
+
 Scene::Scene()
 {
 

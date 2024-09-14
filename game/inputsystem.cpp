@@ -34,7 +34,8 @@ InputSystem::~InputSystem()
 	m_pXboxController = 0;
 }
 
-bool InputSystem::Initialise()
+bool
+InputSystem::Initialise()
 {
 	for (int k = 0; k < SDL_NUM_SCANCODES; ++k)
 	{
@@ -66,7 +67,8 @@ bool InputSystem::Initialise()
 	return true;
 }
 
-void InputSystem::ProcessInput()
+void
+InputSystem::ProcessInput()
 {
 	// Store the old state...
 	for (int k = 0; k < SDL_NUM_SCANCODES; ++k)
@@ -128,7 +130,8 @@ void InputSystem::ProcessInput()
 	}
 }
 
-ButtonState InputSystem::GetKeyState(SDL_Scancode key)
+ButtonState
+InputSystem::GetKeyState(SDL_Scancode key)
 {
 	if (m_pPreviousKeyboardState[key] == 0)
 	{
@@ -167,17 +170,20 @@ InputSystem::ShowMouseCursor(bool show)
 	}
 }
 
-const Vector2& InputSystem::GetMousePosition() const
+const Vector2&
+InputSystem::GetMousePosition() const
 {
 	return m_mousePosition;
 }
 
-const Vector2& InputSystem::GetMouseScrollWheel() const
+const Vector2&
+InputSystem::GetMouseScrollWheel() const
 {
 	return m_mouseWheel;
 }
 
-ButtonState InputSystem::GetMouseButtonState(int button)
+ButtonState
+InputSystem::GetMouseButtonState(int button)
 {
 	if ((m_previousMouseButtons & SDL_BUTTON(button)) == 0)
 	{

@@ -6,6 +6,8 @@
 // Forward declarations:
 class Renderer;
 class InputSystem;
+class Character;
+class Vector2;
 
 // Class declaration: 
 class Scene
@@ -20,6 +22,12 @@ public:
 	
 	virtual void DebugDraw() = 0;
 
+	virtual void SetCharacter(Character& character, Renderer& renderer) = 0;
+	virtual void SetCharPos(Vector2& characterPos) = 0;
+	virtual void SetCharFeetPos(Vector2& feetPos) = 0;
+	virtual void SetCharWidth(int width) = 0;
+	virtual bool SetEnemies(Renderer& renderer) = 0;
+
 protected:
 
 private:
@@ -30,6 +38,16 @@ private:
 public:
 
 protected:
+	int m_iSurge;
+	int m_iShowCount;
+	float m_fVelocity;
+
+	Character* m_pEntCharacter;
+	Vector2* m_vCharPos;
+	Vector2* m_vFeetPos;
+	int m_iCharWidth;
+
+	static const int sm_iSegmentWidth;
 
 };
 

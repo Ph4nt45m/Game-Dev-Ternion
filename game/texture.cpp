@@ -73,11 +73,13 @@ void Texture::SetActive()
 int
 Texture::GetWidth() const
 {
-	assert(m_iWidth); return (m_iWidth);
+	assert(m_iWidth);
+	return (m_iWidth);
 }
 
 int
 Texture::GetHeight() const
 {
-	assert(m_iHeight); return (m_iHeight);
+	assert(m_iHeight);
+	return (m_iHeight);
 }

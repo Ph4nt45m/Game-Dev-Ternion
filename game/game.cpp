@@ -13,7 +13,12 @@
 #include "forestscene.h"
 #include "character.h"
 #include "animatedsprite.h"
+#include "forestscene.h"
 #include "vector2.h"
+
+// Library includes:
+#include <windows.h>
+#include <iostream>
 
 // Static Members:
 Game* Game::sm_pInstance = 0;
@@ -79,8 +84,11 @@ void Game::Quit()
 
 bool Game::Initialise()
 {
-	int bbWidth = 1550; 
-	int bbHeight = 800;
+	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+	int bbWidth = 1536; // 1550 originally
+	int bbHeight = 846; // 800 originally
 
 	m_pRenderer = new Renderer();
 
@@ -90,8 +98,8 @@ bool Game::Initialise()
 		return false;
 	}
 
-	bbWidth = m_pRenderer->GetWidth(); 
-	bbHeight = m_pRenderer->GetHeight();
+	bbWidth = m_pRenderer->GetWidth(); // 1536
+	bbHeight = m_pRenderer->GetHeight(); // 846
 
 	m_iLastTime = SDL_GetPerformanceCounter();
 	m_pRenderer->SetClearColour(255, 255, 255);
@@ -104,13 +112,15 @@ bool Game::Initialise()
 		return false;
 	}
 
-	/*Scene* pScene = 0;
-	pScene = new SceneBouncingBalls();
-	pScene->Initialise(*m_pRenderer);
-	m_scenes.push_back(pScene);
-	m_iCurrentScene = 0;*/
+	m_pEntCharacter = new Character();
 
-	/*m_pScForestScene = new ForestScene();
+	if (!m_pEntCharacter->Initialise(*m_pRenderer))
+	{
+		LogManager::GetInstance().Log("Character failed to initialise!");
+		return false;
+	}
+
+	m_pScForestScene = new ForestScene();
 
 	if (!m_pScForestScene->Initialise(*m_pRenderer))
 	{
@@ -121,27 +131,20 @@ bool Game::Initialise()
 	{
 		m_scenes.push_back(m_pScForestScene);
 		m_iCurrentScene = 0;
-	}*/
-
-	m_pEntCharacter = new Character();
-
-	if (!m_pEntCharacter->Initialise(*m_pRenderer))
-	{
-		LogManager::GetInstance().Log("Character failed to initialise!");
-		return false;
+		m_pScForestScene->SetCharacter(*m_pEntCharacter, *m_pRenderer);
 	}
 
 	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("..\\Sprites\\explosion.png");
 
-	if (m_pASprAnimatedSprite)
-	{
-		m_pASprAnimatedSprite->SetupFrames(64, 64);
-		m_pASprAnimatedSprite->SetFrameDuration(0.15f);
-	}
-	else
+	if (!m_pASprAnimatedSprite)
 	{
 		LogManager::GetInstance().Log("AnimatedSprite failed to initialise!");
 		return false;
+	}
+	else
+	{
+		m_pASprAnimatedSprite->SetupFrames(64, 64);
+		m_pASprAnimatedSprite->SetFrameDuration(0.08f);
 	}
 
 	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("..\\Sprites\\cursor.png");
@@ -196,10 +199,10 @@ Game::Process(float deltaTime)
 
 	// TODO: Add game objects to process here!
 
-	/*if (m_pScForestScene)
+	if (m_pScForestScene)
 	{
 		m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
-	}*/
+	}
 
 	m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
 	m_pASprAnimatedSprite->Process(deltaTime);
@@ -233,7 +236,7 @@ Game::Draw(Renderer& renderer)
 
 	// TODO: Add game objects to draw here!
 
-	//m_scenes[m_iCurrentScene]->Draw(renderer);
+	m_scenes[m_iCurrentScene]->Draw(renderer);
 	
 	m_pEntCharacter->Draw(renderer);
 
@@ -283,7 +286,7 @@ Game::DebugDraw()
 	//}
 
 	//ImGui::SliderInt("Active scene", &m_iCurrentScene, 0, (m_scenes.size() > 0) ? m_scenes.size() - 1 : 0, "%d");
-	//m_scenes[m_iCurrentScene]->DebugDraw();
+	//m_scenes[m_iCurrentScene]->DebugDraw(); // Call DebugDraw of the scene, for example bouncing balls
 
 	//ImGui::End();
 
@@ -295,7 +298,7 @@ Game::DebugDraw()
 		Quit();
 	}
 
-	float colourBorder[4];
+	float colourBorder[4] = {  };
 	colourBorder[0] = m_sprCursorBorderSprite->GetRedTint();
 	colourBorder[1] = m_sprCursorBorderSprite->GetGreenTint();
 	colourBorder[2] = m_sprCursorBorderSprite->GetBlueTint();
@@ -306,7 +309,7 @@ Game::DebugDraw()
 	m_sprCursorBorderSprite->SetBlueTint(colourBorder[2]);
 	m_sprCursorBorderSprite->SetAlpha(colourBorder[3]);
 
-	float colourBody[4];
+	float colourBody[4] = {  };
 	colourBody[0] = m_sprCursorBodySprite->GetRedTint();
 	colourBody[1] = m_sprCursorBodySprite->GetGreenTint();
 	colourBody[2] = m_sprCursorBodySprite->GetBlueTint();

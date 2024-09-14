@@ -112,7 +112,8 @@ Renderer::Initialise(bool windowed, int width, int height)
 bool
 Renderer::InitialiseOpenGL(int screenWidth, int screenHeight)
 {
-	m_iWidth = screenWidth; m_iHeight = screenHeight;
+	m_iWidth = screenWidth;
+	m_iHeight = screenHeight;
 
 	m_pWindow = SDL_CreateWindow("COMP710 GP Framework 2022", SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_OPENGL);
@@ -167,8 +168,8 @@ Renderer::SetFullscreen(bool fullscreen)
 {
 	if (fullscreen)
 	{
-		//SDL_SetWindowFullscreen(m_pWindow, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_ALWAYS_ON_TOP); 
-		SDL_SetWindowFullscreen(m_pWindow, SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_ALWAYS_ON_TOP); 
+		//SDL_SetWindowFullscreen(m_pWindow, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_ALWAYS_ON_TOP);
+		SDL_SetWindowFullscreen(m_pWindow, SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_ALWAYS_ON_TOP);
 		SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
 		SDL_SetWindowSize(m_pWindow, m_iWidth, m_iHeight);
 	}
@@ -211,6 +212,7 @@ Renderer::CreateSprite(const char* pcFilename)
 	assert(m_pTextureManager);
 	Texture* pTexture = m_pTextureManager->GetTexture(pcFilename); 
 	Sprite* pSprite = new Sprite();
+
 	if (!pSprite->Initialise(*pTexture))
 	{
 		LogManager::GetInstance().Log("Sprite Failed to Create!");
@@ -263,6 +265,7 @@ Renderer::DrawSprite(Sprite& sprite, bool horizontalFlip, bool verticalFlip)
 
 	Matrix4 world; SetIdentity(world);
 
+	// Adjust horizintal flip based on boolean flag
 	if (horizontalFlip)
 	{
 		world.m[0][0] = cosf(angleInRadians) * (-sizeX);
@@ -274,6 +277,7 @@ Renderer::DrawSprite(Sprite& sprite, bool horizontalFlip, bool verticalFlip)
 		world.m[0][1] = -sinf(angleInRadians) * (sizeX);
 	}
 	
+	// Adjust vertical flip based on boolean flag
 	if (verticalFlip)
 	{
 		world.m[1][0] = sinf(angleInRadians) * (-sizeY);

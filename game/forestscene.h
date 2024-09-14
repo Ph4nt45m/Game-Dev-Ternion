@@ -5,10 +5,14 @@
 
 // Local includes:
 #include "scene.h"
+#include "inputsystem.h"
 
 // Forward declarations: 
 class Renderer;
+class InputSystem;
 class Forest;
+class Character;
+class Golem;
 
 // Class declarations:
 class ForestScene : public Scene
@@ -22,8 +26,14 @@ public:
 	virtual void Draw(Renderer& renderer);
 	virtual void DebugDraw();
 
-protected:
+	virtual void SetCharacter(Character& character, Renderer& renderer);
+	virtual void SetCharPos(Vector2& characterPos);
+	virtual void SetCharFeetPos(Vector2& feetPos);
+	virtual void SetCharWidth(int width);
+	virtual bool SetEnemies(Renderer& renderer);
 
+protected:
+	
 
 private:
 	ForestScene(const ForestScene& forestScene);
@@ -31,14 +41,11 @@ private:
 
 	// Member data:
 public:
-	int m_iFrameWidth;
-	int m_iFrameHeight;
+	
 
 protected:
-	Forest* m_frtSegments[20];
-	int m_iShowCount;
-
-	static int sm_iSegmentWidth;
+	Forest* m_pFrtSegments[20];
+	Golem* m_pGolem;
 
 private:
 	

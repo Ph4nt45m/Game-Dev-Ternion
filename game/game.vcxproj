@@ -158,10 +158,12 @@
     <ClCompile Include="forest.cpp" />
     <ClCompile Include="forestscene.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="golem.cpp" />
     <ClCompile Include="inputsystem.cpp" />
     <ClCompile Include="logmanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix4.cpp" />
+    <ClCompile Include="projectilearrow.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scenebouncingballs.cpp" />
@@ -191,10 +193,12 @@
     <ClInclude Include="forest.h" />
     <ClInclude Include="forestscene.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="golem.h" />
     <ClInclude Include="inlinehelpers.h" />
     <ClInclude Include="inputsystem.h" />
     <ClInclude Include="logmanager.h" />
     <ClInclude Include="matrix4.h" />
+    <ClInclude Include="projectilearrow.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scenebouncingballs.h" />

@@ -25,6 +25,7 @@ public:
 
 	void SetLooping(bool loop);
 	void Animate();
+	void Inanimate();
 	bool IsAnimating() const;
 	void Restart();
 	void SetFrameDuration(float seconds);

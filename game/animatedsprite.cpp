@@ -129,7 +129,6 @@ AnimatedSprite::SetupFrames(int fixedFrameWidth, int fixedFrameHeight)
 
 	//delete allIndices;
 	allIndices = 0;
-
 }
 
 void
@@ -169,12 +168,20 @@ AnimatedSprite::Draw(Renderer& renderer, bool horizontalFlip, bool verticalFlip)
 	assert(m_pVertexData);
 	m_pTexture->SetActive();
 	m_pVertexData->SetActive();
-	renderer.DrawAnimatedSprite(*this, m_iCurrentFrame, false, false);
+	renderer.DrawAnimatedSprite(*this, m_iCurrentFrame, horizontalFlip, verticalFlip);
 }
 
 void AnimatedSprite::Animate()
 {
 	m_bAnimating = true;
+}
+
+void
+AnimatedSprite::Inanimate()
+{
+	m_bAnimating = false;
+	Restart();
+	m_fTimeElapsed = 0.0f;
 }
 
 void
@@ -191,7 +198,7 @@ AnimatedSprite::SetLooping(bool loop)
 
 void AnimatedSprite::Restart()
 {
-	m_iCurrentFrame = -1;
+	m_iCurrentFrame = 1;
 	m_fTimeElapsed = 0.0f;
 }
 

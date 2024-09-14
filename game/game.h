@@ -13,8 +13,7 @@
 class Renderer;
 class Sprite;
 class AnimatedSprite;
-class Entity;
-//class Character;
+class Character;
 class scene;
 class Game
 {
@@ -64,7 +63,7 @@ protected:
 
 	Vector2 m_pCursor;
 	Scene* m_pScForestScene;
-	Entity* m_pEntCharacter;
+	Character* m_pEntCharacter;
 
 #ifdef USE_LAG
 	float m_fLag;

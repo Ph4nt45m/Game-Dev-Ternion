@@ -105,6 +105,12 @@
     <ClCompile Include="forest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="golem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="projectilearrow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="logmanager.h">
@@ -198,6 +204,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="forest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="golem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="projectilearrow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

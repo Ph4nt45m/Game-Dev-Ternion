@@ -25,6 +25,7 @@ Vector2::Vector2(float inx, float iny)
 	, y(iny)
 {
 }
+
 void
 Vector2::Set(float inx, float iny)
 {
