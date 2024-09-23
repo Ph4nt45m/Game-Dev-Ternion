@@ -745,7 +745,7 @@ Character::HandleLegs(float deltaTime)
         float halfWidth = (float)m_pSprSpriteBody->GetWidth() / 5.0f;
         float maxStepHeight = m_fLegBodyOffset;
 
-        if (m_sKeyboardMotions.Surge > 0)
+        if (m_iFacingDirection > 0)
         {
             // Clockwise cycle
             float leftLegX = restingLeftLegX + halfWidth * sinf(progress * PI);
@@ -774,7 +774,7 @@ Character::HandleLegs(float deltaTime)
             m_pSprSpriteLegRight->SetX((int)rightLegX);
             m_pSprSpriteLegRight->SetY((int)rightLegY);
         }
-        else if (m_sKeyboardMotions.Surge < 0)
+        else if (m_iFacingDirection < 0)
         {
             // Anti-clockwise cycle
             float leftLegX = restingLeftLegX + 2 * halfWidth * progress;

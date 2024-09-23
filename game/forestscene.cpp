@@ -112,7 +112,7 @@ ForestScene::Initialise(Renderer& renderer)
 				if (prevIndex == 0 || prevIndex == 1 || prevIndex == 3) //  || !closedSegment add for floating platform
 				{
 					m_pFrtSegments[i] = new Forest();
-					m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("..\\Sprites\\terrainbase3D\\platform.png"));
+					m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("..Sprites\\terrainbase3D\\tallplatform.png"));
 					m_pFrtSegments[i]->SetX(((sm_iSegmentWidth * i) - (sm_iSegmentWidth / 2) - (6 * i)));
 					m_pFrtSegments[i]->SetIndex(i);
 					m_pFrtSegments[i]->SetType(ST_PLATFORM);
