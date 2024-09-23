@@ -585,7 +585,7 @@ Golem::Action()
                 m_sAnimations.m_pASprGolemWalk->Inanimate();
             }
 
-            if (!m_sAnimations.m_pASprGolemThrow->IsAnimating())
+            if (!m_sAnimations.m_pASprGolemThrow->IsAnimating() && !m_bProjectile)
             {
                 m_sAnimations.m_pASprGolemThrow->Animate();
                 m_bShoot = true;
@@ -608,10 +608,13 @@ Golem::Action()
                 m_sAnimations.m_pASprGolemWalk->Inanimate();
             }
 
-            m_sAnimations.m_pASprGolemJump->Animate();
-            m_bSlam = true;
-            m_bJumping = true;
-            m_bIsAnimating = true;
+            if (!m_sAnimations.m_pASprGolemJump->IsAnimating() && !m_bSlam)
+            {
+                m_sAnimations.m_pASprGolemJump->Animate();
+                m_bSlam = true;
+                m_bJumping = true;
+                m_bIsAnimating = true;
+            }
         }
         else
         {
@@ -628,36 +631,19 @@ Golem::Action()
                 m_sAnimations.m_pASprGolemWalk->Inanimate();
             }
 
-            m_sAnimations.m_pASprGolemSlash->Animate();
-            m_iAttackType = 0;
-            m_bSlash = true;
-            m_bIsAnimating = true;
+            if (!m_sAnimations.m_pASprGolemSlash->IsAnimating() && !m_bSlash)
+            {
+                m_sAnimations.m_pASprGolemSlash->Animate();
+                m_iAttackType = 0;
+                m_bSlash = true;
+                m_bIsAnimating = true;
+            }
         }
         else
         {
             m_bWalk = true;
         }
     }
-    
-    
-    /*else
-    {
-        if (!m_bIsAnimating)
-        {
-            if (m_pEntCharacter->GetPosition().x <= m_vPosition.x && m_fDistToPlayer < m_fSlashRangeMax)
-            {
-                Move(0);
-            }
-            else if (m_fDistToPlayer >= m_fSlashRangeMax && m_fDistToPlayer < m_fSlamRangeMax)
-            {
-                Move(1);
-            }
-            else if (m_fDistToPlayer >= m_fSlamRangeMax && m_fDistToPlayer < m_fThrowRangeMax)
-            {
-                Move(2);
-            }
-        }
-    }*/
 }
 
 void
