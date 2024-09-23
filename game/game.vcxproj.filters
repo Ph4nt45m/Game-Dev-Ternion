@@ -108,7 +108,7 @@
     <ClCompile Include="golem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="projectilearrow.cpp">
+    <ClCompile Include="projectile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -209,7 +209,7 @@
     <ClInclude Include="golem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="projectilearrow.h">
+    <ClInclude Include="projectile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

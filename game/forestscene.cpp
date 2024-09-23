@@ -39,7 +39,7 @@ ForestScene::~ForestScene()
 bool
 ForestScene::Initialise(Renderer& renderer)
 {
-	m_iShowCount = 20;
+	m_iShowCount = 10;
 	srand((int)time(0));
 
 	int prevIndex = 0;
@@ -210,9 +210,14 @@ ForestScene::SetCharacter(Character& character, Renderer& renderer)
 		
 	}
 
-	if (SetEnemies(renderer))
+	for (int i = 0; i < m_iShowCount; i++)
 	{
-		m_pGolem->SetCharacter(character);
+		if (SetEnemies(character, renderer))
+		{
+			m_pFrtSegments[i]->SetGolem(*m_pGolem);
+			m_pFrtSegments[i]->SetGolemPos(m_pGolem->GetPosition());
+			m_pFrtSegments[i]->SetGolemWidth((float)m_pGolem->GetBodyWidth());
+		}
 	}
 }
 
@@ -235,7 +240,7 @@ ForestScene::SetCharWidth(int width)
 }
 
 bool
-ForestScene::SetEnemies(Renderer& renderer)
+ForestScene::SetEnemies(Character& character, Renderer& renderer)
 {
 	m_pGolem = new Golem();
 
@@ -243,6 +248,10 @@ ForestScene::SetEnemies(Renderer& renderer)
 	{
 		LogManager::GetInstance().Log("Golem failed to initialise!");
 		return false;
+	}
+	else
+	{
+		m_pGolem->SetCharacter(character);
 	}
 
 	return true;

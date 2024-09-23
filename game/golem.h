@@ -11,6 +11,7 @@ class Renderer;
 class Sprite;
 class AnimatedSprite;
 class Character;
+class Projectile;
 
 // Golem animations:
 typedef struct {
@@ -42,12 +43,12 @@ public:
     Vector2& GetPosition();
     void SetCharacter(Character& character);
     void CheckPlayerDist();
-    void IsAnimating();
+    bool IsAnimating();
     int GetBodyWidth();
     void ShiftX(float amount);
     void SetNumWalkableSegs(int amount);
 
-    void Move();
+    void Move(int attackType);
     void Action();
     void ProcessAction();
 
@@ -64,23 +65,26 @@ private:
 protected:
     Character* m_pEntCharacter;
     Sprite* m_pSprSpriteBody;
-    Sprite* m_pSprGolemProjectile;
+    Projectile* m_pEntProjectile;
     Vector2 m_vStartingPos;
     Animations m_sAnimations;
     int m_iNumSegments;
     int m_iNumWalkableSegs;
     float m_fAnimateScale;
     float m_fExecutionTime;
-    int m_iPrevAttackType;
+    int m_iAttackType;
     float m_fDistToPlayer;
     float m_fHitBoxRange;
     float m_fSlashRangeMax;
     float m_fSlamRangeMax;
     float m_fThrowRangeMax;
+    float m_fGroundY;
     bool m_bPlayerInRange;
     bool m_bSpotted;
+    bool m_bEngage;
     bool m_bIsAnimating;
     bool m_bSlam;
+    bool m_bWalk;
 
 private:
     

@@ -163,7 +163,7 @@
     <ClCompile Include="logmanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix4.cpp" />
-    <ClCompile Include="projectilearrow.cpp" />
+    <ClCompile Include="projectile.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scenebouncingballs.cpp" />
@@ -198,7 +198,7 @@
     <ClInclude Include="inputsystem.h" />
     <ClInclude Include="logmanager.h" />
     <ClInclude Include="matrix4.h" />
-    <ClInclude Include="projectilearrow.h" />
+    <ClInclude Include="projectile.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scenebouncingballs.h" />

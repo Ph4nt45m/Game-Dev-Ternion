@@ -11,7 +11,7 @@ class Renderer;
 class InputSystem;
 class Sprite;
 class AnimatedSprite;
-class ProjectileArrow;
+class Projectile;
 
 // Class declaration:
 class Character : public Entity
@@ -65,7 +65,7 @@ protected:
     Sprite* m_pSprSpriteLegRight;
     Sprite* m_pSprSpriteShadow;
     Sprite* m_pSprWeapon;
-    ProjectileArrow* m_pEntArrow;
+    Projectile* m_pEntArrow;
     AnimatedSprite* m_pASprWeapAttack;
     int m_iWeaponType;
     float m_fAngleOfAttack;

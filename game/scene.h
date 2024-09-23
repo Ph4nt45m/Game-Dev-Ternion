@@ -26,7 +26,7 @@ public:
 	virtual void SetCharPos(Vector2& characterPos) = 0;
 	virtual void SetCharFeetPos(Vector2& feetPos) = 0;
 	virtual void SetCharWidth(int width) = 0;
-	virtual bool SetEnemies(Renderer& renderer) = 0;
+	virtual bool SetEnemies(Character& character, Renderer& renderer) = 0;
 
 protected:
 

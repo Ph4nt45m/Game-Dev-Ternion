@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "inputsystem.h"
 #include "character.h"
+#include "golem.h"
 #include "vector2.h"
 #include "sprite.h"
 #include "../imgui/imgui.h"
@@ -572,6 +573,97 @@ Forest::HandleProjCollisions()
 }
 
 void
+Forest::HandleGolemCollisions()
+{
+	// Collision vectors:
+	// Left wall & leftmost vectors for other segments
+	Vector2 frontPointL;
+	Vector2 backPointL;
+
+	// Right wall && rightmost vectors for other segments
+	Vector2 frontPointR;
+	Vector2 backPointR;
+
+	// Middle vector for step platform segment - For future updates
+	//Vector2 middlePoint;
+
+	// For future updates
+	/*float tX;
+	float yAtTX;*/
+
+	// Check if golem is within the segment
+	if ((int)m_vGolemPos->x >= (m_fPositionX - ((sm_iSegmentWidth - 6) / static_cast<float>(2)) - (m_fGolemWidth / 2.0f)) &&
+		(int)m_vGolemPos->x <= (m_fPositionX + ((sm_iSegmentWidth - 6) / static_cast<float>(2)) + (m_fGolemWidth / 2.0f)))
+	{
+		switch (m_iSegmentType)
+		{
+		case ST_BOUNDARY:
+			// No collision
+			break;
+		case ST_RIGHTWALL:
+			// Initialise points that make up line of right wall collision
+			frontPointR.x = (float)sm_iScreenWidth;
+			frontPointR.y = m_fFloorLowerBound;
+
+			if ((m_vGolemPos->x + (m_fGolemWidth / 2.0f)) >= frontPointR.x)
+			{
+				// Collision has occured, now handle
+				m_pGolem->ShiftX(-1.0f);
+			}
+
+			break;
+		case ST_PLATFORM:
+			// Initialise points for collision on sides of platform segment
+			frontPointL.x = m_fPositionX - ((float)(sm_iSegmentWidth - 6) / 2.0f);
+			frontPointL.y = m_fFloorLowerBound - m_fPlatformHeight;
+
+			frontPointR.x = m_fPositionX + ((float)(sm_iSegmentWidth - 6) / 2.0f);
+			frontPointR.y = m_fFloorLowerBound - m_fPlatformHeight;
+
+			// Check if golem is colliding with left platform wall
+			if ((int)(m_vGolemPos->x + (m_fGolemWidth / 2.0f)) >= (int)frontPointL.x &&
+				!((int)m_vGolemPos->x > (int)frontPointR.x) && Forest::sm_iTerrainLevel == 0)
+			{
+				m_pGolem->ShiftX(-1.0f);
+			}
+			// Check if golem is colliding with right platform wall
+			else if (((int)m_vGolemPos->x - (m_fGolemWidth / 2.0f)) <= frontPointR.x &&
+				!((int)m_vGolemPos->x < (int)frontPointL.x) && Forest::sm_iTerrainLevel == 0)
+			{
+				m_pGolem->ShiftX(1.0f);
+			}
+
+			break;
+		case ST_FLOATINGPLATFORM:
+			// To be implemented in future update
+			break;
+		case ST_TALLPLATFORM:
+			// Initialise points for collision on sides of tall platform segment
+			frontPointL.x = m_fPositionX - ((float)(sm_iSegmentWidth - 6) / 2.0f);
+			frontPointL.y = m_fFloorLowerBound - (m_fPlatformHeight * 2.0f);
+
+			frontPointR.x = m_fPositionX + ((float)(sm_iSegmentWidth - 6) / 2.0f);
+			frontPointR.y = m_fFloorLowerBound - (m_fPlatformHeight * 2.0f);
+
+			// Check if golem is colliding with left platform wall
+			if ((int)(m_vGolemPos->x + (m_fGolemWidth / 2.0f)) >= (int)frontPointL.x &&
+				!((int)m_vGolemPos->x > (int)frontPointR.x) && Forest::sm_iTerrainLevel < 2)
+			{
+				m_pGolem->ShiftX(-1.0f);
+			}
+			// Check if golem is colliding with right platform wall
+			else if ((m_vGolemPos->x - (m_fGolemWidth / 2.0f)) <= frontPointR.x &&
+				!((int)m_vGolemPos->x < (int)frontPointL.x) && Forest::sm_iTerrainLevel < 2)
+			{
+				m_pGolem->ShiftX(1.0f);
+			}
+
+			break;
+		}
+	}
+}
+
+void
 Forest::SetBounds()
 {
 	m_iUpperBound = ((m_iSegmentIndex * (sm_iSegmentWidth - 6)) - ((sm_iSegmentWidth - 6) / 2));
@@ -600,6 +692,24 @@ void
 Forest::SetCharWidth(int width)
 {
 	m_iCharWidth = width;
+}
+
+void
+Forest::SetGolem(Golem& golem)
+{
+	m_pGolem = &golem;
+}
+
+void
+Forest::SetGolemPos(Vector2& position)
+{
+	m_vGolemPos = &position;
+}
+
+void
+Forest::SetGolemWidth(float width)
+{
+	m_fGolemWidth = width;
 }
 
 int

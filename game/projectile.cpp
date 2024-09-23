@@ -1,5 +1,5 @@
 // This include:
-#include "projectilearrow.h"
+#include "projectile.h"
 
 // Local includes:
 #include "renderer.h"
@@ -12,7 +12,7 @@
 #include <cassert>
 #include <cstdio>
 
-ProjectileArrow::ProjectileArrow()
+Projectile::Projectile()
 	: m_fGravity(0.0f)
 	, m_fTimeToTarget(0.0f)
 	, m_fDX(0.0f)
@@ -24,31 +24,31 @@ ProjectileArrow::ProjectileArrow()
 
 }
 
-ProjectileArrow::~ProjectileArrow()
+Projectile::~Projectile()
 {
 	delete m_pSprSpriteBody;
 	m_pSprSpriteBody = 0;
 }
 
 bool
-ProjectileArrow::Initialise(Renderer& renderer)
+Projectile::Initialise(Renderer& renderer)
 {
-	if (!SetBodySprites(renderer))
+	/*if (!SetBodySprites(renderer))
 	{
 		LogManager::GetInstance().Log("Projectile Arrow Sprites failed to initialise!");
 		return false;
-	}
+	}*/
 
 	m_fGravity = 200.0f;
 	m_fTimeToTarget = 0.5f;
-	m_fWidth = (float)m_pSprSpriteBody->GetWidth();
-	m_fHeight = (float)m_pSprSpriteBody->GetHeight();
+	/*m_fWidth = (float)m_pSprSpriteBody->GetWidth();
+	m_fHeight = (float)m_pSprSpriteBody->GetHeight();*/
 
 	return true;
 }
 
 void
-ProjectileArrow::Process(float deltaTime, InputSystem& inputSystem)
+Projectile::Process(float deltaTime, InputSystem& inputSystem)
 {
 	if (m_bAlive)
 	{
@@ -72,7 +72,7 @@ ProjectileArrow::Process(float deltaTime, InputSystem& inputSystem)
 }
 
 void
-ProjectileArrow::Draw(Renderer& renderer)
+Projectile::Draw(Renderer& renderer)
 {
 	if (m_bAlive)
 	{
@@ -81,68 +81,86 @@ ProjectileArrow::Draw(Renderer& renderer)
 }
 
 bool
-ProjectileArrow::SetBodySprites(Renderer& renderer)
+Projectile::SetBodySprites(Renderer& renderer)
 {
-	m_pSprSpriteBody = renderer.CreateSprite("..\\Sprites\\characterprojectile\\arrow.png");
+	/*m_pSprSpriteBody = renderer.CreateSprite("..\\Sprites\\characterprojectile\\arrow.png");
 
 	if (!m_pSprSpriteBody)
 	{
 		return false;
-	}
+	}*/
 
 	return true;
 }
 
 void
-ProjectileArrow::SetNumSegments(int amount)
+Projectile::SetNumSegments(int amount)
 {
 
 }
 
 void
-ProjectileArrow::GetInputs(InputSystem& inputSystem)
+Projectile::GetInputs(InputSystem& inputSystem)
 {
 
 }
 
 void
-ProjectileArrow::HandleInput(float deltaTime)
+Projectile::HandleInput(float deltaTime)
 {
 
 }
 
 void
-ProjectileArrow::SetTerrainMoving(bool moving)
+Projectile::SetTerrainMoving(bool moving)
 {
 
 }
 
 bool
-ProjectileArrow::IsTerrainMoving()
+Projectile::IsTerrainMoving()
 {
 	return sm_bTerrainMoving;
 }
 
 Vector2&
-ProjectileArrow::GetPosition()
+Projectile::GetPosition()
 {
 	return m_vPosition;
 }
 
+bool
+Projectile::SetProjectileSprite(Renderer& renderer, const char* filePath)
+{
+	m_pSprSpriteBody = renderer.CreateSprite(filePath);
+
+	if (!m_pSprSpriteBody)
+	{
+		return false;
+	}
+	else
+	{
+		m_fWidth = (float)m_pSprSpriteBody->GetWidth();
+		m_fHeight = (float)m_pSprSpriteBody->GetHeight();
+	}
+
+	return true;
+}
+
 float
-ProjectileArrow::GetWidth()
+Projectile::GetWidth()
 {
 	return (float)m_pSprSpriteBody->GetWidth();
 }
 
 float
-ProjectileArrow::GetHeight()
+Projectile::GetHeight()
 {
 	return (float)m_pSprSpriteBody->GetHeight();
 }
 
 void
-ProjectileArrow::SetStartPos(float st_x, float st_y)
+Projectile::SetStartPos(float st_x, float st_y)
 {
 	m_vPosition.x = st_x;
 	m_vPosition.y = st_y;
@@ -151,32 +169,29 @@ ProjectileArrow::SetStartPos(float st_x, float st_y)
 }
 
 void
-ProjectileArrow::SetTargetPos(float t_x, float t_y)
+Projectile::SetTargetPos(float t_x, float t_y)
 {
 	m_vTarget.x = t_x;
 	m_vTarget.y = t_y;
 }
 
 void
-ProjectileArrow::SetGroundY(float g_y)
+Projectile::SetGroundY(float g_y)
 {
 	m_fGroundY = g_y;
 }
 
 void
-ProjectileArrow::Shoot()
+Projectile::SetTimeToTarget(float time)
+{
+	m_fTimeToTarget = time;
+}
+
+void
+Projectile::Shoot()
 {
 	m_fDX = m_vTarget.x - m_vStandingPos.x;
 	m_fDY = m_vTarget.y - m_vStandingPos.y;
-
-	if (m_fDX < 0)
-	{
-		m_bFlipHorizontally = true;
-	}
-	else if (m_fDX > 0)
-	{
-		m_bFlipHorizontally = false;
-	}
 
 	m_velocityBody.x = m_fDX / m_fTimeToTarget;
 	m_velocityBody.y = (m_fDY - 0.5f * m_fGravity * m_fTimeToTarget * m_fTimeToTarget) / m_fTimeToTarget;
@@ -184,13 +199,13 @@ ProjectileArrow::Shoot()
 }
 
 bool
-ProjectileArrow::IsAlive()
+Projectile::IsAlive()
 {
 	return m_bAlive;
 }
 
 void
-ProjectileArrow::SetAlive(bool alive)
+Projectile::SetAlive(bool alive)
 {
 	m_bAlive = alive;
 }

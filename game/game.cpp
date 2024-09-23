@@ -290,37 +290,37 @@ Game::DebugDraw()
 
 	//ImGui::End();
 
-	ImGui::Begin("Debug Window - Cursor", &open, ImGuiWindowFlags_MenuBar);
-	//ImGui::Text("COMP710 GP Framework (%s)", "2022, S2");
+	//ImGui::Begin("Debug Window - Cursor", &open, ImGuiWindowFlags_MenuBar);
+	////ImGui::Text("COMP710 GP Framework (%s)", "2022, S2");
 
-	if (ImGui::Button("Quit"))
-	{
-		Quit();
-	}
+	//if (ImGui::Button("Quit"))
+	//{
+	//	Quit();
+	//}
 
-	float colourBorder[4] = {  };
-	colourBorder[0] = m_sprCursorBorderSprite->GetRedTint();
-	colourBorder[1] = m_sprCursorBorderSprite->GetGreenTint();
-	colourBorder[2] = m_sprCursorBorderSprite->GetBlueTint();
-	colourBorder[3] = m_sprCursorBorderSprite->GetAlpha();
-	ImGui::ColorEdit4("Border colour", colourBorder);
-	m_sprCursorBorderSprite->SetRedTint(colourBorder[0]);
-	m_sprCursorBorderSprite->SetGreenTint(colourBorder[1]);
-	m_sprCursorBorderSprite->SetBlueTint(colourBorder[2]);
-	m_sprCursorBorderSprite->SetAlpha(colourBorder[3]);
+	//float colourBorder[4] = {  };
+	//colourBorder[0] = m_sprCursorBorderSprite->GetRedTint();
+	//colourBorder[1] = m_sprCursorBorderSprite->GetGreenTint();
+	//colourBorder[2] = m_sprCursorBorderSprite->GetBlueTint();
+	//colourBorder[3] = m_sprCursorBorderSprite->GetAlpha();
+	//ImGui::ColorEdit4("Border colour", colourBorder);
+	//m_sprCursorBorderSprite->SetRedTint(colourBorder[0]);
+	//m_sprCursorBorderSprite->SetGreenTint(colourBorder[1]);
+	//m_sprCursorBorderSprite->SetBlueTint(colourBorder[2]);
+	//m_sprCursorBorderSprite->SetAlpha(colourBorder[3]);
 
-	float colourBody[4] = {  };
-	colourBody[0] = m_sprCursorBodySprite->GetRedTint();
-	colourBody[1] = m_sprCursorBodySprite->GetGreenTint();
-	colourBody[2] = m_sprCursorBodySprite->GetBlueTint();
-	colourBody[3] = m_sprCursorBodySprite->GetAlpha();
-	ImGui::ColorEdit4("Body colour", colourBody);
-	m_sprCursorBodySprite->SetRedTint(colourBody[0]);
-	m_sprCursorBodySprite->SetGreenTint(colourBody[1]);
-	m_sprCursorBodySprite->SetBlueTint(colourBody[2]);
-	m_sprCursorBodySprite->SetAlpha(colourBody[3]);
+	//float colourBody[4] = {  };
+	//colourBody[0] = m_sprCursorBodySprite->GetRedTint();
+	//colourBody[1] = m_sprCursorBodySprite->GetGreenTint();
+	//colourBody[2] = m_sprCursorBodySprite->GetBlueTint();
+	//colourBody[3] = m_sprCursorBodySprite->GetAlpha();
+	//ImGui::ColorEdit4("Body colour", colourBody);
+	//m_sprCursorBodySprite->SetRedTint(colourBody[0]);
+	//m_sprCursorBodySprite->SetGreenTint(colourBody[1]);
+	//m_sprCursorBodySprite->SetBlueTint(colourBody[2]);
+	//m_sprCursorBodySprite->SetAlpha(colourBody[3]);
 
-	ImGui::End();
+	//ImGui::End();
 }
 
 void

@@ -1,5 +1,5 @@
-#ifndef PROJECTILEARROW_H
-#define PROJECTILEARROW_H
+#ifndef PROJECTILE_H
+#define PROJECTILE_H
 
 // Local includes:
 #include "entity.h"
@@ -12,12 +12,12 @@ class Sprite;
 class InputSystem;
 
 // Class declaration:
-class ProjectileArrow : public Entity
+class Projectile : public Entity
 {
 	// Member methods:
 public:
-	ProjectileArrow();
-	~ProjectileArrow();
+	Projectile();
+	~Projectile();
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;
@@ -30,11 +30,13 @@ public:
     bool IsTerrainMoving() override;
 
     Vector2& GetPosition();
+    bool SetProjectileSprite(Renderer& renderer, const char* filePath);
     float GetWidth();
     float GetHeight();
     void SetStartPos(float st_x, float st_y);
     void SetTargetPos(float t_x, float t_y);
     void SetGroundY(float g_y);
+    void SetTimeToTarget(float time);
     void Shoot();
     bool IsAlive();
     void SetAlive(bool alive);
@@ -63,5 +65,5 @@ private:
 
 };
 
-#endif // !PROJECTILEARROW_H
+#endif // !PROJECTILE_H
 

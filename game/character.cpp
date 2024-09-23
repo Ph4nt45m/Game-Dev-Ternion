@@ -8,7 +8,7 @@
 #include "inputsystem.h"
 #include "../imgui/imgui.h"
 #include "animatedsprite.h"
-#include "projectilearrow.h"
+#include "projectile.h"
 
 // Library includes:
 #include <cassert>
@@ -53,6 +53,9 @@ Character::~Character()
 
     delete m_pSprWeapon;
     m_pSprWeapon = 0;
+
+    delete m_pEntArrow;
+    m_pEntArrow = 0;
 
     delete m_pASprWeapAttack;
     m_pASprWeapAttack = 0;
@@ -117,7 +120,7 @@ Character::Initialise(Renderer& renderer)
     case 1:
         m_pSprWeapon = renderer.CreateSprite("..\\Sprites\\weaponsstatic\\bow.png");
         m_pASprWeapAttack = renderer.CreateAnimatedSprite("..\\Sprites\\weaponsanim8\\anim8bow.png");
-        m_pEntArrow = new ProjectileArrow();
+        m_pEntArrow = new Projectile();
 
         if (m_pSprWeapon && m_pASprWeapAttack)
         {
@@ -137,6 +140,7 @@ Character::Initialise(Renderer& renderer)
         }
         else
         {
+            m_pEntArrow->SetProjectileSprite(renderer, "..\\Sprites\\characterprojectile\\arrow.png");
             m_pEntArrow->SetGroundY(m_vStandingPos.y);
         }
 
@@ -416,12 +420,23 @@ Character::HandleInput(float deltaTime)
     // Handles main attack
     if (m_sKeyboardMotions.Attack > 0)
     {
-        if (!m_pASprWeapAttack->IsAnimating() && !m_pEntArrow->IsAlive())
+        switch (m_iWeaponType)
         {
+        case 0:
             m_pASprWeapAttack->Animate();
-            m_pEntArrow->SetStartPos(m_vPosition.x, m_vPosition.y);
-            m_pEntArrow->SetTargetPos(m_vCursor.x, m_vCursor.y);
-            m_pEntArrow->Shoot();
+            break;
+        case 1:
+            if (!m_pASprWeapAttack->IsAnimating() && !m_pEntArrow->IsAlive())
+            {
+                m_pASprWeapAttack->Animate();
+                m_pEntArrow->SetStartPos(m_vPosition.x, m_vPosition.y);
+                m_pEntArrow->SetTargetPos(m_vCursor.x, m_vCursor.y);
+                m_pEntArrow->Shoot();
+            }
+            break;
+        case 2:
+            m_pASprWeapAttack->Animate();
+            break;
         }
     }
 

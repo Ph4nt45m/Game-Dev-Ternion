@@ -10,6 +10,7 @@ class Renderer;
 class InputSystem;
 class Sprite;
 class Character;
+class Golem;
 
 // Represents the states of a set of keys used to side-scroll the terrain
 typedef struct {
@@ -61,6 +62,10 @@ public:
 	void SetCharFeetPos(Vector2& feetPos);
 	void SetCharWidth(int width);
 
+	void SetGolem(Golem& golem);
+	void SetGolemPos(Vector2& position);
+	void SetGolemWidth(float width);
+
 	int GetLBX();
 	int GetUBX();
 	float GetPos();
@@ -73,6 +78,7 @@ protected:
 	void HandleInputs();
 	void HandlePlayerCollisions();
 	void HandleProjCollisions();
+	void HandleGolemCollisions();
 
 private:
 	Forest(const Forest& forest);
@@ -104,6 +110,10 @@ protected:
 	Vector2* m_vCharPos;
 	Vector2* m_vFeetPos;
 	int m_iCharWidth;
+
+	Golem* m_pGolem;
+	Vector2* m_vGolemPos;
+	float m_fGolemWidth;
 
 	static int sm_iSegmentWidth;
 	static int sm_iSegmentHeight;

@@ -30,7 +30,7 @@ public:
 	virtual void SetCharPos(Vector2& characterPos);
 	virtual void SetCharFeetPos(Vector2& feetPos);
 	virtual void SetCharWidth(int width);
-	virtual bool SetEnemies(Renderer& renderer);
+	virtual bool SetEnemies(Character& character, Renderer& renderer);
 
 protected:
 	
@@ -44,7 +44,7 @@ public:
 	
 
 protected:
-	Forest* m_pFrtSegments[20];
+	Forest* m_pFrtSegments[10];
 	Golem* m_pGolem;
 
 private:
