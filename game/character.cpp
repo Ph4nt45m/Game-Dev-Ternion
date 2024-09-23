@@ -243,8 +243,8 @@ Character::Process(float deltaTime, InputSystem& inputSystem)
     m_pSprSpriteHead->SetY((int)m_vPosition.y - (int)(m_pSprSpriteBody->GetHeight() / 2.0f) - (int)m_fHeadBodyOffset);
 
     // For future updates
-    /*m_pSprSpriteShadow->SetX((int)m_vStandingPos.x);
-    m_pSprSpriteShadow->SetY((int)m_vStandingPos.y);*/
+    m_pSprSpriteShadow->SetX((int)m_vStandingPos.x);
+    m_pSprSpriteShadow->SetY((int)m_vStandingPos.y);
 
     // Update position of weapon
     m_pSprWeapon->SetX((int)m_vPosition.x);
@@ -309,8 +309,8 @@ Character::GetInputs(InputSystem& inputSystem)
     // Gets movement keys' states
     m_sMotionKeyStates.MoveForward = inputSystem.GetKeyState(SDL_SCANCODE_D);
     m_sMotionKeyStates.MoveBackward = inputSystem.GetKeyState(SDL_SCANCODE_A);
-    //m_sMotionKeyStates.MoveUp = inputSystem.GetKeyState(SDL_SCANCODE_W); // For future updates
-    //m_sMotionKeyStates.MoveDown = inputSystem.GetKeyState(SDL_SCANCODE_S); // For future updates
+    m_sMotionKeyStates.MoveUp = inputSystem.GetKeyState(SDL_SCANCODE_W); // For future updates
+    m_sMotionKeyStates.MoveDown = inputSystem.GetKeyState(SDL_SCANCODE_S); // For future updates
     m_sMotionKeyStates.Jump = inputSystem.GetKeyState(SDL_SCANCODE_SPACE);
     m_sMotionKeyStates.LeftClickAttack = inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT);
 
@@ -484,49 +484,49 @@ Character::HandleInput(float deltaTime)
         }
     }
 
-    ////Handles up and down motions - For future updates
-    //if (m_sKeyboardMotions.Sway > 0)
-    //{
-    //    if (m_vStandingPos.y > m_vBoundaryLow.y)
-    //    {
-    //        m_velocityBody.y = -200.0f;
-    //        m_velocityPos.y = -200.0f;
-    //        m_fScale -= m_fScaleChangeRate * deltaTime;
+    //Handles up and down motions - For future updates
+    if (m_sKeyboardMotions.Sway > 0)
+    {
+        if (m_vStandingPos.y > m_vBoundaryLow.y)
+        {
+            m_velocityBody.y = -200.0f;
+            m_velocityPos.y = -200.0f;
+            m_fScale -= m_fScaleChangeRate * deltaTime;
 
-    //        if (m_fScale < m_fScaleMin)
-    //        {
-    //            m_fScale = m_fScaleMin;
-    //        }
-    //    }
+            if (m_fScale < m_fScaleMin)
+            {
+                m_fScale = m_fScaleMin;
+            }
+        }
 
-    //    m_bMovingY = true;
-    //}
-    //else if (m_sKeyboardMotions.Sway < 0)
-    //{
-    //    if (m_vStandingPos.y < m_vBoundaryHigh.y)
-    //    {
-    //        m_velocityBody.y = 200.0f;
-    //        m_velocityPos.y = 200.0f;
-    //        m_fScale += m_fScaleChangeRate * deltaTime;
+        m_bMovingY = true;
+    }
+    else if (m_sKeyboardMotions.Sway < 0)
+    {
+        if (m_vStandingPos.y < m_vBoundaryHigh.y)
+        {
+            m_velocityBody.y = 200.0f;
+            m_velocityPos.y = 200.0f;
+            m_fScale += m_fScaleChangeRate * deltaTime;
 
-    //        if (m_fScale > m_fScaleMax)
-    //        {
-    //            m_fScale = m_fScaleMax;
-    //        }
-    //    }
+            if (m_fScale > m_fScaleMax)
+            {
+                m_fScale = m_fScaleMax;
+            }
+        }
 
-    //    m_bMovingY = true;
-    //}
-    //else if (m_sKeyboardMotions.Sway == 0)
-    //{
-    //    m_velocityBody.y = 0.0f;
-    //    m_velocityPos.y = 0.0f;
+        m_bMovingY = true;
+    }
+    else if (m_sKeyboardMotions.Sway == 0)
+    {
+        m_velocityBody.y = 0.0f;
+        m_velocityPos.y = 0.0f;
 
-    //    if (!m_bJumping)
-    //    {
-    //        m_bMovingY = false;
-    //    }
-    //}
+        if (!m_bJumping)
+        {
+            m_bMovingY = false;
+        }
+    }
 }
 
 bool

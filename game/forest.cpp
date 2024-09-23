@@ -180,11 +180,11 @@ Forest::HandlePlayerCollisions()
 	Vector2 backPointR;
 
 	// Middle vector for step platform segment - For future updates
-	//Vector2 middlePoint;
+	Vector2 middlePoint;
 
 	// For future updates
-	/*float tX;
-	float yAtTX;*/
+	float tX;
+	float yAtTX;
 
 	// Check if character is within the segment
 	if ((int)m_vCharPos->x >= (m_fPositionX - ((sm_iSegmentWidth - 6) / static_cast<float>(2)) - ((float)m_iCharWidth * 1.5f)) &&
@@ -200,27 +200,21 @@ Forest::HandlePlayerCollisions()
 			frontPointL.x = 0.0f;
 			frontPointL.y = m_fFloorLowerBound;
 
-			if ((m_vFeetPos->x - ((float)m_iCharWidth / 2.0f)) <= frontPointL.x)
+			// Initialise points that make up line of left wall collision - For future updates
+			frontPointL.x = 6.0f;
+			frontPointL.y = m_fFloorUpperBound;
+
+			backPointL.x = 38.0f;
+			backPointL.y = m_fFloorLowerBound;
+			
+			tX = ((m_vCharPos->x - ((float)m_iCharWidth / 2.0f)) - frontPointL.x) / (backPointL.x - frontPointL.x);
+			yAtTX = frontPointL.y + tX * (backPointL.y - frontPointL.y);
+
+			if (tX >= 0.0f && tX <= 1.0f && m_vCharPos->y <= yAtTX)
 			{
 				// Collision has occured, now handle
 				m_pEntCharacter->ShiftX(1.0f);
 			}
-
-			//// Initialise points that make up line of left wall collision - For future updates
-			//frontPointL.x = 6.0f;
-			//frontPointL.y = m_fFloorUpperBound;
-
-			//backPointL.x = 38.0f;
-			//backPointL.y = m_fFloorLowerBound;
-			//
-			//tX = ((m_vCharPos->x - ((float)m_iCharWidth / 2.0f)) - frontPointL.x) / (backPointL.x - frontPointL.x);
-			//yAtTX = frontPointL.y + tX * (backPointL.y - frontPointL.y);
-
-			//if (tX >= 0.0f && tX <= 1.0f && m_vCharPos->y <= yAtTX)
-			//{
-			//	// Collision has occured, now handle
-			//	m_pEntCharacter->ShiftX(1.0f);
-			//}
 
 			break;
 		case ST_RIGHTWALL:
@@ -228,27 +222,21 @@ Forest::HandlePlayerCollisions()
 			frontPointR.x = (float)sm_iScreenWidth;
 			frontPointR.y = m_fFloorLowerBound;
 
-			if ((m_vFeetPos->x + ((float)m_iCharWidth / 2.0f)) >= frontPointR.x)
+			// Initialise points that make up line of right wall collision - For future updates
+			frontPointR.x = sm_iScreenWidth - 6.0f;
+			frontPointR.y = m_fFloorUpperBound;
+
+			backPointR.x = sm_iScreenWidth - 38.0f;
+			backPointR.y = m_fFloorLowerBound;
+
+			tX = ((m_vCharPos->x + ((float)m_iCharWidth / 2.0f)) - frontPointR.x) / (backPointR.x - frontPointR.x);
+			yAtTX = frontPointR.y + tX * (backPointR.y - frontPointR.y);
+
+			if (tX >= 0.0f && tX <= 1.0f && m_vCharPos->y <= yAtTX)
 			{
 				// Collision has occured, now handle
 				m_pEntCharacter->ShiftX(-1.0f);
 			}
-
-			//// Initialise points that make up line of right wall collision - For future updates
-			//frontPointR.x = sm_iScreenWidth - 6.0f;
-			//frontPointR.y = m_fFloorUpperBound;
-
-			//backPointR.x = sm_iScreenWidth - 38.0f;
-			//backPointR.y = m_fFloorLowerBound;
-
-			//tX = ((m_vCharPos->x + ((float)m_iCharWidth / 2.0f)) - frontPointR.x) / (backPointR.x - frontPointR.x);
-			//yAtTX = frontPointR.y + tX * (backPointR.y - frontPointR.y);
-
-			//if (tX >= 0.0f && tX <= 1.0f && m_vCharPos->y <= yAtTX)
-			//{
-			//	// Collision has occured, now handle
-			//	m_pEntCharacter->ShiftX(-1.0f);
-			//}
 
 			break;
 		case ST_BLANK:
