@@ -154,6 +154,7 @@
     <ClCompile Include="animatedsprite.cpp" />
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="character.cpp" />
+    <ClCompile Include="collision.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="forest.cpp" />
     <ClCompile Include="forestscene.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="animatedsprite.h" />
     <ClInclude Include="ball.h" />
     <ClInclude Include="character.h" />
+    <ClInclude Include="collision.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="forest.h" />
     <ClInclude Include="forestscene.h" />

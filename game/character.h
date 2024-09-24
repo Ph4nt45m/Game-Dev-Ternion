@@ -43,6 +43,7 @@ public:
     void SetCentered(bool centered);
     bool IsCentered();
     int GetBodyWidth();
+    int GetBodyHeight();
     void ShiftX(float amount);
     void ShiftY(float amount);
 

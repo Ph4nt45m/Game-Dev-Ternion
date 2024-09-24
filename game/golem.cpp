@@ -9,6 +9,7 @@
 #include "../imgui/imgui.h"
 #include "character.h"
 #include "projectile.h"
+#include "collision.h"
 
 // Library includes:
 #include <cassert>
@@ -194,7 +195,7 @@ Golem::Draw(Renderer& renderer)
             {
                 if (m_sAnimations.m_pASprGolemSlash->IsAnimating())
                 {
-                    printf("Slash\n");
+                   // printf("Slash\n");
                     m_sAnimations.m_pASprGolemSlash->Draw(renderer, m_bFlipHorizontally, false);
                 }
                 else
@@ -216,7 +217,7 @@ Golem::Draw(Renderer& renderer)
             {
                 if (m_sAnimations.m_pASprGolemJump->IsAnimating())
                 {
-                    printf("Jump\n");
+                   // printf("Jump\n");
                     m_sAnimations.m_pASprGolemJump->Draw(renderer, m_bFlipHorizontally, false);
                 }
                 else
@@ -228,7 +229,7 @@ Golem::Draw(Renderer& renderer)
                     }
                     else if (m_sAnimations.m_pASprGolemSlam->IsAnimating())
                     {
-                        printf("Slam\n");
+                       // printf("Slam\n");
                         m_sAnimations.m_pASprGolemSlam->Draw(renderer, m_bFlipHorizontally, false);
                         m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, true);
                     }
@@ -252,12 +253,12 @@ Golem::Draw(Renderer& renderer)
             {
                 if (m_sAnimations.m_pASprGolemThrow->IsAnimating())
                 {
-                    printf("Throw\n");
+                    //printf("Throw\n");
                     m_sAnimations.m_pASprGolemThrow->Draw(renderer, m_bFlipHorizontally, false);
                 }
                 else
                 {
-                    printf("Projectile\n");
+                   // printf("Projectile\n");
                     m_pEntProjectile->SetStartPos(m_vPosition.x + ((m_bFlipHorizontally ? -m_fHitBoxRange : m_fHitBoxRange)), m_vPosition.y);
                     m_pEntProjectile->SetTargetPos(m_pEntCharacter->GetPosition().x, m_pEntCharacter->GetPosition().y);
                     m_pEntProjectile->Shoot();
@@ -447,7 +448,7 @@ Golem::Move(int attackType)
             if (m_pEntCharacter->GetPosition().x < (m_vPosition.x - m_fSlashRangeMax) &&
                 m_pEntCharacter->GetPosition().x > m_vPosition.x)
             {
-                printf("Moving Left Slash\n");
+               // printf("Moving Left Slash\n");
                 m_iFacingDirection = -1;
                 m_bFlipHorizontally = true;
                 m_bIsAnimating = true;
@@ -456,7 +457,7 @@ Golem::Move(int attackType)
             else if (m_pEntCharacter->GetPosition().x > (m_vPosition.x + m_fSlashRangeMax) &&
                 m_pEntCharacter->GetPosition().x < m_vPosition.x)
             {
-                printf("Moving Right Slash\n");
+                //printf("Moving Right Slash\n");
                 m_iFacingDirection = 1;
                 m_bFlipHorizontally = false;
                 m_bIsAnimating = true;
@@ -473,7 +474,7 @@ Golem::Move(int attackType)
             if (m_pEntCharacter->GetPosition().x < (m_vPosition.x - m_fSlamRangeMax) &&
                 m_pEntCharacter->GetPosition().x < m_vPosition.x)
             {
-                printf("Moving Left Slam\n");
+              //  printf("Moving Left Slam\n");
                 m_iFacingDirection = -1;
                 m_bFlipHorizontally = true;
                 m_bIsAnimating = true;
@@ -482,7 +483,7 @@ Golem::Move(int attackType)
             else if (m_pEntCharacter->GetPosition().x > (m_vPosition.x + m_fSlamRangeMax) &&
                 m_pEntCharacter->GetPosition().x < m_vPosition.x)
             {
-                printf("Moving Right Slam\n");
+             //   printf("Moving Right Slam\n");
                 m_iFacingDirection = 1;
                 m_bFlipHorizontally = false;
                 m_bIsAnimating = true;
@@ -498,7 +499,7 @@ Golem::Move(int attackType)
         case 2:
             if (m_pEntCharacter->GetPosition().x < (m_vPosition.x - m_fThrowRangeMax) && m_pEntCharacter->GetPosition().x < m_vPosition.x)
             {
-                printf("Moving Left Throw\n");
+                //printf("Moving Left Throw\n");
                 m_iFacingDirection = -1;
                 m_bFlipHorizontally = true;
                 m_bIsAnimating = true;
@@ -506,7 +507,7 @@ Golem::Move(int attackType)
             }
             else if (m_pEntCharacter->GetPosition().x > (m_vPosition.x + m_fThrowRangeMax) && m_pEntCharacter->GetPosition().x > m_vPosition.x)
             {
-                printf("Moving Right Throw\n");
+               // printf("Moving Right Throw\n");
                 m_iFacingDirection = 1;
                 m_bFlipHorizontally = false;
                 m_bIsAnimating = true;
@@ -660,43 +661,36 @@ Golem::Action()
     }*/
 }
 
-void
-Golem::ProcessAction()
+void Golem::ProcessAction()
 {
+    Collision collisionChecker;
+
     if (m_bSlash)
     {
         if (m_fDistToPlayer >= 0.0f && m_fDistToPlayer < m_fSlashRangeMax)
         {
-            // Apply slash damage
+            // Check if the player is within the hitbox range
+            if (collisionChecker.checkCollision(*m_pEntCharacter, *m_sAnimations.m_pASprGolemSlash)) {
+                // Apply slash damage to the player
+                printf("Player hit by slash!\n");
+                // You can apply the damage logic here, or notify the player of the hit
+            }
         }
     }
-
-    if (m_bSlam)
+    if (m_bSlam && m_sAnimations.m_pASprGolemSlam->IsAnimating())
     {
-        if (m_sAnimations.m_pASprGolemSlam->IsAnimating())
-        {
-            if (m_fDistToPlayer >= m_fSlashRangeMax && m_fDistToPlayer < m_fSlamRangeMax)
-            {
-                // Apply damage
-            }
+        float slamStartX = m_vPosition.x;
+        float slamEndX = m_vPosition.x + m_fSlamRangeMax * m_iFacingDirection;
+        if (collisionChecker.checkPathCollision(*m_pEntCharacter, *m_sAnimations.m_pASprGolemSlam, slamStartX, slamEndX, 0.1f, m_iFacingDirection)) {
+            // Apply slam damage
+            //printf("Player hit by slam!\n");
         }
     }
 
     if (m_bProjectile)
     {
-        /*m_velocityDirection.x = m_vProjectileEndPos.x - m_vProjectileStartPos.x;
-        m_velocityDirection.y = m_vProjectileEndPos.y - m_vProjectileStartPos.y;
-
-        float length = m_velocityDirection.Length();
-
-        if (length > 0.0f)
-        {
-            m_velocityDirection.x /= length;
-            m_velocityDirection.y /= length;
-        }
-
-        m_velocityProjectile.x = m_velocityDirection.x * 175.0f;
-        m_velocityProjectile.y = m_velocityDirection.y * 175.0f;*/
+       
+        
     }
 }
 

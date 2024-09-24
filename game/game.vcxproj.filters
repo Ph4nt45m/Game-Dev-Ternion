@@ -16,6 +16,12 @@
     <Filter Include="Imgui">
       <UniqueIdentifier>{69c22732-600f-4095-9959-9f0c557424cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Rauens files">
+      <UniqueIdentifier>{86fd9500-e08d-46ba-8fad-95ce701bca8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rauens files">
+      <UniqueIdentifier>{631b4091-fcab-4d7b-ad86-d43b7e6ede78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -110,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="projectile.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="collision.cpp">
+      <Filter>Source Files\Rauens files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -211,6 +220,9 @@
     </ClInclude>
     <ClInclude Include="projectile.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="collision.h">
+      <Filter>Header Files\Rauens files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

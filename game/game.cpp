@@ -87,8 +87,8 @@ bool Game::Initialise()
 	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
 	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-	int bbWidth = 1536; // 1550 originally
-	int bbHeight = 846; // 800 originally
+	int bbWidth = 1550; // 1550 originally
+	int bbHeight = 800; // 800 originally
 
 	m_pRenderer = new Renderer();
 
