@@ -204,9 +204,13 @@ Game::Process(float deltaTime)
 		m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
 	}
 
+	//Char?
 	m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
+	
+	//gotta ask what's this?
 	m_pASprAnimatedSprite->Process(deltaTime);
 
+	// Just cursor stuff
 	if (m_sprCursorBorderSprite)
 	{
 		m_pCursor.SetPosition(m_pInputSystem->GetMousePosition());
