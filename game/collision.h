@@ -7,13 +7,16 @@
 
 class Collision {
 public:
-    // Check collision between two sprites (player and attack)
-    bool checkCollision(Character& character, const Sprite& attackSprite);
+    bool checkCollision(Character& character, Sprite& attackSprite);
 
+    // Check collision between two animated sprites with frame synchronization
+    bool checkCollisionWithFrames(Character& character, AnimatedSprite& attackSprite, int currentFrame, int startFrame, int endFrame);
 
-    // Check collision between two animated sprites
-    bool checkPathCollision(Character& character, AnimatedSprite& attackSprite, float startX, float endX, float step, int direction);
+    // Path-based collision check (using frame synchronization)
+    bool checkPathCollision(Character& character, AnimatedSprite& attackSprite, float startX, float endX, float step, int direction, int currentFrame, int startFrame, int endFrame);
 
+    // Arc-based collision check (using frame synchronization)
+    bool checkArcCollision(Character& character, AnimatedSprite& attackSprite, float arcStartX, float arcEndX, float step, int direction, int currentFrame, int startFrame, int endFrame);
 };
 
 #endif // COLLISION_H

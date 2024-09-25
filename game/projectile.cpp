@@ -153,6 +153,11 @@ Projectile::GetWidth()
 	return (float)m_pSprSpriteBody->GetWidth();
 }
 
+Sprite* Projectile::GetSprite()
+{
+	return m_pSprSpriteBody;
+}
+
 float
 Projectile::GetHeight()
 {
@@ -173,6 +178,7 @@ Projectile::SetTargetPos(float t_x, float t_y)
 {
 	m_vTarget.x = t_x;
 	m_vTarget.y = t_y;
+	targetSet = true;
 }
 
 void
@@ -209,3 +215,5 @@ Projectile::SetAlive(bool alive)
 {
 	m_bAlive = alive;
 }
+
+

@@ -260,21 +260,16 @@ Golem::Draw(Renderer& renderer)
                 {
                    // printf("Projectile\n");
                     m_pEntProjectile->SetStartPos(m_vPosition.x + ((m_bFlipHorizontally ? -m_fHitBoxRange : m_fHitBoxRange)), m_vPosition.y);
-                    m_pEntProjectile->SetTargetPos(m_pEntCharacter->GetPosition().x, m_pEntCharacter->GetPosition().y);
+                    if (!m_pEntProjectile->HasTargetPos())  // Check if target is already set
+                    {
+                        m_pEntProjectile->SetTargetPos(m_pEntCharacter->GetPosition().x, m_pEntCharacter->GetPosition().y);
+                    }
                     m_pEntProjectile->Shoot();
                     m_bShoot = false;
                     m_bProjectile = false;
                     m_bIsAnimating = false;
                     m_iAttackType = 1;
                     
-                    /*if (m_fDistToPlayer < m_fSlashRangeMax)
-                    {
-                        m_iAttackType = 0;
-                    }
-                    else if (m_fDistToPlayer < m_fSlamRangeMax && m_fDistToPlayer >= m_fSlashRangeMax)
-                    {
-                        m_iAttackType = 1;
-                    }*/
                 }
             }
             else
@@ -667,30 +662,55 @@ void Golem::ProcessAction()
 
     if (m_bSlash)
     {
+        int currentFrame = m_sAnimations.m_pASprGolemSlash->GetCurrentFrame();
+        int startCollisionFrame = 5;  // Frame at which the collision becomes active
+        int endCollisionFrame = 10;   // Frame at which the collision stops being active
+
         if (m_fDistToPlayer >= 0.0f && m_fDistToPlayer < m_fSlashRangeMax)
         {
-            // Check if the player is within the hitbox range
-            if (collisionChecker.checkCollision(*m_pEntCharacter, *m_sAnimations.m_pASprGolemSlash)) {
-                // Apply slash damage to the player
+            // Get start position of the arc (the base of the slash)
+            float arcStartX = m_vPosition.x;
+            float arcEndX = m_vPosition.x + m_fSlashRangeMax * m_iFacingDirection;
+
+            // Use the collision class to check arc-shaped collision
+            if (collisionChecker.checkArcCollision(*m_pEntCharacter, *m_sAnimations.m_pASprGolemSlash, arcStartX, arcEndX, 5.0f, m_iFacingDirection, currentFrame, startCollisionFrame, endCollisionFrame)) {
+                // Apply slash damage
                 printf("Player hit by slash!\n");
-                // You can apply the damage logic here, or notify the player of the hit
             }
         }
     }
+
     if (m_bSlam && m_sAnimations.m_pASprGolemSlam->IsAnimating())
     {
+        int currentFrame = m_sAnimations.m_pASprGolemSlam->GetCurrentFrame();
+        int startCollisionFrame = 3;  // Start frame for slam collision
+        int endCollisionFrame = 8;    // End frame for slam collision
+
         float slamStartX = m_vPosition.x;
         float slamEndX = m_vPosition.x + m_fSlamRangeMax * m_iFacingDirection;
-        if (collisionChecker.checkPathCollision(*m_pEntCharacter, *m_sAnimations.m_pASprGolemSlam, slamStartX, slamEndX, 0.1f, m_iFacingDirection)) {
+
+        // Use the collision class to check path-based collision
+        if (collisionChecker.checkPathCollision(*m_pEntCharacter, *m_sAnimations.m_pASprGolemSlam, slamStartX, slamEndX, 0.1f, m_iFacingDirection, currentFrame, startCollisionFrame, endCollisionFrame)) {
             // Apply slam damage
-            //printf("Player hit by slam!\n");
+            printf("Player hit by slam!\n");
         }
     }
 
     if (m_bProjectile)
     {
-       
-        
+        int currentFrame = m_sAnimations.m_pASprGolemThrow->GetCurrentFrame();
+        int startCollisionFrame = 2;  // Frame when projectile is thrown
+        int endCollisionFrame = 6;    // End frame for projectile collision
+
+        float projectileStartX = m_pEntProjectile->GetSprite()->GetX();
+        float projectileEndX = m_pEntProjectile->GetSprite()->GetX() + m_fThrowRangeMax * m_iFacingDirection;
+
+        // The projectile is already moving in an arc, so just check for collision
+        if (collisionChecker.checkArcCollision(*m_pEntCharacter,*m_sAnimations.m_pASprGolemThrow, projectileStartX, projectileEndX, 5.0f, m_iFacingDirection, currentFrame, startCollisionFrame, endCollisionFrame))
+        {
+            // Apply damage to the player
+            printf("Player hit by projectile!\n");
+        }
     }
 }
 

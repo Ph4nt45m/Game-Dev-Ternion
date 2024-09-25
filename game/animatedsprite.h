@@ -32,6 +32,7 @@ public:
 
 	int GetWidth() const;
 	int GetHeight() const;
+	int GetCurrentFrame() const { return m_iCurrentFrame; };
 	void DebugDraw();
 
 protected:
