@@ -33,6 +33,7 @@ public:
     bool SetProjectileSprite(Renderer& renderer, const char* filePath);
     float GetWidth();
     float GetHeight();
+    Sprite* GetSprite();
     void SetStartPos(float st_x, float st_y);
     void SetTargetPos(float t_x, float t_y);
     void SetGroundY(float g_y);
@@ -40,6 +41,7 @@ public:
     void Shoot();
     bool IsAlive();
     void SetAlive(bool alive);
+    bool HasTargetPos() const { return targetSet; }
 
 protected:
 
@@ -57,6 +59,7 @@ public:
     float m_fGroundY;
     float m_fWidth;
     float m_fHeight;
+    bool targetSet = false;
 
 protected:
 

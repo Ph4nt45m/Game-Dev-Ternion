@@ -665,6 +665,12 @@ Character::GetBodyWidth()
     return m_pSprSpriteBody->GetWidth();
 }
 
+int
+Character::GetBodyHeight()
+{
+    return m_pSprSpriteBody->GetHeight();
+}
+
 void
 Character::SetNumSegments(int amount)
 {
