@@ -84,7 +84,7 @@ Golem::Initialise(Renderer& renderer)
     m_fSlashRangeMax = (m_sAnimations.m_pASprGolemSlash->GetWidth() / 2.0f) - 15;
     m_fSlamRangeMax = (m_sAnimations.m_pASprGolemSlam->GetWidth() / 2.0f);
     m_fThrowRangeMax = (sm_fSegmentWidth * 2.0f);
-    m_fGroundY = ((sm_fBoundaryHeight / 7.0f) * 5.0f);
+    m_fGroundY = sm_fBoundaryHeight;
     m_iAttackType = 2;
     m_bAlive = true;
 
@@ -103,7 +103,7 @@ Golem::Initialise(Renderer& renderer)
     else
     {
         m_pEntProjectile->SetProjectileSprite(renderer, "..\\Sprites\\golem\\ball.png");
-        m_pEntProjectile->SetGroundY(m_fGroundY + 32);
+        m_pEntProjectile->SetGroundY(m_fGroundY);
         m_pEntProjectile->SetTimeToTarget(1.5f);
     }
 
@@ -125,27 +125,12 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         {
             Action();
         }
-        /*else
-        {
-            if (m_bWalk)
-            {
-                Move(m_iAttackType);
-                
-                if (!m_sAnimations.m_pASprGolemWalk->IsAnimating())
-                {
-                    m_sAnimations.m_pASprGolemWalk->Animate();
-                    m_sAnimations.m_pASprGolemWalk->SetLooping(true);
-                }
-            }
-            else
-            {
-                m_sAnimations.m_pASprGolemWalk->Inanimate();
-                m_sAnimations.m_pASprGolemWalk->SetLooping(false);
-            }
-        }*/
+        
         if (m_bWalk)
         {
             Move(m_iAttackType);
+            m_sAnimations.m_pASprGolemWalk->Animate();
+            m_sAnimations.m_pASprGolemWalk->SetLooping(true);
         }
         else
         {

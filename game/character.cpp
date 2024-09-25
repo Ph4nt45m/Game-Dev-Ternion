@@ -141,7 +141,7 @@ Character::Initialise(Renderer& renderer)
         else
         {
             m_pEntArrow->SetProjectileSprite(renderer, "..\\Sprites\\characterprojectile\\arrow.png");
-            m_pEntArrow->SetGroundY(m_vStandingPos.y);
+            m_pEntArrow->SetGroundY(sm_fBoundaryHeight);
         }
 
         break;
