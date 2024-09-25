@@ -9,6 +9,7 @@
 #include "../imgui/imgui.h"
 #include "character.h"
 #include "projectile.h"
+#include "collision.h"
 
 // Library includes:
 #include <cassert>
@@ -656,40 +657,59 @@ Golem::Action()
 void
 Golem::ProcessAction()
 {
+    Collision collisionChecker;
+
     if (m_bSlash)
     {
+        int currentFrame = m_sAnimations.m_pASprGolemSlash->GetCurrentFrame();
+        int startCollisionFrame = 5;  // Frame at which the collision becomes active
+        int endCollisionFrame = 10;   // Frame at which the collision stops being active
+
         if (m_fDistToPlayer >= 0.0f && m_fDistToPlayer < m_fSlashRangeMax)
         {
-            // Apply slash damage
+            // Get start position of the arc (the base of the slash)
+            float arcStartX = m_vPosition.x;
+            float arcEndX = m_vPosition.x + m_fSlashRangeMax * m_iFacingDirection;
+
+            // Use the collision class to check arc-shaped collision
+            if (collisionChecker.checkArcCollision(*m_pEntCharacter, *m_sAnimations.m_pASprGolemSlash, arcStartX, arcEndX, 5.0f, m_iFacingDirection, currentFrame, startCollisionFrame, endCollisionFrame)) {
+                // Apply slash damage
+                printf("Player hit by slash!\n");
+            }
         }
     }
 
-    if (m_bSlam)
+    if (m_bSlam && m_sAnimations.m_pASprGolemSlam->IsAnimating())
     {
-        if (m_sAnimations.m_pASprGolemSlam->IsAnimating())
-        {
-            if (m_fDistToPlayer >= m_fSlashRangeMax && m_fDistToPlayer < m_fSlamRangeMax)
-            {
-                // Apply damage
-            }
+        int currentFrame = m_sAnimations.m_pASprGolemSlam->GetCurrentFrame();
+        int startCollisionFrame = 3;  // Start frame for slam collision
+        int endCollisionFrame = 8;    // End frame for slam collision
+
+        float slamStartX = m_vPosition.x;
+        float slamEndX = m_vPosition.x + m_fSlamRangeMax * m_iFacingDirection;
+        LogManager::GetInstance().Log("Player Hit by slam");
+        // Use the collision class to check path-based collision
+        if (collisionChecker.checkPathCollision(*m_pEntCharacter, *m_sAnimations.m_pASprGolemSlam, slamStartX, slamEndX, 0.1f, m_iFacingDirection, currentFrame, startCollisionFrame, endCollisionFrame)) {
+            // Apply slam damage
+            printf("Player hit by slam!\n");
         }
     }
 
     if (m_bProjectile)
     {
-        /*m_velocityDirection.x = m_vProjectileEndPos.x - m_vProjectileStartPos.x;
-        m_velocityDirection.y = m_vProjectileEndPos.y - m_vProjectileStartPos.y;
+        int currentFrame = m_sAnimations.m_pASprGolemThrow->GetCurrentFrame();
+        int startCollisionFrame = 2;  // Frame when projectile is thrown
+        int endCollisionFrame = 6;    // End frame for projectile collision
 
-        float length = m_velocityDirection.Length();
+        float projectileStartX = m_pEntProjectile->GetSprite()->GetX();
+        float projectileEndX = m_pEntProjectile->GetSprite()->GetX() + m_fThrowRangeMax * m_iFacingDirection;
 
-        if (length > 0.0f)
+        // The projectile is already moving in an arc, so just check for collision
+        if (collisionChecker.checkArcCollision(*m_pEntCharacter, *m_sAnimations.m_pASprGolemThrow, projectileStartX, projectileEndX, 5.0f, m_iFacingDirection, currentFrame, startCollisionFrame, endCollisionFrame))
         {
-            m_velocityDirection.x /= length;
-            m_velocityDirection.y /= length;
+            // Apply damage to the player
+            printf("Player hit by projectile!\n");
         }
-
-        m_velocityProjectile.x = m_velocityDirection.x * 175.0f;
-        m_velocityProjectile.y = m_velocityDirection.y * 175.0f;*/
     }
 }
 
