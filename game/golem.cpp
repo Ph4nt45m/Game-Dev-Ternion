@@ -85,7 +85,7 @@ Golem::Initialise(Renderer& renderer)
     m_fSlashRangeMax = (m_sAnimations.m_pASprGolemSlash->GetWidth() / 2.0f) - 15;
     m_fSlamRangeMax = (m_sAnimations.m_pASprGolemSlam->GetWidth() / 2.0f);
     m_fThrowRangeMax = (sm_fSegmentWidth * 2.0f);
-    m_fGroundY = sm_fBoundaryHeight;
+    m_fGroundY = ((sm_fBoundaryHeight / 7.0f) * 5.0f);
     m_iAttackType = 2;
     m_bAlive = true;
 
@@ -104,7 +104,6 @@ Golem::Initialise(Renderer& renderer)
     else
     {
         m_pEntProjectile->SetProjectileSprite(renderer, "..\\Sprites\\golem\\ball.png");
-        m_pEntProjectile->SetGroundY(m_fGroundY);
         m_pEntProjectile->SetTimeToTarget(1.5f);
     }
 
@@ -130,8 +129,12 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         if (m_bWalk)
         {
             Move(m_iAttackType);
-            m_sAnimations.m_pASprGolemWalk->Animate();
-            m_sAnimations.m_pASprGolemWalk->SetLooping(true);
+
+            if (!m_sAnimations.m_pASprGolemWalk->IsAnimating())
+            {
+                m_sAnimations.m_pASprGolemWalk->Animate();
+                m_sAnimations.m_pASprGolemWalk->SetLooping(true);
+            }        
         }
         else
         {
@@ -189,7 +192,6 @@ Golem::Draw(Renderer& renderer)
             {
                 if (m_sAnimations.m_pASprGolemSlash->IsAnimating())
                 {
-                    printf("Slash\n");
                     m_sAnimations.m_pASprGolemSlash->Draw(renderer, m_bFlipHorizontally, false);
                 }
                 else
@@ -211,7 +213,6 @@ Golem::Draw(Renderer& renderer)
             {
                 if (m_sAnimations.m_pASprGolemJump->IsAnimating())
                 {
-                    printf("Jump\n");
                     m_sAnimations.m_pASprGolemJump->Draw(renderer, m_bFlipHorizontally, false);
                 }
                 else
@@ -223,7 +224,6 @@ Golem::Draw(Renderer& renderer)
                     }
                     else if (m_sAnimations.m_pASprGolemSlam->IsAnimating())
                     {
-                        printf("Slam\n");
                         m_sAnimations.m_pASprGolemSlam->Draw(renderer, m_bFlipHorizontally, false);
                         m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, true);
                     }
@@ -247,14 +247,13 @@ Golem::Draw(Renderer& renderer)
             {
                 if (m_sAnimations.m_pASprGolemThrow->IsAnimating())
                 {
-                    printf("Throw\n");
                     m_sAnimations.m_pASprGolemThrow->Draw(renderer, m_bFlipHorizontally, false);
                 }
                 else
                 {
-                    printf("Projectile\n");
                     m_pEntProjectile->SetStartPos(m_vPosition.x + ((m_bFlipHorizontally ? -m_fHitBoxRange : m_fHitBoxRange)), m_vPosition.y);
                     m_pEntProjectile->SetTargetPos(m_pEntCharacter->GetPosition().x, m_pEntCharacter->GetPosition().y);
+                    m_pEntProjectile->SetGroundY(m_pEntCharacter->GetPosition().y);
                     m_pEntProjectile->Shoot();
                     m_bShoot = false;
                     m_bProjectile = false;
@@ -441,7 +440,6 @@ Golem::Move(int attackType)
             if (m_pEntCharacter->GetPosition().x < (m_vPosition.x - m_fSlashRangeMax) &&
                 m_pEntCharacter->GetPosition().x < m_vPosition.x)
             {
-                printf("Moving Left Slash\n");
                 m_iFacingDirection = -1;
                 m_bFlipHorizontally = true;
                 m_bIsAnimating = true;
@@ -450,7 +448,6 @@ Golem::Move(int attackType)
             else if (m_pEntCharacter->GetPosition().x > (m_vPosition.x + m_fSlashRangeMax) &&
                 m_pEntCharacter->GetPosition().x > m_vPosition.x)
             {
-                printf("Moving Right Slash\n");
                 m_iFacingDirection = 1;
                 m_bFlipHorizontally = false;
                 m_bIsAnimating = true;
@@ -458,7 +455,6 @@ Golem::Move(int attackType)
             }
             else
             {
-                printf("In Slash Range\n");
                 m_velocityBody.x = 0.0f;
                 m_bIsAnimating = false;
                 m_bWalk = false;
@@ -469,7 +465,6 @@ Golem::Move(int attackType)
             if (m_pEntCharacter->GetPosition().x < (m_vPosition.x - m_fSlamRangeMax) &&
                 m_pEntCharacter->GetPosition().x < m_vPosition.x)
             {
-                printf("Moving Left Slam\n");
                 m_iFacingDirection = -1;
                 m_bFlipHorizontally = true;
                 m_bIsAnimating = true;
@@ -478,7 +473,6 @@ Golem::Move(int attackType)
             else if (m_pEntCharacter->GetPosition().x > (m_vPosition.x + m_fSlamRangeMax) &&
                 m_pEntCharacter->GetPosition().x > m_vPosition.x)
             {
-                printf("Moving Right Slam\n");
                 m_iFacingDirection = 1;
                 m_bFlipHorizontally = false;
                 m_bIsAnimating = true;
@@ -486,7 +480,6 @@ Golem::Move(int attackType)
             }
             else
             {
-                printf("In Slam Range\n");
                 m_velocityBody.x = 0.0f;
                 m_bIsAnimating = false;
                 m_bWalk = false;
@@ -497,7 +490,6 @@ Golem::Move(int attackType)
             if (m_pEntCharacter->GetPosition().x < (m_vPosition.x - m_fThrowRangeMax) &&
                 m_pEntCharacter->GetPosition().x < m_vPosition.x)
             {
-                printf("Moving Left Throw\n");
                 m_iFacingDirection = -1;
                 m_bFlipHorizontally = true;
                 m_bIsAnimating = true;
@@ -506,7 +498,6 @@ Golem::Move(int attackType)
             else if (m_pEntCharacter->GetPosition().x > (m_vPosition.x + m_fThrowRangeMax) &&
                 m_pEntCharacter->GetPosition().x > m_vPosition.x)
             {
-                printf("Moving Right Throw\n");
                 m_iFacingDirection = 1;
                 m_bFlipHorizontally = false;
                 m_bIsAnimating = true;
@@ -514,7 +505,6 @@ Golem::Move(int attackType)
             }
             else
             {
-                printf("In Throw Range\n");
                 m_velocityBody.x = 0.0f;
                 m_bIsAnimating = false;
                 m_bWalk = false;
@@ -524,7 +514,6 @@ Golem::Move(int attackType)
         case 3:
             if ((int)m_vPosition.x < (int)m_vStartingPos.x)
             {
-                printf("Move Start From Left\n");
                 m_iFacingDirection = 1;
                 m_bFlipHorizontally = false;
                 m_bIsAnimating = true;
@@ -532,7 +521,6 @@ Golem::Move(int attackType)
             }
             else if ((int)m_vPosition.x > (int)m_vStartingPos.x)
             {
-                printf("Move Start From Right");
                 m_iFacingDirection = -1;
                 m_bFlipHorizontally = true;
                 m_bIsAnimating = true;
@@ -540,7 +528,6 @@ Golem::Move(int attackType)
             }
             else
             {
-                printf("At Start Pos\n");
                 m_iFacingDirection = -1;
                 m_bFlipHorizontally = true;
                 m_velocityBody.x = 0.0f;
