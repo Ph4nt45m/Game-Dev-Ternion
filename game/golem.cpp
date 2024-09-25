@@ -125,7 +125,7 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         {
             Action();
         }
-        else
+        /*else
         {
             if (m_bWalk)
             {
@@ -142,6 +142,15 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
                 m_sAnimations.m_pASprGolemWalk->Inanimate();
                 m_sAnimations.m_pASprGolemWalk->SetLooping(false);
             }
+        }*/
+        if (m_bWalk)
+        {
+            Move(m_iAttackType);
+        }
+        else
+        {
+            m_sAnimations.m_pASprGolemWalk->Inanimate();
+            m_sAnimations.m_pASprGolemWalk->SetLooping(false);
         }
     }
     else
@@ -237,7 +246,7 @@ Golem::Draw(Renderer& renderer)
                         m_bSlam = false;
                         m_bIsAnimating = false;
                         
-                        if (m_fDistToPlayer < m_fSlashRangeMax)
+                        if (m_fDistToPlayer < m_fSlamRangeMax)
                         {
                             m_iAttackType = 0;
                         }
@@ -264,16 +273,15 @@ Golem::Draw(Renderer& renderer)
                     m_bShoot = false;
                     m_bProjectile = false;
                     m_bIsAnimating = false;
-                    m_iAttackType = 1;
                     
-                    /*if (m_fDistToPlayer < m_fSlashRangeMax)
+                    if (m_fDistToPlayer < m_fSlashRangeMax)
                     {
                         m_iAttackType = 0;
                     }
-                    else if (m_fDistToPlayer < m_fSlamRangeMax && m_fDistToPlayer >= m_fSlashRangeMax)
+                    else if (m_fDistToPlayer < m_fSlamRangeMax && m_fDistToPlayer >= m_fSlashRangeMax || m_iAttackType == 2)
                     {
                         m_iAttackType = 1;
-                    }*/
+                    }
                 }
             }
             else
@@ -445,7 +453,7 @@ Golem::Move(int attackType)
         {
         case 0:
             if (m_pEntCharacter->GetPosition().x < (m_vPosition.x - m_fSlashRangeMax) &&
-                m_pEntCharacter->GetPosition().x > m_vPosition.x)
+                m_pEntCharacter->GetPosition().x < m_vPosition.x)
             {
                 printf("Moving Left Slash\n");
                 m_iFacingDirection = -1;
@@ -454,7 +462,7 @@ Golem::Move(int attackType)
                 m_velocityBody.x = -150.0f;
             }
             else if (m_pEntCharacter->GetPosition().x > (m_vPosition.x + m_fSlashRangeMax) &&
-                m_pEntCharacter->GetPosition().x < m_vPosition.x)
+                m_pEntCharacter->GetPosition().x > m_vPosition.x)
             {
                 printf("Moving Right Slash\n");
                 m_iFacingDirection = 1;
@@ -464,9 +472,11 @@ Golem::Move(int attackType)
             }
             else
             {
+                printf("In Slash Range\n");
                 m_velocityBody.x = 0.0f;
                 m_bIsAnimating = false;
                 m_bWalk = false;
+                m_fExecutionTime = 0.0f;
             }
             break;
         case 1:
@@ -480,7 +490,7 @@ Golem::Move(int attackType)
                 m_velocityBody.x = -150.0f;
             }
             else if (m_pEntCharacter->GetPosition().x > (m_vPosition.x + m_fSlamRangeMax) &&
-                m_pEntCharacter->GetPosition().x < m_vPosition.x)
+                m_pEntCharacter->GetPosition().x > m_vPosition.x)
             {
                 printf("Moving Right Slam\n");
                 m_iFacingDirection = 1;
@@ -490,13 +500,16 @@ Golem::Move(int attackType)
             }
             else
             {
+                printf("In Slam Range\n");
                 m_velocityBody.x = 0.0f;
                 m_bIsAnimating = false;
                 m_bWalk = false;
+                m_fExecutionTime = 0.0f;
             }
             break;
         case 2:
-            if (m_pEntCharacter->GetPosition().x < (m_vPosition.x - m_fThrowRangeMax) && m_pEntCharacter->GetPosition().x < m_vPosition.x)
+            if (m_pEntCharacter->GetPosition().x < (m_vPosition.x - m_fThrowRangeMax) &&
+                m_pEntCharacter->GetPosition().x < m_vPosition.x)
             {
                 printf("Moving Left Throw\n");
                 m_iFacingDirection = -1;
@@ -504,7 +517,8 @@ Golem::Move(int attackType)
                 m_bIsAnimating = true;
                 m_velocityBody.x = -150.0f;
             }
-            else if (m_pEntCharacter->GetPosition().x > (m_vPosition.x + m_fThrowRangeMax) && m_pEntCharacter->GetPosition().x > m_vPosition.x)
+            else if (m_pEntCharacter->GetPosition().x > (m_vPosition.x + m_fThrowRangeMax) &&
+                m_pEntCharacter->GetPosition().x > m_vPosition.x)
             {
                 printf("Moving Right Throw\n");
                 m_iFacingDirection = 1;
@@ -514,14 +528,17 @@ Golem::Move(int attackType)
             }
             else
             {
+                printf("In Throw Range\n");
                 m_velocityBody.x = 0.0f;
                 m_bIsAnimating = false;
                 m_bWalk = false;
+                m_fExecutionTime = 0.0f;
             }
             break;
         case 3:
             if ((int)m_vPosition.x < (int)m_vStartingPos.x)
             {
+                printf("Move Start From Left\n");
                 m_iFacingDirection = 1;
                 m_bFlipHorizontally = false;
                 m_bIsAnimating = true;
@@ -529,6 +546,7 @@ Golem::Move(int attackType)
             }
             else if ((int)m_vPosition.x > (int)m_vStartingPos.x)
             {
+                printf("Move Start From Right");
                 m_iFacingDirection = -1;
                 m_bFlipHorizontally = true;
                 m_bIsAnimating = true;
@@ -536,9 +554,13 @@ Golem::Move(int attackType)
             }
             else
             {
+                printf("At Start Pos\n");
                 m_iFacingDirection = -1;
                 m_bFlipHorizontally = true;
                 m_velocityBody.x = 0.0f;
+                m_bWalk = false;
+                m_iAttackType = 2;
+                m_fExecutionTime = 0.0f;
             }
             break;
         }
@@ -737,40 +759,10 @@ Golem::CheckPlayerDist()
         if ((int)m_vPosition.x != (int)m_vStartingPos.x)
         {
             m_bWalk = true;
-            Move(3);
+            m_iAttackType = 3;
+            Move(m_iAttackType);
         }
     }
-}
-
-bool
-Golem::IsAnimating()
-{
-    if (m_sAnimations.m_pASprGolemWalk->IsAnimating())
-    {
-        return true;
-    }
-    
-    if (m_sAnimations.m_pASprGolemSlash->IsAnimating())
-    {
-        return true;
-    }
-
-    if (m_sAnimations.m_pASprGolemJump->IsAnimating())
-    {
-        return true;
-    }
-
-    if (m_sAnimations.m_pASprGolemSlam->IsAnimating())
-    {
-        return true;
-    }
-
-    if (m_sAnimations.m_pASprGolemThrow->IsAnimating())
-    {
-        return true;
-    }
-
-    return false;
 }
 
 int

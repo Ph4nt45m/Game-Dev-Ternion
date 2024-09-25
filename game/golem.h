@@ -43,7 +43,6 @@ public:
     Vector2& GetPosition();
     void SetCharacter(Character& character);
     void CheckPlayerDist();
-    bool IsAnimating();
     int GetBodyWidth();
     void ShiftX(float amount);
     void SetNumWalkableSegs(int amount);
