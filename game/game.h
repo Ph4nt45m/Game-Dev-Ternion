@@ -28,6 +28,8 @@ public:
 	bool DoGameLoop();
 	void Quit();
 
+	Character* GetCharacter() const;
+
 protected:
 	void Process(float deltaTime);
 	void Draw(Renderer& renderer);

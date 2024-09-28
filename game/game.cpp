@@ -15,6 +15,7 @@
 #include "animatedsprite.h"
 #include "forestscene.h"
 #include "vector2.h"
+#include "sceneManager.h"
 
 // Library includes:
 #include <windows.h>
@@ -120,8 +121,11 @@ bool Game::Initialise()
 		return false;
 	}
 
-	m_pScForestScene = new ForestScene();
+	//Kyle Code
 
+	//First scene this what I kinda wanna deal with?
+	/*
+	m_pScForestScene = new ForestScene();
 	if (!m_pScForestScene->Initialise(*m_pRenderer))
 	{
 		LogManager::GetInstance().Log("ForestScene failed to initialise!");
@@ -132,10 +136,24 @@ bool Game::Initialise()
 		m_scenes.push_back(m_pScForestScene);
 		m_iCurrentScene = 0;
 		m_pScForestScene->SetCharacter(*m_pEntCharacter, *m_pRenderer);
+	}*/
+
+	// Initialize SceneManager and the first scene
+	SceneManager& sceneManager = SceneManager::GetInstance();
+	if (!sceneManager.Initialise(*m_pRenderer))
+	{
+		LogManager::GetInstance().Log("SceneManager failed to initialise!");
+		return false;
 	}
 
-	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("..\\Sprites\\explosion.png");
+	// Optionally, load the first scene if not using transitions right away
+	sceneManager.ChangeScene(0); // Load initial scene (e.g., splash screen, menu)
+	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
+	// Kyle code finish
+
+	//dealing with explosion
+	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("..\\Sprites\\explosion.png");
 	if (!m_pASprAnimatedSprite)
 	{
 		LogManager::GetInstance().Log("AnimatedSprite failed to initialise!");
@@ -198,13 +216,17 @@ Game::Process(float deltaTime)
 	ProcessFrameCounting(deltaTime);
 
 	// TODO: Add game objects to process here!
+	// Kyle
+	//if (m_pScForestScene)
+	//{
+	//	//this what I wanna be dealing with
+	//	m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
+	//}
+	// Perform scene transition if flagged
+	SceneManager::GetInstance().Process(deltaTime, *m_pInputSystem);
+	//Kyle code ends
 
-	if (m_pScForestScene)
-	{
-		m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
-	}
-
-	//Char?
+	// Basically runs player?
 	m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
 	
 	//gotta ask what's this?
@@ -239,9 +261,10 @@ Game::Draw(Renderer& renderer)
 	renderer.Clear();
 
 	// TODO: Add game objects to draw here!
-
-	m_scenes[m_iCurrentScene]->Draw(renderer);
-	
+	//Kyle Code
+//	m_scenes[m_iCurrentScene]->Draw(renderer);
+	SceneManager::GetInstance().Draw(renderer);
+	//Kyle Code end
 	m_pEntCharacter->Draw(renderer);
 
 	if (m_pASprAnimatedSprite->IsAnimating())
@@ -333,4 +356,9 @@ Game::ToggleDebugWindow()
 	m_bShowDebugWindow = !m_bShowDebugWindow;
 
 	m_pInputSystem->ShowMouseCursor(m_bShowDebugWindow);
+}
+
+Character* Game::GetCharacter() const
+{
+	return m_pEntCharacter;
 }
