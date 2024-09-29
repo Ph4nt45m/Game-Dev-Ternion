@@ -5,6 +5,8 @@
 #include "scene.h"
 #include "vector2.h"
 #include "inputsystem.h"
+// Change made by: Ethan
+#include "healthbar.h"
 
 // Library includes:
 #include <vector>
@@ -64,6 +66,9 @@ protected:
 	Vector2 m_pCursor;
 	Scene* m_pScForestScene;
 	Character* m_pEntCharacter;
+
+	// Change made by: Ethan
+	Healthbar* m_pHealthbar;
 
 #ifdef USE_LAG
 	float m_fLag;
