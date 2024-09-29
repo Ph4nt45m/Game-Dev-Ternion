@@ -39,6 +39,7 @@ class Healthbar
 		float m_fMaxHealth;
 		float m_fHealthbarX;
 		float m_fHealthbarY;
+		float m_fHealthbarScale;
 
 		Sprite* m_pHealthbarSprite;
 		Sprite* m_pHealthbarBackgroundSprite;

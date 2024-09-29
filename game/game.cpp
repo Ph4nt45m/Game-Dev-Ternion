@@ -229,6 +229,13 @@ Game::Process(float deltaTime)
 			m_pASprAnimatedSprite->Animate();
 		}
 	}
+
+	// Change made by: Ethan
+	// Process healthbar
+	if (m_pHealthbar)
+	{
+		m_pHealthbar->Process(deltaTime);
+	}
 }
 
 void

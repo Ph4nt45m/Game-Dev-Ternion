@@ -28,13 +28,14 @@ Healthbar::Healthbar(Renderer& renderer)
 
 	m_fHealthbarX = 300;
 	m_fHealthbarY = bbHeight - 100;
+	m_fHealthbarScale = 2.0f;
 
 	m_pHealthbarSprite->SetX(m_fHealthbarX);
 	m_pHealthbarSprite->SetY(m_fHealthbarY);
-	m_pHealthbarSprite->SetScale(2.0f);
+	m_pHealthbarSprite->SetScale(m_fHealthbarScale);
 	m_pHealthbarBackgroundSprite->SetX(m_fHealthbarX);
 	m_pHealthbarBackgroundSprite->SetY(m_fHealthbarY);
-	m_pHealthbarBackgroundSprite->SetScale(2.0f);
+	m_pHealthbarBackgroundSprite->SetScale(m_fHealthbarScale);
 }
 
 Healthbar::~Healthbar()
@@ -44,13 +45,8 @@ Healthbar::~Healthbar()
 
 void Healthbar::Process(float deltaTime)
 {
-	
-}
-
-void Healthbar::Draw(Renderer& renderer)
-{
 	// Calculate health bar size
-	float healthbarMaxWidth = 200.0f;
+	float healthbarMaxWidth = 100.0f * m_fHealthbarScale;
 	float healthPercentage = m_fCurrentHealth / m_fMaxHealth;
 	float healthbarWidth = round(healthbarMaxWidth * healthPercentage);
 	m_pHealthbarSprite->SetWidth(healthbarWidth);
@@ -58,7 +54,10 @@ void Healthbar::Draw(Renderer& renderer)
 	// Calculate health bar position
 	float newHealthbarX = m_fHealthbarX - healthbarMaxWidth + m_pHealthbarSprite->GetWidth() / 2.0f;
 	m_pHealthbarSprite->SetX(newHealthbarX);
+}
 
+void Healthbar::Draw(Renderer& renderer)
+{
 	// Draw health bar
 	m_pHealthbarBackgroundSprite->Draw(renderer, false, false);
 	m_pHealthbarSprite->Draw(renderer, false, false);
