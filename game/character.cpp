@@ -101,9 +101,9 @@ Character::Initialise(Renderer& renderer)
 
     switch (m_iWeaponType)
     {
-    case 0:
-        m_pSprWeapon = renderer.CreateSprite("..\\Sprites\\weaponsstatic\\sword.png");
-        m_pASprWeapAttack = renderer.CreateAnimatedSprite("..\\Sprites\\weaponsanim8\\anim8sword.png");
+    case 0:// Changes made by Karl - Start
+        m_pSprWeapon = renderer.CreateSprite("Sprites\\weaponsstatic\\sword.png");
+        m_pASprWeapAttack = renderer.CreateAnimatedSprite("Sprites\\weaponsanim8\\anim8sword.png");
 
         if (m_pSprWeapon && m_pASprWeapAttack)
         {
@@ -118,8 +118,8 @@ Character::Initialise(Renderer& renderer)
 
         break;
     case 1:
-        m_pSprWeapon = renderer.CreateSprite("..\\Sprites\\weaponsstatic\\bow.png");
-        m_pASprWeapAttack = renderer.CreateAnimatedSprite("..\\Sprites\\weaponsanim8\\anim8bow.png");
+        m_pSprWeapon = renderer.CreateSprite("Sprites\\weaponsstatic\\bow.png");
+        m_pASprWeapAttack = renderer.CreateAnimatedSprite("Sprites\\weaponsanim8\\anim8bow.png");
         m_pEntArrow = new Projectile();
 
         if (m_pSprWeapon && m_pASprWeapAttack)
@@ -140,15 +140,15 @@ Character::Initialise(Renderer& renderer)
         }
         else
         {
-            m_pEntArrow->SetProjectileSprite(renderer, "..\\Sprites\\characterprojectile\\arrow.png");
+            m_pEntArrow->SetProjectileSprite(renderer, "Sprites\\characterprojectile\\arrow.png");
             m_pEntArrow->SetGroundY(sm_fBoundaryHeight);
         }
 
         break;
     case 2:
-        m_pSprWeapon = renderer.CreateSprite("..\\Sprites\\weaponsstatic\\staff.png");
-        m_pASprWeapAttack = renderer.CreateAnimatedSprite("..\\Sprites\\weaponsanim8\\anim8staff.png");
-
+        m_pSprWeapon = renderer.CreateSprite("Sprites\\weaponsstatic\\staff.png");
+        m_pASprWeapAttack = renderer.CreateAnimatedSprite("Sprites\\weaponsanim8\\anim8staff.png");
+        // Changes made by Karl - End
         if (m_pSprWeapon && m_pASprWeapAttack)
         {
             m_pASprWeapAttack->SetupFrames(67, 119);
@@ -531,8 +531,8 @@ Character::HandleInput(float deltaTime)
 
 bool
 Character::SetBodySprites(Renderer& renderer)
-{
-    m_pSprSpriteHead = renderer.CreateSprite("..\\Sprites\\characterbase\\head.png");
+{   // Change made by Karl - Start
+    m_pSprSpriteHead = renderer.CreateSprite("Sprites\\characterbase\\head.png");
 
     if (!(m_pSprSpriteHead))
     {
@@ -540,7 +540,7 @@ Character::SetBodySprites(Renderer& renderer)
         return false;
     }
 
-    m_pSprSpriteBody = renderer.CreateSprite("..\\Sprites\\characterbase\\body.png");
+    m_pSprSpriteBody = renderer.CreateSprite("Sprites\\characterbase\\body.png");
 
     if (!(m_pSprSpriteBody))
     {
@@ -548,7 +548,7 @@ Character::SetBodySprites(Renderer& renderer)
         return false;
     }
 
-    m_pSprSpriteLegLeft = renderer.CreateSprite("..\\Sprites\\characterbase\\leg.png");
+    m_pSprSpriteLegLeft = renderer.CreateSprite("Sprites\\characterbase\\leg.png");
 
     if (!(m_pSprSpriteLegLeft))
     {
@@ -556,7 +556,7 @@ Character::SetBodySprites(Renderer& renderer)
         return false;
     }
 
-    m_pSprSpriteLegRight = renderer.CreateSprite("..\\Sprites\\characterbase\\leg.png");
+    m_pSprSpriteLegRight = renderer.CreateSprite("Sprites\\characterbase\\leg.png");
 
     if (!(m_pSprSpriteLegRight))
     {
@@ -564,8 +564,8 @@ Character::SetBodySprites(Renderer& renderer)
         return false;
     }
 
-    m_pSprSpriteShadow = renderer.CreateSprite("..\\Sprites\\characterbase\\floorshadow.png");
-
+    m_pSprSpriteShadow = renderer.CreateSprite("Sprites\\characterbase\\floorshadow.png");
+    // Change made by Karl - End
     if (!(m_pSprSpriteShadow))
     {
         LogManager::GetInstance().Log("Character Shadow failed to initialise!");

@@ -133,8 +133,8 @@ bool Game::Initialise()
 		m_iCurrentScene = 0;
 		m_pScForestScene->SetCharacter(*m_pEntCharacter, *m_pRenderer);
 	}
-
-	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("..\\Sprites\\explosion.png");
+	// Changes made by Karl - Start
+	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("Sprites\\explosion.png");
 
 	if (!m_pASprAnimatedSprite)
 	{
@@ -147,9 +147,9 @@ bool Game::Initialise()
 		m_pASprAnimatedSprite->SetFrameDuration(0.08f);
 	}
 
-	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("..\\Sprites\\cursor.png");
-	m_sprCursorBodySprite = m_pRenderer->CreateSprite("..\\Sprites\\cursor.png");
-
+	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
+	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
+	// Changes made by Karl - End
 	return true;
 }
 

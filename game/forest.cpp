@@ -43,6 +43,9 @@ Forest::Forest()
 	, m_vCharPos(0)
 	, m_vFeetPos(0)
 	, m_iCharWidth(0)
+	, m_pGolem(0)
+	, m_vGolemPos(0)
+	, m_fGolemWidth(0.0f)
 {
 
 }
@@ -80,7 +83,6 @@ Forest::Process(float deltaTime, InputSystem& inputSystem)
 	GetInputs(inputSystem);
 	HandleInputs();
 	HandlePlayerCollisions();
-	//HandlePlayerCollisions();
 
 	m_fPositionX += Forest::sm_fVelocity * deltaTime;
 	m_pSprSprite->SetX((int)m_fPositionX);
