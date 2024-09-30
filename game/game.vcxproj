@@ -160,6 +160,7 @@
     <ClCompile Include="forestscene.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="golem.cpp" />
+    <ClCompile Include="healthbar.cpp" />
     <ClCompile Include="inputsystem.cpp" />
     <ClCompile Include="logmanager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="forestscene.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="golem.h" />
+    <ClInclude Include="healthbar.h" />
     <ClInclude Include="inlinehelpers.h" />
     <ClInclude Include="inputsystem.h" />
     <ClInclude Include="logmanager.h" />

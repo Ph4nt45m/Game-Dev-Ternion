@@ -44,6 +44,10 @@ public:
 	void SetCursorBorder(Vector2* cursor, Sprite* cursorSprite);
 	void SetCursorBody(Vector2* cursor, Sprite* cursorSprite);
 
+	// Change made by: Ethan
+	void SetWidth(int width);
+	void SetHeight(int height);
+
 protected:
 	float Clamp(float minimum,
 		float value, float maximum);
