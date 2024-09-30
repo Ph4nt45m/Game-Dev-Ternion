@@ -131,8 +131,6 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 		return nullptr;
 	}
 
-	//Set one character for the scene
-	newScene->SetCharacter(*Game::GetInstance().GetCharacter(), *m_pRenderer);
 
 	// Initialize the scene
 	if (newScene && !newScene->Initialise(*m_pRenderer))
@@ -141,6 +139,8 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 		delete newScene;
 		return nullptr;
 	}
+	//Set one character for the scene
+	newScene->SetCharacter(*Game::GetInstance().GetCharacter(), *m_pRenderer);
 
 	return newScene;
 }
