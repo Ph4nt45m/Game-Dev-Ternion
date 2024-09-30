@@ -13,7 +13,7 @@ class InputSystem;
 class Sprite;
 class AnimatedSprite;
 class Projectile;
-
+class Game;
 // Class declaration:
 class Character : public Entity
 {

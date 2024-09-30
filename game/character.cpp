@@ -10,6 +10,7 @@
 #include "animatedsprite.h"
 #include "projectile.h"
 #include "healthbar.h"
+#include "game.h"
 
 // Library includes:
 #include <cassert>
@@ -292,6 +293,7 @@ Character::Process(float deltaTime, InputSystem& inputSystem)
 void
 Character::Draw(Renderer& renderer)
 {
+    m_bAlive = m_pHealthbar->Living();
     if (m_bAlive)
     {
         //m_pSprSpriteShadow->Draw(renderer, false, false); // For future updates
@@ -315,6 +317,10 @@ Character::Draw(Renderer& renderer)
         {
             m_pEntArrow->Draw(renderer);
         }
+    }
+    else
+    {
+        Game::GetInstance().Quit();
     }
 
     // Draw healthbar

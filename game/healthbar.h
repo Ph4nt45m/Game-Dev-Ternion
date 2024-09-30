@@ -25,7 +25,7 @@ class Healthbar
 		void SetCurrentHealth(float newCurrentHealth);
 		float GetCurrentHealth() const;
 		float GetMaxHealth() const;
-
+		bool Living();
 	protected:
 
 	private:

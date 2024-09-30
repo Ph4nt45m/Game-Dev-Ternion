@@ -11,7 +11,8 @@
 #include <cmath>
 
 Healthbar::Healthbar(Renderer& renderer)
-	: m_fCurrentHealth(100), m_fMaxHealth(100)
+	: m_fCurrentHealth(100)
+	, m_fMaxHealth(100)
 {
 	// Load healthbar sprites
 	m_pHealthbarSprite = renderer.CreateSprite("..\\Sprites\\healthbar\\Healthbar.png");
@@ -105,4 +106,13 @@ float Healthbar::GetCurrentHealth() const
 float Healthbar::GetMaxHealth() const
 {
 	return m_fMaxHealth;
+}
+
+bool Healthbar::Living()
+{
+	if (m_fCurrentHealth == 0)
+	{
+		return false;
+	}
+	return true;
 }
