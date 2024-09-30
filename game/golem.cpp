@@ -101,7 +101,7 @@ Golem::Initialise(Renderer& renderer)
         return false;
     }
     else
-    {   // Changes made by Karl/Kyle
+    {   // Changes made by Karl
         m_pEntProjectile->SetProjectileSprite(renderer, "Sprites\\ball.png"); //DO NOT TOUCH THIS CODE
         m_pEntProjectile->SetTimeToTarget(1.5f);
     }
