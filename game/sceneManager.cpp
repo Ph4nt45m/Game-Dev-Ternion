@@ -126,6 +126,9 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 	case 0:
 		newScene = new ForestScene();
 		break;
+	case 1:
+//		newScene = new menuScene();
+		break;
 	default:
 		// Handle invalid scene ID
 		return nullptr;
