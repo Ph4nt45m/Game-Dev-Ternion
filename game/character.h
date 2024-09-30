@@ -69,12 +69,11 @@ protected:
     Sprite* m_pSprWeapon;
     Projectile* m_pEntArrow;
     AnimatedSprite* m_pASprWeapAttack;
+    Healthbar* m_pHealthbar;
     int m_iWeaponType;
     float m_fAngleOfAttack;
     bool m_bDoubleJump;
 
-    // Change made by: Ethan
-    Healthbar* m_pHealthbar;
 
 private:
     float m_fHeadBodyOffset;

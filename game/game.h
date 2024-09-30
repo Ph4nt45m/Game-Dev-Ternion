@@ -5,8 +5,6 @@
 #include "scene.h"
 #include "vector2.h"
 #include "inputsystem.h"
-// Change made by: Ethan
-#include "healthbar.h"
 
 // Library includes:
 #include <vector>

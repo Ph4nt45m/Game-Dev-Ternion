@@ -24,6 +24,7 @@ Character::Character()
     , m_pEntArrow(0)
     , m_pASprWeapAttack(0)
     , m_iWeaponType(0)
+    , m_pHealthbar(0)
     , m_fAngleOfAttack(0.0f)
     , m_bDoubleJump(false)
     , m_fHeadBodyOffset(0.0f)
@@ -60,6 +61,9 @@ Character::~Character()
 
     delete m_pASprWeapAttack;
     m_pASprWeapAttack = 0;
+
+    delete m_pHealthbar;
+    m_pHealthbar = 0;
 }
 
 bool
@@ -164,7 +168,6 @@ Character::Initialise(Renderer& renderer)
         break;
     }
 
-    // Change made by: Ethan
     // Initialise healthbar
     m_pHealthbar = new Healthbar(renderer);
 
@@ -278,7 +281,6 @@ Character::Process(float deltaTime, InputSystem& inputSystem)
         m_pEntArrow->Process(deltaTime, inputSystem);
     }
 
-    // Change made by: Ethan
     // Process healthbar
     if (m_pHealthbar)
     {
@@ -315,7 +317,6 @@ Character::Draw(Renderer& renderer)
         }
     }
 
-    // Change made by: Ethan
     // Draw healthbar
     if (m_pHealthbar)
     {
