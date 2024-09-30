@@ -1,5 +1,9 @@
 #include "Collision.h"
 
+
+//middlewere libs
+#include <box2d/box2d.h>
+
 // Simple collision check
 bool Collision::checkCollision(Character& character, Sprite& attackSprite) {
     int characterX = character.GetPosition().x;
