@@ -102,8 +102,8 @@ Golem::Initialise(Renderer& renderer)
         return false;
     }
     else
-    {
-        m_pEntProjectile->SetProjectileSprite(renderer, "..\\Sprites\\golem\\ball.png");
+    {   // Changes made by Karl
+        m_pEntProjectile->SetProjectileSprite(renderer, "Sprites\\ball.png"); //DO NOT TOUCH THIS CODE
         m_pEntProjectile->SetTimeToTarget(1.5f);
     }
 
@@ -352,8 +352,8 @@ Golem::HandleInput(float deltaTime)
 
 bool
 Golem::SetBodySprites(Renderer& renderer)
-{
-    m_pSprSpriteBody = renderer.CreateSprite("..\\Sprites\\golem\\golem.png");
+{   //Changes made by Karl - Start
+    m_pSprSpriteBody = renderer.CreateSprite("Sprites\\golem\\golem.png");
 
     if (!(m_pSprSpriteBody))
     {
@@ -361,7 +361,7 @@ Golem::SetBodySprites(Renderer& renderer)
         return false;
     }
 
-    m_sAnimations.m_pASprGolemWalk = renderer.CreateAnimatedSprite("..\\Sprites\\golem\\anim8golemwalk.png");
+    m_sAnimations.m_pASprGolemWalk = renderer.CreateAnimatedSprite("Sprites\\golem\\anim8golemwalk.png");
 
     if (!(m_sAnimations.m_pASprGolemWalk))
     {
@@ -374,7 +374,7 @@ Golem::SetBodySprites(Renderer& renderer)
         m_sAnimations.m_pASprGolemWalk->SetFrameDuration(0.07f);
     }
 
-    m_sAnimations.m_pASprGolemSlash = renderer.CreateAnimatedSprite("..\\Sprites\\golem\\anim8golemslash.png");
+    m_sAnimations.m_pASprGolemSlash = renderer.CreateAnimatedSprite("Sprites\\golem\\anim8golemslash.png");
 
     if (!(m_sAnimations.m_pASprGolemSlash))
     {
@@ -387,7 +387,7 @@ Golem::SetBodySprites(Renderer& renderer)
         m_sAnimations.m_pASprGolemSlash->SetFrameDuration(0.15f);
     }
 
-    m_sAnimations.m_pASprGolemJump = renderer.CreateAnimatedSprite("..\\Sprites\\golem\\anim8golemjump.png");
+    m_sAnimations.m_pASprGolemJump = renderer.CreateAnimatedSprite("Sprites\\golem\\anim8golemjump.png");
 
     if (!(m_sAnimations.m_pASprGolemJump))
     {
@@ -400,7 +400,7 @@ Golem::SetBodySprites(Renderer& renderer)
         m_sAnimations.m_pASprGolemJump->SetFrameDuration(0.1f);
     }
 
-    m_sAnimations.m_pASprGolemSlam = renderer.CreateAnimatedSprite("..\\Sprites\\golem\\anim8golemslam.png");
+    m_sAnimations.m_pASprGolemSlam = renderer.CreateAnimatedSprite("Sprites\\golem\\anim8golemslam.png");
 
     if (!(m_sAnimations.m_pASprGolemSlam))
     {
@@ -413,8 +413,8 @@ Golem::SetBodySprites(Renderer& renderer)
         m_sAnimations.m_pASprGolemSlam->SetFrameDuration(0.15f);
     }
 
-    m_sAnimations.m_pASprGolemThrow = renderer.CreateAnimatedSprite("..\\Sprites\\golem\\anim8golemthrow.png");
-
+    m_sAnimations.m_pASprGolemThrow = renderer.CreateAnimatedSprite("Sprites\\golem\\anim8golemthrow.png");
+    // Changes made by Karl - End
     if (!(m_sAnimations.m_pASprGolemThrow))
     {
         LogManager::GetInstance().Log("Golem Throw animation failed to initialise!");
