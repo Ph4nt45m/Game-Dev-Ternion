@@ -150,10 +150,6 @@ bool Game::Initialise()
 	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("..\\Sprites\\cursor.png");
 	m_sprCursorBodySprite = m_pRenderer->CreateSprite("..\\Sprites\\cursor.png");
 
-	// Change made by: Ethan
-	// Initialise healthbar
-	m_pHealthbar = new Healthbar(*m_pRenderer);
-
 	return true;
 }
 
@@ -230,12 +226,6 @@ Game::Process(float deltaTime)
 		}
 	}
 
-	// Change made by: Ethan
-	// Process healthbar
-	if (m_pHealthbar)
-	{
-		m_pHealthbar->Process(deltaTime);
-	}
 }
 
 void
@@ -264,13 +254,6 @@ Game::Draw(Renderer& renderer)
 	if (m_sprCursorBodySprite)
 	{
 		m_sprCursorBodySprite->Draw(renderer, false, false);
-	}
-
-	// Change made by: Ethan
-	// Draw healthbar
-	if (m_pHealthbar)
-	{
-		m_pHealthbar->Draw(renderer);
 	}
 
 	DebugDraw();

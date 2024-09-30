@@ -2,13 +2,14 @@
 #define HEALTHBAR_H
 
 // Local includes:
+#include "inputsystem.h"
 
 // Library includes:
 
 // Forward Declarations:
 class Renderer;
 class Sprite;
-
+//class inputSystem;
 // class declaration:
 class Healthbar
 {
@@ -16,7 +17,7 @@ class Healthbar
 	public:
 		Healthbar(Renderer& renderer);
 		~Healthbar();
-		void Process(float deltaTime);
+		void Process(float deltaTime, InputSystem& inputSystem);
 		void Draw(Renderer& renderer);
 		void Damage(float damage);
 		void Heal(float heal);

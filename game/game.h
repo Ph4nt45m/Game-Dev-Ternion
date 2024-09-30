@@ -67,9 +67,6 @@ protected:
 	Scene* m_pScForestScene;
 	Character* m_pEntCharacter;
 
-	// Change made by: Ethan
-	Healthbar* m_pHealthbar;
-
 #ifdef USE_LAG
 	float m_fLag;
 	int m_iUpdateCount;

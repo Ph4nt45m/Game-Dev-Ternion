@@ -9,6 +9,7 @@
 #include "../imgui/imgui.h"
 #include "animatedsprite.h"
 #include "projectile.h"
+#include "healthbar.h"
 
 // Library includes:
 #include <cassert>
@@ -163,6 +164,10 @@ Character::Initialise(Renderer& renderer)
         break;
     }
 
+    // Change made by: Ethan
+    // Initialise healthbar
+    m_pHealthbar = new Healthbar(renderer);
+
     return true;
 }
 
@@ -272,6 +277,14 @@ Character::Process(float deltaTime, InputSystem& inputSystem)
     {
         m_pEntArrow->Process(deltaTime, inputSystem);
     }
+
+    // Change made by: Ethan
+    // Process healthbar
+    if (m_pHealthbar)
+    {
+        m_pHealthbar->Process(deltaTime, inputSystem);
+    }
+
 }
 
 void
@@ -301,6 +314,14 @@ Character::Draw(Renderer& renderer)
             m_pEntArrow->Draw(renderer);
         }
     }
+
+    // Change made by: Ethan
+    // Draw healthbar
+    if (m_pHealthbar)
+    {
+        m_pHealthbar->Draw(renderer);
+    }
+
 }
 
 void

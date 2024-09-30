@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "logmanager.h"
 #include "sprite.h"
+#include "inputsystem.h"
 
 // Library includes:
 #include <cmath>
@@ -43,7 +44,7 @@ Healthbar::~Healthbar()
 
 }
 
-void Healthbar::Process(float deltaTime)
+void Healthbar::Process(float deltaTime, InputSystem& inputSystem)
 {
 	// Calculate health bar size
 	float healthbarMaxWidth = 100.0f * m_fHealthbarScale;
@@ -54,6 +55,18 @@ void Healthbar::Process(float deltaTime)
 	// Calculate health bar position
 	float newHealthbarX = m_fHealthbarX - healthbarMaxWidth + m_pHealthbarSprite->GetWidth() / 2.0f;
 	m_pHealthbarSprite->SetX(newHealthbarX);
+
+	//Kyle testing added, until system fully ready. Will remove once sources are established
+	ButtonState temp = inputSystem.GetKeyState(SDL_SCANCODE_Q);
+
+	if (temp == BS_PRESSED)
+	{
+		Damage(10.0f);
+	}
+	if (temp == BS_RELEASED)
+	{
+		Heal(5.0f);
+	}
 }
 
 void Healthbar::Draw(Renderer& renderer)
