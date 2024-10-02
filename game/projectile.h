@@ -31,6 +31,7 @@ public:
 
     Vector2& GetPosition();
     bool SetProjectileSprite(Renderer& renderer, const char* filePath);
+    void SetScale(float scale); // Changes made by Karl
     float GetWidth();
     float GetHeight();
     void SetStartPos(float st_x, float st_y);

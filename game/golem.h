@@ -3,6 +3,7 @@
 
 // Local includes:
 #include "entity.h"
+#include "enemy.h" // Changes made by Karl
 #include "vector2.h"
 #include "inputsystem.h"
 
@@ -23,7 +24,7 @@ typedef struct {
 } Animations;
 
 // Class declaration:
-class Golem : public Entity
+class Golem : public Enemy // Changes made by Karl
 {
     // Member methods:
 public:

@@ -11,8 +11,7 @@
 
 // Forward declarations:
 class Renderer;
-class Sprite;
-class AnimatedSprite;
+class Sprite; // Changes made by Karl
 class Character;
 class scene;
 class Game
@@ -72,9 +71,7 @@ protected:
 
 	bool m_bLooping;
 
-private:
-	//Sprite* m_pCheckerboard;
-	AnimatedSprite* m_pASprAnimatedSprite;
+private: // Changes made by Karl
 	Sprite* m_sprCursorBodySprite;
 	Sprite* m_sprCursorBorderSprite;
 	int m_iMouseState;

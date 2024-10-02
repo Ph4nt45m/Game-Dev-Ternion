@@ -48,9 +48,9 @@ ForestScene::Initialise(Renderer& renderer)
 	for (int i = 0; i < m_iShowCount; i++)
 	{
 		if (i == 0 || i == (m_iShowCount - 1))
-		{
+		{	// Changes made by Karl - Start
 			m_pFrtSegments[i] = new Forest();
-			m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("..\\Sprites\\terrainforest2D\\boundary2D.png"));
+			m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("Sprites\\terrainbase3D\\boundary.png"));
 			m_pFrtSegments[i]->SetX(((sm_iSegmentWidth * i) - (sm_iSegmentWidth / 2)));
 			m_pFrtSegments[i]->SetIndex(i);
 			m_pFrtSegments[i]->SetType(ST_BOUNDARY);
@@ -59,7 +59,7 @@ ForestScene::Initialise(Renderer& renderer)
 		else if (i == 1)
 		{
 			m_pFrtSegments[i] = new Forest();
-			m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("..\\Sprites\\terrainforest2D\\blank2D.png"));
+			m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("Sprites\\terrainbase3D\\leftwall.png"));
 			m_pFrtSegments[i]->SetX(((sm_iSegmentWidth * i) - (sm_iSegmentWidth / 2) - (6 * i)));
 			m_pFrtSegments[i]->SetIndex(i);
 			m_pFrtSegments[i]->SetType(ST_LEFTWALL);
@@ -68,7 +68,7 @@ ForestScene::Initialise(Renderer& renderer)
 		else if (i == ((m_iShowCount - 1) - 1))
 		{
 			m_pFrtSegments[i] = new Forest();
-			m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("..\\Sprites\\terrainforest2D\\blank2D.png"));
+			m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("Sprites\\terrainbase3D\\rightwall.png"));
 			m_pFrtSegments[i]->SetX(((sm_iSegmentWidth * i) - (sm_iSegmentWidth / 2) - (6 * i)));
 			m_pFrtSegments[i]->SetIndex(i);
 			m_pFrtSegments[i]->SetType(ST_RIGHTWALL);
@@ -77,7 +77,7 @@ ForestScene::Initialise(Renderer& renderer)
 		else if (i == 2 || i == 3 || i == ((m_iShowCount - 1) - 2) || i == ((m_iShowCount - 1) - 3))
 		{
 			m_pFrtSegments[i] = new Forest();
-			m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("..\\Sprites\\terrainforest2D\\blank2D.png"));
+			m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("Sprites\\terrainbase3D\\blank.png"));
 			m_pFrtSegments[i]->SetX(((sm_iSegmentWidth * i) - (sm_iSegmentWidth / 2) - (6 * i)));
 			m_pFrtSegments[i]->SetIndex(i);
 			m_pFrtSegments[i]->SetType(ST_BLANK);
@@ -94,7 +94,7 @@ ForestScene::Initialise(Renderer& renderer)
 				if (prevIndex == 0 || prevIndex == 1)
 				{
 					m_pFrtSegments[i] = new Forest();
-					m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("..\\Sprites\\terrainforest2D\\blank2D.png"));
+					m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("Sprites\\terrainbase3D\\blank.png"));
 					m_pFrtSegments[i]->SetX(((sm_iSegmentWidth * i) - (sm_iSegmentWidth / 2) - (6 * i)));
 					m_pFrtSegments[i]->SetIndex(i);
 					m_pFrtSegments[i]->SetType(ST_BLANK);
@@ -112,7 +112,7 @@ ForestScene::Initialise(Renderer& renderer)
 				if (prevIndex == 0 || prevIndex == 1 || prevIndex == 3) //  || !closedSegment add for floating platform
 				{
 					m_pFrtSegments[i] = new Forest();
-					m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("..\\Sprites\\terrainforest2D\\platform2D.png"));
+					m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("Sprites\\terrainbase3D\\tallplatform.png"));
 					m_pFrtSegments[i]->SetX(((sm_iSegmentWidth * i) - (sm_iSegmentWidth / 2) - (6 * i)));
 					m_pFrtSegments[i]->SetIndex(i);
 					m_pFrtSegments[i]->SetType(ST_PLATFORM);
@@ -128,7 +128,7 @@ ForestScene::Initialise(Renderer& renderer)
 			else if (index == 2)
 			{
 				//m_pFrtSegments[i] = new Forest();
-				//m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("..\\Sprites\\floatingplatform.png"));
+				//m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("Sprites\\terrainbse3D\\floatingplatform.png"));
 				////m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("..\\Sprites\\boundary.png"));
 				//m_pFrtSegments[i]->SetX(((sm_iSegmentWidth * i) - (sm_iSegmentWidth / 2)));
 				//m_pFrtSegments[i]->SetIndex(i);
@@ -144,7 +144,7 @@ ForestScene::Initialise(Renderer& renderer)
 				if (prevIndex == 0 || prevIndex == 1 || prevIndex == 3)
 				{
 					m_pFrtSegments[i] = new Forest();
-					m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("..\\Sprites\\terrainforest2D\\tallplatform2D.png"));
+					m_pFrtSegments[i]->SetSprite(renderer.CreateSprite("Sprites\\terrainbase3D\\tallplatform.png")); // Changes made by Karl - End
 					m_pFrtSegments[i]->SetX(((sm_iSegmentWidth * i) - (sm_iSegmentWidth / 2) - (6 * i)));
 					m_pFrtSegments[i]->SetIndex(i);
 					m_pFrtSegments[i]->SetType(ST_TALLPLATFORM);
@@ -207,7 +207,7 @@ ForestScene::SetCharacter(Character& character, Renderer& renderer)
 		m_pFrtSegments[i]->SetCharPos(*m_vCharPos);
 		m_pFrtSegments[i]->SetCharFeetPos(*m_vFeetPos);
 		m_pFrtSegments[i]->SetCharWidth(m_iCharWidth);
-		
+
 	}
 
 	for (int i = 0; i < m_iShowCount; i++)

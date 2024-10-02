@@ -34,11 +34,12 @@ public:
 
 
 protected:
-	
+
 
 private:
 
 };
 
 #endif // !ENEMY_H
+
 

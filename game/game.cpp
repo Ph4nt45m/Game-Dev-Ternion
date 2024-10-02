@@ -47,8 +47,7 @@ Game::Game()
 	, m_iFPS(0)
 	, m_pCursor()
 	, m_pScForestScene(0)
-	, m_pEntCharacter(0)
-	, m_pASprAnimatedSprite(0)
+	, m_pEntCharacter(0) // Changes made by Karl
 	, m_sprCursorBodySprite(0)
 	, m_sprCursorBorderSprite(0)
 	, m_bShowDebugWindow(0)
@@ -63,10 +62,7 @@ Game::~Game()
 {
 	delete m_pRenderer; 
 	m_pRenderer = 0;
-
-	delete m_pASprAnimatedSprite;
-	m_pASprAnimatedSprite = 0;
-
+	// Changes made by Karl
 	delete m_sprCursorBorderSprite;
 	m_sprCursorBorderSprite = 0;
 
@@ -133,22 +129,9 @@ bool Game::Initialise()
 		m_iCurrentScene = 0;
 		m_pScForestScene->SetCharacter(*m_pEntCharacter, *m_pRenderer);
 	}
-
-	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("..\\Sprites\\explosion.png");
-
-	if (!m_pASprAnimatedSprite)
-	{
-		LogManager::GetInstance().Log("AnimatedSprite failed to initialise!");
-		return false;
-	}
-	else
-	{
-		m_pASprAnimatedSprite->SetupFrames(64, 64);
-		m_pASprAnimatedSprite->SetFrameDuration(0.08f);
-	}
-
-	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("..\\Sprites\\cursor.png");
-	m_sprCursorBodySprite = m_pRenderer->CreateSprite("..\\Sprites\\cursor.png");
+	// Changes made by Karl
+	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
+	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 
 	return true;
 }
@@ -205,8 +188,7 @@ Game::Process(float deltaTime)
 	}
 
 	m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
-	m_pASprAnimatedSprite->Process(deltaTime);
-
+	// Changes made by Karl
 	if (m_sprCursorBorderSprite)
 	{
 		m_pCursor.SetPosition(m_pInputSystem->GetMousePosition());
@@ -220,9 +202,7 @@ Game::Process(float deltaTime)
 
 		if (m_iMouseState == BS_PRESSED)
 		{
-			m_pASprAnimatedSprite->SetX((int)m_pCursor.GetX());
-			m_pASprAnimatedSprite->SetY((int)m_pCursor.GetY());
-			m_pASprAnimatedSprite->Animate();
+			// Changes made by Karl
 		}
 	}
 }
@@ -239,12 +219,7 @@ Game::Draw(Renderer& renderer)
 	m_scenes[m_iCurrentScene]->Draw(renderer);
 	
 	m_pEntCharacter->Draw(renderer);
-
-	if (m_pASprAnimatedSprite->IsAnimating())
-	{
-		m_pASprAnimatedSprite->Draw(renderer, false, false);
-	}
-
+	// Changes made by Karl
 	if (m_sprCursorBorderSprite)
 	{
 		m_sprCursorBorderSprite->Draw(renderer, false, false);
@@ -289,38 +264,38 @@ Game::DebugDraw()
 	//m_scenes[m_iCurrentScene]->DebugDraw(); // Call DebugDraw of the scene, for example bouncing balls
 
 	//ImGui::End();
+	 // Changes made by Karl
+	ImGui::Begin("Debug Window - Cursor", &open, ImGuiWindowFlags_MenuBar);
+	//ImGui::Text("COMP710 GP Framework (%s)", "2022, S2");
 
-	//ImGui::Begin("Debug Window - Cursor", &open, ImGuiWindowFlags_MenuBar);
-	////ImGui::Text("COMP710 GP Framework (%s)", "2022, S2");
+	if (ImGui::Button("Quit"))
+	{
+		Quit();
+	}
 
-	//if (ImGui::Button("Quit"))
-	//{
-	//	Quit();
-	//}
+	float colourBorder[4] = {  };
+	colourBorder[0] = m_sprCursorBorderSprite->GetRedTint();
+	colourBorder[1] = m_sprCursorBorderSprite->GetGreenTint();
+	colourBorder[2] = m_sprCursorBorderSprite->GetBlueTint();
+	colourBorder[3] = m_sprCursorBorderSprite->GetAlpha();
+	ImGui::ColorEdit4("Border colour", colourBorder);
+	m_sprCursorBorderSprite->SetRedTint(colourBorder[0]);
+	m_sprCursorBorderSprite->SetGreenTint(colourBorder[1]);
+	m_sprCursorBorderSprite->SetBlueTint(colourBorder[2]);
+	m_sprCursorBorderSprite->SetAlpha(colourBorder[3]);
 
-	//float colourBorder[4] = {  };
-	//colourBorder[0] = m_sprCursorBorderSprite->GetRedTint();
-	//colourBorder[1] = m_sprCursorBorderSprite->GetGreenTint();
-	//colourBorder[2] = m_sprCursorBorderSprite->GetBlueTint();
-	//colourBorder[3] = m_sprCursorBorderSprite->GetAlpha();
-	//ImGui::ColorEdit4("Border colour", colourBorder);
-	//m_sprCursorBorderSprite->SetRedTint(colourBorder[0]);
-	//m_sprCursorBorderSprite->SetGreenTint(colourBorder[1]);
-	//m_sprCursorBorderSprite->SetBlueTint(colourBorder[2]);
-	//m_sprCursorBorderSprite->SetAlpha(colourBorder[3]);
+	float colourBody[4] = {  };
+	colourBody[0] = m_sprCursorBodySprite->GetRedTint();
+	colourBody[1] = m_sprCursorBodySprite->GetGreenTint();
+	colourBody[2] = m_sprCursorBodySprite->GetBlueTint();
+	colourBody[3] = m_sprCursorBodySprite->GetAlpha();
+	ImGui::ColorEdit4("Body colour", colourBody);
+	m_sprCursorBodySprite->SetRedTint(colourBody[0]);
+	m_sprCursorBodySprite->SetGreenTint(colourBody[1]);
+	m_sprCursorBodySprite->SetBlueTint(colourBody[2]);
+	m_sprCursorBodySprite->SetAlpha(colourBody[3]);
 
-	//float colourBody[4] = {  };
-	//colourBody[0] = m_sprCursorBodySprite->GetRedTint();
-	//colourBody[1] = m_sprCursorBodySprite->GetGreenTint();
-	//colourBody[2] = m_sprCursorBodySprite->GetBlueTint();
-	//colourBody[3] = m_sprCursorBodySprite->GetAlpha();
-	//ImGui::ColorEdit4("Body colour", colourBody);
-	//m_sprCursorBodySprite->SetRedTint(colourBody[0]);
-	//m_sprCursorBodySprite->SetGreenTint(colourBody[1]);
-	//m_sprCursorBodySprite->SetBlueTint(colourBody[2]);
-	//m_sprCursorBodySprite->SetAlpha(colourBody[3]);
-
-	//ImGui::End();
+	ImGui::End();
 }
 
 void

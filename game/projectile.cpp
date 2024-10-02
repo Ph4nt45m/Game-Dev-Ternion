@@ -146,6 +146,12 @@ Projectile::SetProjectileSprite(Renderer& renderer, const char* filePath)
 
 	return true;
 }
+// Changes made by Karl
+void
+Projectile::SetScale(float scale)
+{
+	m_pSprSpriteBody->SetScale(scale);
+}
 
 float
 Projectile::GetWidth()

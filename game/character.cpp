@@ -101,9 +101,9 @@ Character::Initialise(Renderer& renderer)
 
     switch (m_iWeaponType)
     {
-    case 0:
-        m_pSprWeapon = renderer.CreateSprite("..\\Sprites\\weaponsstatic\\sword.png");
-        m_pASprWeapAttack = renderer.CreateAnimatedSprite("..\\Sprites\\weaponsanim8\\anim8sword.png");
+    case 0:// Changes made by Karl - Start
+        m_pSprWeapon = renderer.CreateSprite("Sprites\\weaponsstatic\\sword.png");
+        m_pASprWeapAttack = renderer.CreateAnimatedSprite("Sprites\\weaponsanim8\\anim8sword.png");
 
         if (m_pSprWeapon && m_pASprWeapAttack)
         {
@@ -118,8 +118,8 @@ Character::Initialise(Renderer& renderer)
 
         break;
     case 1:
-        m_pSprWeapon = renderer.CreateSprite("..\\Sprites\\weaponsstatic\\bow.png");
-        m_pASprWeapAttack = renderer.CreateAnimatedSprite("..\\Sprites\\weaponsanim8\\anim8bow.png");
+        m_pSprWeapon = renderer.CreateSprite("Sprites\\weaponsstatic\\bow.png");
+        m_pASprWeapAttack = renderer.CreateAnimatedSprite("Sprites\\weaponsanim8\\anim8bow.png");
         m_pEntArrow = new Projectile();
 
         if (m_pSprWeapon && m_pASprWeapAttack)
@@ -140,15 +140,15 @@ Character::Initialise(Renderer& renderer)
         }
         else
         {
-            m_pEntArrow->SetProjectileSprite(renderer, "..\\Sprites\\characterprojectile\\arrow.png");
-            m_pEntArrow->SetGroundY(m_vStandingPos.y);
+            m_pEntArrow->SetProjectileSprite(renderer, "Sprites\\characterprojectile\\arrow.png");
+            m_pEntArrow->SetGroundY(sm_fBoundaryHeight);
         }
 
         break;
     case 2:
-        m_pSprWeapon = renderer.CreateSprite("..\\Sprites\\weaponsstatic\\staff.png");
-        m_pASprWeapAttack = renderer.CreateAnimatedSprite("..\\Sprites\\weaponsanim8\\anim8staff.png");
-
+        m_pSprWeapon = renderer.CreateSprite("Sprites\\weaponsstatic\\staff.png");
+        m_pASprWeapAttack = renderer.CreateAnimatedSprite("Sprites\\weaponsanim8\\anim8staff.png");
+        // Changes made by Karl - End
         if (m_pSprWeapon && m_pASprWeapAttack)
         {
             m_pASprWeapAttack->SetupFrames(67, 119);
@@ -243,8 +243,8 @@ Character::Process(float deltaTime, InputSystem& inputSystem)
     m_pSprSpriteHead->SetY((int)m_vPosition.y - (int)(m_pSprSpriteBody->GetHeight() / 2.0f) - (int)m_fHeadBodyOffset);
 
     // For future updates
-    /*m_pSprSpriteShadow->SetX((int)m_vStandingPos.x);
-    m_pSprSpriteShadow->SetY((int)m_vStandingPos.y);*/
+    m_pSprSpriteShadow->SetX((int)m_vStandingPos.x);
+    m_pSprSpriteShadow->SetY((int)m_vStandingPos.y);
 
     // Update position of weapon
     m_pSprWeapon->SetX((int)m_vPosition.x);
@@ -309,8 +309,8 @@ Character::GetInputs(InputSystem& inputSystem)
     // Gets movement keys' states
     m_sMotionKeyStates.MoveForward = inputSystem.GetKeyState(SDL_SCANCODE_D);
     m_sMotionKeyStates.MoveBackward = inputSystem.GetKeyState(SDL_SCANCODE_A);
-    //m_sMotionKeyStates.MoveUp = inputSystem.GetKeyState(SDL_SCANCODE_W); // For future updates
-    //m_sMotionKeyStates.MoveDown = inputSystem.GetKeyState(SDL_SCANCODE_S); // For future updates
+    m_sMotionKeyStates.MoveUp = inputSystem.GetKeyState(SDL_SCANCODE_W); // For future updates
+    m_sMotionKeyStates.MoveDown = inputSystem.GetKeyState(SDL_SCANCODE_S); // For future updates
     m_sMotionKeyStates.Jump = inputSystem.GetKeyState(SDL_SCANCODE_SPACE);
     m_sMotionKeyStates.LeftClickAttack = inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT);
 
@@ -453,7 +453,7 @@ Character::HandleInput(float deltaTime)
             m_velocityBody.x = 0.0f;
             m_velocityPos.x = 0.0f;
         }
-        
+
         m_iFacingDirection = 1;
         m_bMovingX = true;
     }
@@ -469,7 +469,7 @@ Character::HandleInput(float deltaTime)
             m_velocityBody.x = 0.0f;
             m_velocityPos.x = 0.0f;
         }
-        
+
         m_iFacingDirection = -1;
         m_bMovingX = true;
     }
@@ -484,55 +484,55 @@ Character::HandleInput(float deltaTime)
         }
     }
 
-    ////Handles up and down motions - For future updates
-    //if (m_sKeyboardMotions.Sway > 0)
-    //{
-    //    if (m_vStandingPos.y > m_vBoundaryLow.y)
-    //    {
-    //        m_velocityBody.y = -200.0f;
-    //        m_velocityPos.y = -200.0f;
-    //        m_fScale -= m_fScaleChangeRate * deltaTime;
+    //Handles up and down motions - For future updates
+    if (m_sKeyboardMotions.Sway > 0)
+    {
+        if (m_vStandingPos.y > m_vBoundaryLow.y)
+        {
+            m_velocityBody.y = -200.0f;
+            m_velocityPos.y = -200.0f;
+            m_fScale -= m_fScaleChangeRate * deltaTime;
 
-    //        if (m_fScale < m_fScaleMin)
-    //        {
-    //            m_fScale = m_fScaleMin;
-    //        }
-    //    }
+            if (m_fScale < m_fScaleMin)
+            {
+                m_fScale = m_fScaleMin;
+            }
+        }
 
-    //    m_bMovingY = true;
-    //}
-    //else if (m_sKeyboardMotions.Sway < 0)
-    //{
-    //    if (m_vStandingPos.y < m_vBoundaryHigh.y)
-    //    {
-    //        m_velocityBody.y = 200.0f;
-    //        m_velocityPos.y = 200.0f;
-    //        m_fScale += m_fScaleChangeRate * deltaTime;
+        m_bMovingY = true;
+    }
+    else if (m_sKeyboardMotions.Sway < 0)
+    {
+        if (m_vStandingPos.y < m_vBoundaryHigh.y)
+        {
+            m_velocityBody.y = 200.0f;
+            m_velocityPos.y = 200.0f;
+            m_fScale += m_fScaleChangeRate * deltaTime;
 
-    //        if (m_fScale > m_fScaleMax)
-    //        {
-    //            m_fScale = m_fScaleMax;
-    //        }
-    //    }
+            if (m_fScale > m_fScaleMax)
+            {
+                m_fScale = m_fScaleMax;
+            }
+        }
 
-    //    m_bMovingY = true;
-    //}
-    //else if (m_sKeyboardMotions.Sway == 0)
-    //{
-    //    m_velocityBody.y = 0.0f;
-    //    m_velocityPos.y = 0.0f;
+        m_bMovingY = true;
+    }
+    else if (m_sKeyboardMotions.Sway == 0)
+    {
+        m_velocityBody.y = 0.0f;
+        m_velocityPos.y = 0.0f;
 
-    //    if (!m_bJumping)
-    //    {
-    //        m_bMovingY = false;
-    //    }
-    //}
+        if (!m_bJumping)
+        {
+            m_bMovingY = false;
+        }
+    }
 }
 
 bool
 Character::SetBodySprites(Renderer& renderer)
-{
-    m_pSprSpriteHead = renderer.CreateSprite("..\\Sprites\\characterbase\\head.png");
+{   // Change made by Karl - Start
+    m_pSprSpriteHead = renderer.CreateSprite("Sprites\\characterbase\\head.png");
 
     if (!(m_pSprSpriteHead))
     {
@@ -540,7 +540,7 @@ Character::SetBodySprites(Renderer& renderer)
         return false;
     }
 
-    m_pSprSpriteBody = renderer.CreateSprite("..\\Sprites\\characterbase\\body.png");
+    m_pSprSpriteBody = renderer.CreateSprite("Sprites\\characterbase\\body.png");
 
     if (!(m_pSprSpriteBody))
     {
@@ -548,7 +548,7 @@ Character::SetBodySprites(Renderer& renderer)
         return false;
     }
 
-    m_pSprSpriteLegLeft = renderer.CreateSprite("..\\Sprites\\characterbase\\leg.png");
+    m_pSprSpriteLegLeft = renderer.CreateSprite("Sprites\\characterbase\\leg.png");
 
     if (!(m_pSprSpriteLegLeft))
     {
@@ -556,7 +556,7 @@ Character::SetBodySprites(Renderer& renderer)
         return false;
     }
 
-    m_pSprSpriteLegRight = renderer.CreateSprite("..\\Sprites\\characterbase\\leg.png");
+    m_pSprSpriteLegRight = renderer.CreateSprite("Sprites\\characterbase\\leg.png");
 
     if (!(m_pSprSpriteLegRight))
     {
@@ -564,8 +564,8 @@ Character::SetBodySprites(Renderer& renderer)
         return false;
     }
 
-    m_pSprSpriteShadow = renderer.CreateSprite("..\\Sprites\\characterbase\\floorshadow.png");
-
+    m_pSprSpriteShadow = renderer.CreateSprite("Sprites\\characterbase\\floorshadow.png");
+    // Change made by Karl - End
     if (!(m_pSprSpriteShadow))
     {
         LogManager::GetInstance().Log("Character Shadow failed to initialise!");
@@ -745,7 +745,7 @@ Character::HandleLegs(float deltaTime)
         float halfWidth = (float)m_pSprSpriteBody->GetWidth() / 5.0f;
         float maxStepHeight = m_fLegBodyOffset;
 
-        if (m_sKeyboardMotions.Surge > 0)
+        if (m_iFacingDirection > 0)
         {
             // Clockwise cycle
             float leftLegX = restingLeftLegX + halfWidth * sinf(progress * PI);
@@ -774,7 +774,7 @@ Character::HandleLegs(float deltaTime)
             m_pSprSpriteLegRight->SetX((int)rightLegX);
             m_pSprSpriteLegRight->SetY((int)rightLegY);
         }
-        else if (m_sKeyboardMotions.Surge < 0)
+        else if (m_iFacingDirection < 0)
         {
             // Anti-clockwise cycle
             float leftLegX = restingLeftLegX + 2 * halfWidth * progress;
