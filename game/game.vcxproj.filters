@@ -111,7 +111,10 @@
     <ClCompile Include="projectile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="healthbar.cpp">
+    <ClCompile Include="button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sceneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -215,7 +218,10 @@
     <ClInclude Include="projectile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="healthbar.h">
+    <ClInclude Include="button.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
