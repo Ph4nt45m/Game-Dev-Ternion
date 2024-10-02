@@ -11,12 +11,13 @@
 #include "projectile.h"
 #include "healthbar.h"
 #include "game.h"
+#include "MyContactListener.h"
 
 // Library includes:
 #include <cassert>
 #include <cstdio>
 
-Character::Character()
+Character::Character(b2World* world)
     : m_pSprSpriteHead(0)
     , m_pSprSpriteLegLeft(0)
     , m_pSprSpriteLegRight(0)
@@ -33,6 +34,8 @@ Character::Character()
     , m_fLegBodyOffset(0.0f)
     , m_fStepTimer(0.0f)
     , m_fStepDuration(0.0f)
+    , m_pWorld(world)
+    , m_pBody(nullptr)
 {
 
 }
@@ -172,6 +175,28 @@ Character::Initialise(Renderer& renderer)
     // Initialise healthbar
     m_pHealthbar = new Healthbar(renderer);
 
+    //Changes made by Rauen
+    //Create the Box2D body
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(m_vPosition.x, m_vPosition.y);
+
+    m_pBody = m_pWorld->CreateBody(&bodyDef);
+
+    // Define the character's shape 
+    b2PolygonShape characterBox;
+    characterBox.SetAsBox(m_pSprSpriteBody->GetWidth(), m_pSprSpriteBody->GetHeight());
+
+    // Create a fixture for the body
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &characterBox;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
+    m_pBody->CreateFixture(&fixtureDef);
+
+    // Set user data to recognize 
+    m_pBody->SetUserData((void*)PLAYER);
+
     return true;
 }
 
@@ -287,11 +312,16 @@ Character::Process(float deltaTime, InputSystem& inputSystem)
     {
         m_pHealthbar->Process(deltaTime, inputSystem);
     }
+    
+    //Changes made by Rauen
+    b2Vec2 position = m_pBody->GetPosition();
+     position.x = m_vPosition.x;
+     position.y = m_vPosition.y;
 
 }
 
 void
-Character::Draw(Renderer& renderer)
+Character::DrawWithCam(Renderer& renderer, Vector2* offset)
 {
     m_bAlive = m_pHealthbar->Living();
     if (m_bAlive)
@@ -300,6 +330,9 @@ Character::Draw(Renderer& renderer)
         m_pSprSpriteLegLeft->Draw(renderer, false, false);
         m_pSprSpriteLegRight->Draw(renderer, false, false);
 
+        m_pSprSpriteBody->SetX(GetBodyWidth() + offset->x);
+        m_pSprSpriteBody->SetX(GetBodyHeight() + offset->y);
+        
         m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, false);
         m_pSprSpriteHead->Draw(renderer, m_bFlipHorizontally, false);
 
@@ -609,10 +642,10 @@ Character::SetBodySprites(Renderer& renderer)
     return true;
 }
 
-Vector2&
+b2Vec2
 Character::GetPosition()
 {
-    return m_vStandingPos;
+    return m_pBody->GetPosition();
 }
 
 Vector2&
@@ -839,6 +872,9 @@ Character::HandleLegs(float deltaTime)
         }
     }
 }
+
+void Character::Draw(Renderer& renderer)
+{}
 
 //void
 //Character::DebugDraw()

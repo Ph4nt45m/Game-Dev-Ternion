@@ -10,12 +10,15 @@
 #include "character.h"
 #include "projectile.h"
 #include "collision.h"
+#include "MyContactListener.h"
+
 
 // Library includes:
 #include <cassert>
 #include <cstdio>
+#include <stdio.h>
 
-Golem::Golem()
+Golem::Golem(b2World* world)
     : m_pEntCharacter(0)
     , m_pSprSpriteBody(0)
     , m_pEntProjectile(0)
@@ -37,6 +40,11 @@ Golem::Golem()
     , m_bIsAnimating(false)
     , m_bSlam(false)
     , m_bWalk(false)
+    , m_pBody(0)
+    , slashBody(nullptr)
+    , slashWidth(0)
+    , slashHeight(0)
+    , m_pWorld(world)
 {
 
 }
@@ -105,6 +113,37 @@ Golem::Initialise(Renderer& renderer)
     {   // Changes made by Karl
         m_pEntProjectile->SetProjectileSprite(renderer, "Sprites\\ball.png"); //DO NOT TOUCH THIS CODE
         m_pEntProjectile->SetTimeToTarget(1.5f);
+    }
+
+    //Changes made by Rauen
+     
+    // Create the Box2D body for the Golem
+    if (m_pWorld)
+    {
+        // Define the body
+        b2BodyDef bodyDef;
+        bodyDef.type = b2_dynamicBody;
+        bodyDef.position.Set(m_vPosition.x, m_vPosition.y);
+
+        // Create the body in the world
+        m_pBody = m_pWorld->CreateBody(&bodyDef);
+
+        // Define the shape of the body (box shape in this example)
+        b2PolygonShape dynamicBox;
+        dynamicBox.SetAsBox(m_pSprSpriteBody->GetWidth() / 2.0f, m_pSprSpriteBody->GetHeight() / 2.0f);
+
+        // Define the fixture (physical properties)
+        b2FixtureDef fixtureDef;
+        fixtureDef.shape = &dynamicBox;
+        fixtureDef.density = 1.0f;
+        fixtureDef.friction = 0.3f;
+
+        // Attach the fixture to the body
+        m_pBody->CreateFixture(&fixtureDef);
+
+        // Set user data to identify this body as a Golem
+        m_pBody->SetUserData((void*)GOLEM);
+
     }
 
 	return true;
@@ -641,62 +680,34 @@ Golem::Action()
     }
 }
 
-void
-Golem::ProcessAction()
-{
-    Collision collisionChecker;
+//change made by Rauen
+void Golem::ProcessAction() {
+    if (m_bSlash) {
+        // Check if the slash animation is happening
+        if (m_fDistToPlayer >= 0.0f && m_fDistToPlayer < m_fSlashRangeMax) {
+            // Move the Box2D body for the slash, or create it if not created
+            if (!slashBody) {
+                slashWidth = m_sAnimations.m_pASprGolemSlash->GetWidth();
+                slashHeight = m_sAnimations.m_pASprGolemSlash->GetHeight();
+                b2BodyDef slashBodyDef;
+                slashBodyDef.type = b2_kinematicBody;
+                slashBodyDef.position.Set(m_vPosition.x, m_vPosition.y);
+                slashBody = m_pWorld->CreateBody(&slashBodyDef);
+                printf("Creating slash body at position (%f, %f)\n", m_vPosition.x, m_vPosition.y);
 
-    if (m_bSlash)
-    {
-        int currentFrame = m_sAnimations.m_pASprGolemSlash->GetCurrentFrame();
-        int startCollisionFrame = 5;  // Frame at which the collision becomes active
-        int endCollisionFrame = 10;   // Frame at which the collision stops being active
+                b2PolygonShape slashBox;
+                slashBox.SetAsBox(slashWidth, slashHeight);
 
-        if (m_fDistToPlayer >= 0.0f && m_fDistToPlayer < m_fSlashRangeMax)
-        {
-            // Get start position of the arc (the base of the slash)
-            float arcStartX = m_vPosition.x;
-            float arcEndX = m_vPosition.x + m_fSlashRangeMax * m_iFacingDirection;
+                b2FixtureDef slashFixtureDef;
+                slashFixtureDef.shape = &slashBox;
+                slashFixtureDef.isSensor = true;  // Set as a sensor, no physical response
+                slashBody->CreateFixture(&slashFixtureDef);
 
-            // Use the collision class to check arc-shaped collision
-            if (collisionChecker.checkArcCollision(*m_pEntCharacter, *m_sAnimations.m_pASprGolemSlash, arcStartX, arcEndX, 5.0f, m_iFacingDirection, currentFrame, startCollisionFrame, endCollisionFrame)) {
-                // Apply slash damage
-                printf("Player hit by slash!\n");
+                // Set user data to recognize this body as a slash
+                slashBody->SetUserData((void*)GOLEM_SLASH);
             }
         }
-    }
-
-    if (m_bSlam && m_sAnimations.m_pASprGolemSlam->IsAnimating())
-    {
-        int currentFrame = m_sAnimations.m_pASprGolemSlam->GetCurrentFrame();
-        int startCollisionFrame = 3;  // Start frame for slam collision
-        int endCollisionFrame = 8;    // End frame for slam collision
-
-        float slamStartX = m_vPosition.x;
-        float slamEndX = m_vPosition.x + m_fSlamRangeMax * m_iFacingDirection;
-        LogManager::GetInstance().Log("Player Hit by slam");
-        // Use the collision class to check path-based collision
-        if (collisionChecker.checkPathCollision(*m_pEntCharacter, *m_sAnimations.m_pASprGolemSlam, slamStartX, slamEndX, 0.1f, m_iFacingDirection, currentFrame, startCollisionFrame, endCollisionFrame)) {
-            // Apply slam damage
-            printf("Player hit by slam!\n");
-        }
-    }
-
-    if (m_bProjectile)
-    {
-        int currentFrame = m_sAnimations.m_pASprGolemThrow->GetCurrentFrame();
-        int startCollisionFrame = 2;  // Frame when projectile is thrown
-        int endCollisionFrame = 6;    // End frame for projectile collision
-
-        float projectileStartX = m_pEntProjectile->GetSprite()->GetX();
-        float projectileEndX = m_pEntProjectile->GetSprite()->GetX() + m_fThrowRangeMax * m_iFacingDirection;
-
-        // The projectile is already moving in an arc, so just check for collision
-        if (collisionChecker.checkArcCollision(*m_pEntCharacter, *m_sAnimations.m_pASprGolemThrow, projectileStartX, projectileEndX, 5.0f, m_iFacingDirection, currentFrame, startCollisionFrame, endCollisionFrame))
-        {
-            // Apply damage to the player
-            printf("Player hit by projectile!\n");
-        }
+        slashBody->SetTransform(b2Vec2(m_vPosition.x, m_vPosition.y), 0.0f);
     }
 }
 

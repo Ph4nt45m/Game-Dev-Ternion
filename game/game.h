@@ -9,6 +9,9 @@
 // Library includes:
 #include <vector>
 
+//box2D
+#include <Box2D.h>
+
 // Forward declarations:
 class Renderer;
 class Sprite;
@@ -45,6 +48,9 @@ private:
 
 	// Member data:
 public:
+	//Box2D
+	b2Vec2 gravity{ 0.0, -9.8 };
+	b2World world{ gravity };
 
 protected:
 	static Game* sm_pInstance;

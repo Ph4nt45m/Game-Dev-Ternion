@@ -1,5 +1,6 @@
 // This include: 
 #include "game.h"
+#include "MyContactListener.h"
 
 // Local includes:
 #include "renderer.h" 
@@ -18,7 +19,9 @@
 
 // Library includes:
 #include <windows.h>
+#include <Box2D.h>
 #include <iostream>
+#include <stdio.h>
 
 // Static Members:
 Game* Game::sm_pInstance = 0;
@@ -90,6 +93,13 @@ bool Game::Initialise()
 	int bbWidth = 1550; // 1550 originally
 	int bbHeight = 800; // 800 originally
 
+	//Box2D stuff
+	MyContactListener contactListener;
+	world.SetContactListener(&contactListener);
+
+	b2Vec2 gravity = world.GetGravity();
+	printf("World gravity: (%f, %f)\n", gravity.x, gravity.y);
+
 	m_pRenderer = new Renderer();
 
 	if (!m_pRenderer->Initialise(true, bbWidth, bbHeight)) // true = windowed, false = fullscreen
@@ -112,15 +122,15 @@ bool Game::Initialise()
 		return false;
 	}
 
-	m_pEntCharacter = new Character();
+	m_pEntCharacter = new Character(&world);
 
 	if (!m_pEntCharacter->Initialise(*m_pRenderer))
 	{
 		LogManager::GetInstance().Log("Character failed to initialise!");
 		return false;
 	}
-
-	m_pScForestScene = new ForestScene();
+	printf("Game player: %f\n", m_pEntCharacter->GetPosition().x);
+	m_pScForestScene = new ForestScene(&world, m_pEntCharacter);
 
 	if (!m_pScForestScene->Initialise(*m_pRenderer))
 	{
@@ -131,7 +141,6 @@ bool Game::Initialise()
 	{
 		m_scenes.push_back(m_pScForestScene);
 		m_iCurrentScene = 0;
-		m_pScForestScene->SetCharacter(*m_pEntCharacter, *m_pRenderer);
 	}
 	// Changes made by Karl - Start
 	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("Sprites\\explosion.png");
@@ -150,6 +159,11 @@ bool Game::Initialise()
 	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 	// Changes made by Karl - End
+
+	for (b2Body* body = world.GetBodyList(); body != nullptr; body = body->GetNext()) {
+		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
+	}
+
 	return true;
 }
 
@@ -199,6 +213,24 @@ Game::Process(float deltaTime)
 
 	// TODO: Add game objects to process here!
 
+
+	// Box2D time step
+	const float32 timeStep = 1.0f / 60.0f;  // 60Hz update rate
+	const int32 velocityIterations = 6;     // Box2D velocity solver iterations
+	const int32 positionIterations = 2;     // Box2D position solver iterations
+
+	// Step the Box2D world to simulate physics
+
+
+	
+
+		int32 bodyCount = world.GetBodyCount();
+		//printf("Number of bodies in world: %d\n", bodyCount);
+
+		// Step the world
+		//world.Step(timeStep, velocityIterations, positionIterations);
+
+
 	if (m_pScForestScene)
 	{
 		m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
@@ -239,8 +271,6 @@ Game::Draw(Renderer& renderer)
 
 	m_scenes[m_iCurrentScene]->Draw(renderer);
 	
-	m_pEntCharacter->Draw(renderer);
-
 	if (m_pASprAnimatedSprite->IsAnimating())
 	{
 		m_pASprAnimatedSprite->Draw(renderer, false, false);
