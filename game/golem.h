@@ -39,7 +39,7 @@ public:
     bool SetBodySprites(Renderer& renderer) override;
     void SetNumSegments(int amount) override;
     void GetInputs(InputSystem& inputSystem) override;
-    void HandleInput(float deltaTime) override;
+    void HandleInput(float deltaTime);
     void SetTerrainMoving(bool moving) override;
     bool IsTerrainMoving() override;
 

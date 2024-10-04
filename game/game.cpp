@@ -93,12 +93,10 @@ bool Game::Initialise()
 	int bbWidth = 1550; // 1550 originally
 	int bbHeight = 800; // 800 originally
 
-	//Box2D stuff
-	MyContactListener contactListener;
-	world.SetContactListener(&contactListener);
+	b2Vec2 gravity{ 0.0f, 0.0f };
+	world = new b2World{ gravity };
 
-	b2Vec2 gravity = world.GetGravity();
-	printf("World gravity: (%f, %f)\n", gravity.x, gravity.y);
+	world->SetContactListener(&m_contactListener);
 
 	m_pRenderer = new Renderer();
 
@@ -122,15 +120,14 @@ bool Game::Initialise()
 		return false;
 	}
 
-	m_pEntCharacter = new Character(&world);
+	m_pEntCharacter = new Character(world);
 
 	if (!m_pEntCharacter->Initialise(*m_pRenderer))
 	{
 		LogManager::GetInstance().Log("Character failed to initialise!");
 		return false;
 	}
-	printf("Game player: %f\n", m_pEntCharacter->GetPosition().x);
-	m_pScForestScene = new ForestScene(&world, m_pEntCharacter);
+	m_pScForestScene = new ForestScene(world, m_pEntCharacter);
 
 	if (!m_pScForestScene->Initialise(*m_pRenderer))
 	{
@@ -160,7 +157,7 @@ bool Game::Initialise()
 	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 	// Changes made by Karl - End
 
-	for (b2Body* body = world.GetBodyList(); body != nullptr; body = body->GetNext()) {
+	for (b2Body* body = world->GetBodyList(); body != nullptr; body = body->GetNext()) {
 		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
 	}
 
@@ -220,15 +217,9 @@ Game::Process(float deltaTime)
 	const int32 positionIterations = 2;     // Box2D position solver iterations
 
 	// Step the Box2D world to simulate physics
-
-
 	
-
-		int32 bodyCount = world.GetBodyCount();
-		//printf("Number of bodies in world: %d\n", bodyCount);
-
-		// Step the world
-		//world.Step(timeStep, velocityIterations, positionIterations);
+	// Step the world
+	world->Step(timeStep, velocityIterations, positionIterations);
 
 
 	if (m_pScForestScene)

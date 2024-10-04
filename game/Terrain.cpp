@@ -45,15 +45,14 @@ void Terrain::Draw(Renderer& renderer) {
     m_sprite->SetY((int)m_pBody->GetPosition().y);
 
     //Draw tarrian
-    renderer.DrawSprite(*m_sprite, false, false);
-
+    m_sprite->Draw(renderer, false, false);
 }
 
 void Terrain::SetSprite(Renderer& renderer, TerrainType m_type, float width, float height)
 {
     switch (m_type) {
     case TerrainType::GROUND:
-        m_sprite = renderer.CreateSprite("Sprites\\terrainbase3D\\boundary.png");
+        m_sprite = renderer.CreateSprite("Sprites\\terrainbase3D\\platform.png");
         break;
     case TerrainType::PLATFORM:
         m_sprite = renderer.CreateSprite("Sprites\\terrainbase3D\\platform.png");

@@ -5,6 +5,7 @@
 #include "scene.h"
 #include "vector2.h"
 #include "inputsystem.h"
+#include "MyContactListener.h"
 
 // Library includes:
 #include <vector>
@@ -46,11 +47,15 @@ private:
 	Game(const Game& game);
 	Game& operator=(const Game& game);
 
+
+
 	// Member data:
 public:
 	//Box2D
-	b2Vec2 gravity{ 0.0, -9.8 };
-	b2World world{ gravity };
+	
+	b2World* world;
+
+	//Box2D stuff
 
 protected:
 	static Game* sm_pInstance;
@@ -84,5 +89,7 @@ private:
 	Sprite* m_sprCursorBodySprite;
 	Sprite* m_sprCursorBorderSprite;
 	int m_iMouseState;
+
+	MyContactListener m_contactListener;
 };
 #endif // __GAME_H_

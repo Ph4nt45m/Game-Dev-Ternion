@@ -53,6 +53,7 @@ protected:
 	Golem* m_pGolem;
 	Character* m_pCharacter;
 	Camera camera;
+	Terrain* ground;
 private:
 	std::vector<Terrain*> m_terrainSegments;
 };

@@ -168,10 +168,10 @@ ForestScene::Initialise(Renderer& renderer)
 //Made by Rauen
 	  // Define some terrain segments at different positions and sizes
 		float terrainWidth = 300.0f;  // Example width
-		float terrainHeight = 500.0f;  // Example height
+		float terrainHeight = 150.0f;  // Example height
 		float wallWidth = 10.0f;  // Thin wall
 		float wallHeight = 1000.0f;  // Tall enough to act as a boundary
-		float worldWidth = 1000.0f;
+		float worldWidth = 50000.0f;
 		float worldHeight = 1000.0f;
 		float windowHeight = renderer.GetHeight();
 		float windowWidth = renderer.GetWidth();
@@ -179,23 +179,24 @@ ForestScene::Initialise(Renderer& renderer)
 		// Set the Y position to the bottom of the window
 		float groundY = windowHeight - terrainHeight;
 
-		Terrain* ground = new Terrain(m_pWorld, 0.0f, groundY, worldWidth, terrainHeight);
+	    ground = new Terrain(m_pWorld, 0.0f, groundY, worldWidth, terrainHeight);
 		m_terrainSegments.push_back(ground);  // Ground
 		ground->SetSprite(renderer, GROUND, worldWidth, terrainHeight);
-		
-		Terrain* platform = new Terrain(m_pWorld, 100.0f, groundY - terrainHeight, terrainWidth, terrainHeight);
-		m_terrainSegments.push_back(platform);  // Another platform
-		platform->SetSprite(renderer, PLATFORM, terrainWidth, terrainHeight);
-		
-		// Add a left wall
-		Terrain* leftWall = new Terrain(m_pWorld, -wallWidth, groundY, wallWidth, wallHeight);
-		m_terrainSegments.push_back(leftWall);  // Left boundary
-		leftWall->SetSprite(renderer, LEFT_WALL, wallWidth, wallHeight);
-		
-		// Add a right wall 
-		Terrain* rightWall = new Terrain(m_pWorld, worldWidth + wallWidth, groundY, wallWidth, wallHeight);
-		m_terrainSegments.push_back(rightWall);  // Right boundary
-		rightWall->SetSprite(renderer, RIGHT_WALL, wallWidth, wallHeight);
+
+		//
+		//Terrain* platform = new Terrain(m_pWorld, 100.0f, groundY - terrainHeight, terrainWidth, terrainHeight);
+		//m_terrainSegments.push_back(platform);  // Another platform
+		//platform->SetSprite(renderer, PLATFORM, terrainWidth, terrainHeight);
+		//
+		//// Add a left wall
+		//Terrain* leftWall = new Terrain(m_pWorld, -wallWidth, groundY, wallWidth, wallHeight);
+		//m_terrainSegments.push_back(leftWall);  // Left boundary
+		//leftWall->SetSprite(renderer, LEFT_WALL, wallWidth, wallHeight);
+		//
+		//// Add a right wall 
+		//Terrain* rightWall = new Terrain(m_pWorld, worldWidth + wallWidth, groundY, wallWidth, wallHeight);
+		//m_terrainSegments.push_back(rightWall);  // Right boundary
+		//rightWall->SetSprite(renderer, RIGHT_WALL, wallWidth, wallHeight);
 
 		//m_terrainSegments.push_back(new Terrain(m_pWorld, 450.0f, 450.0f, terrainWidth, terrainHeight));  // Elevated platform
 		
@@ -223,7 +224,7 @@ ForestScene::Draw(Renderer& renderer)
 	// When rendering, offset everything by the camera's position
 	m_pCharacter->DrawWithCam(renderer, view);
 
-
+	ground->Draw(renderer);
 	//m_pGolem->Draw(renderer);
 }
 

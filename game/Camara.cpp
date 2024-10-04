@@ -23,8 +23,7 @@ void Camera::SetCamera(int screenWidth, int screenHeight, int worldWidth, int wo
 // Update the camera to follow the player
 void Camera::Update(Character& player) {
     // Center the camera horizontally on the player
-    printf("vector: %f\n", m_position.x);
-    printf("player: %f\n", player.GetPosition().x);
+   
 
     m_position.x = player.GetPosition().x - (m_screenWidth / 2);
 
