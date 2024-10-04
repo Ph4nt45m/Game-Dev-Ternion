@@ -152,6 +152,8 @@
     <ClCompile Include="..\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
     <ClCompile Include="animatedsprite.cpp" />
+    <ClCompile Include="AUTSplashScene.cpp" />
+    <ClCompile Include="AUTSplashScene.h" />
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="character.cpp" />
