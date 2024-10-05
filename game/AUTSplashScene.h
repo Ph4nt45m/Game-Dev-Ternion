@@ -28,10 +28,7 @@ public:
     virtual void Draw(Renderer& renderer) override;
 
     virtual void DebugDraw() override;
-    virtual void SetCharPos(Vector2& characterPos);
-    virtual void SetCharFeetPos(Vector2& feetPos);
-    virtual void SetCharWidth(int width);
-    virtual bool SetEnemies(Character& character, Renderer& renderer);
+
 private:
     SplashScene(const SplashScene& other) = delete;
     SplashScene& operator=(const SplashScene& other) = delete;

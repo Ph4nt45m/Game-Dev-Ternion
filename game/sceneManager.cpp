@@ -125,8 +125,9 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 	switch (sceneID)
 	{
 	case 0://AUT Splash Scene
-		m_pRenderer->SetClearColour(0, 0, 0);
-		newScene = new SplashScene();
+//		m_pRenderer->SetClearColour(0, 0, 0);
+//		newScene = new SplashScene();
+		newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
 		break;
 	case 1://Ternion Menu Scene
 //		newScene = new menuScene();
@@ -134,7 +135,6 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 	case 2://Character select Scene
 		break;
 	case 3://Foreset Scene(first level
-		newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
 		break;
 	default:
 		// Handle invalid scene ID
