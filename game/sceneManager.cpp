@@ -10,6 +10,7 @@
 
 // Scenes
 #include "forestscene.h"
+#include "AUTSplashScene.h"
 
 // includes
 #include <cassert>
@@ -123,11 +124,17 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 
 	switch (sceneID)
 	{
-	case 0:
-		newScene = new ForestScene();
+	case 0://AUT Splash Scene
+		m_pRenderer->SetClearColour(0, 0, 0);
+		newScene = new SplashScene();
 		break;
-	case 1:
+	case 1://Ternion Menu Scene
 //		newScene = new menuScene();
+		break;
+	case 2://Character select Scene
+		break;
+	case 3://Foreset Scene(first level
+		newScene = new ForestScene();
 		break;
 	default:
 		// Handle invalid scene ID
