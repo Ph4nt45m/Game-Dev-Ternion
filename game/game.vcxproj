@@ -173,6 +173,7 @@
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scenebouncingballs.cpp" />
     <ClCompile Include="scenecheckerboards.cpp" />
+    <ClCompile Include="sceneManager.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="Terrain.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="scene.h" />
     <ClInclude Include="scenebouncingballs.h" />
     <ClInclude Include="scenecheckerboards.h" />
+    <ClInclude Include="sceneManager.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="Terrain.h" />
