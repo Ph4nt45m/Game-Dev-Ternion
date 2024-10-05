@@ -11,11 +11,10 @@
 #include "../imgui/imgui_impl_opengl3.h"
 #include "inputsystem.h"
 #include "SDL_scancode.h"
-#include "forestscene.h"
 #include "character.h"
 #include "animatedsprite.h"
-#include "forestscene.h"
 #include "vector2.h"
+#include "sceneManager.h"
 
 // Library includes:
 #include <windows.h>
@@ -129,18 +128,16 @@ bool Game::Initialise()
 	}
 
 	//Scene
-	m_pScForestScene = new ForestScene(world, m_pEntCharacter);
-
-	if (!m_pScForestScene->Initialise(*m_pRenderer))
+	// Initialize SceneManager and the first scene
+	SceneManager& sceneManager = SceneManager::GetInstance();
+	if (!sceneManager.Initialise(*m_pRenderer))
 	{
-		LogManager::GetInstance().Log("ForestScene failed to initialise!");
+		LogManager::GetInstance().Log("SceneManager failed to initialise!");
 		return false;
 	}
-	else
-	{
-		m_scenes.push_back(m_pScForestScene);
-		m_iCurrentScene = 0;
-	}
+	// Optionally, load the first scene if not using transitions right away
+	sceneManager.ChangeScene(0); // Load initial scene (e.g., splash screen, menu)
+	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
 
 	// Changes made by Karl - Start
