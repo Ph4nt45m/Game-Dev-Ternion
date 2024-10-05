@@ -11,12 +11,13 @@
 #include "projectile.h"
 #include "healthbar.h"
 #include "game.h"
+#include "MyContactListener.h"
 
 // Library includes:
 #include <cassert>
 #include <cstdio>
 
-Character::Character()
+Character::Character(b2World* world)
     : m_pSprSpriteHead(0)
     , m_pSprSpriteLegLeft(0)
     , m_pSprSpriteLegRight(0)
@@ -33,6 +34,8 @@ Character::Character()
     , m_fLegBodyOffset(0.0f)
     , m_fStepTimer(0.0f)
     , m_fStepDuration(0.0f)
+    , m_pWorld(world)
+    , m_pBody(nullptr)
 {
 
 }
@@ -65,6 +68,8 @@ Character::~Character()
 
     delete m_pHealthbar;
     m_pHealthbar = 0;
+
+    m_pWorld->DestroyBody(m_pBody);
 }
 
 bool
@@ -90,8 +95,8 @@ Character::Initialise(Renderer& renderer)
 
     Entity::SetWindowBoundaries(renderer);
 
-    m_vPosition.x = sm_fBoundaryWidth / 5.0f;
-    m_vPosition.y = ((sm_fBoundaryHeight / 7.0f) * 5.0f);
+    m_vPosition.x = 10.0f;
+    m_vPosition.y = 500.0f;
 
     m_fLengthFootToBody = ((float)m_pSprSpriteLegLeft->GetHeight() + 1.0f) / 2.0f;
 
@@ -172,17 +177,44 @@ Character::Initialise(Renderer& renderer)
     // Initialise healthbar
     m_pHealthbar = new Healthbar(renderer);
 
+    //Changes made by Rauen
+    //Create the Box2D body
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(m_vPosition.x, m_vPosition.y);
+
+    m_pBody = m_pWorld->CreateBody(&bodyDef);
+
+    // Define the character's shape 
+    b2PolygonShape characterBox;
+    characterBox.SetAsBox(m_pSprSpriteBody->GetWidth(), m_pSprSpriteBody->GetHeight());
+
+    // Create a fixture for the body
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &characterBox;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
+    m_pBody->CreateFixture(&fixtureDef);
+
+    // Set user data to recognize 
+    m_pBody->SetUserData((void*)PLAYER);
+
     return true;
 }
 
 void
 Character::Process(float deltaTime, InputSystem& inputSystem)
 {
+    //changes made by Rauen
     m_vCursor.SetPosition(inputSystem.GetMousePosition());
-    GetInputs(inputSystem);
-    HandleInput(deltaTime);
+    HandleInput(deltaTime, inputSystem);
 
-    // Sets facing orientation
+    // Get the current position from Box2D's body (physics position)
+    b2Vec2 position = m_pBody->GetPosition();
+    position.x = m_vPosition.x + m_velocityPos.x;
+    position.y = m_vPosition.y + m_velocityPos.y;
+
+    // Set facing orientation based on mouse cursor position
     if (m_vPosition.x < m_vCursor.x)
     {
         m_iFacingDirection = 1;
@@ -194,116 +226,47 @@ Character::Process(float deltaTime, InputSystem& inputSystem)
         m_bFlipHorizontally = true;
     }
 
-    // Calculates angle of aim
-    m_vRelative.x = m_vCursor.x - m_vPosition.x;
-    m_vRelative.y = m_vCursor.y - m_vPosition.y;
-    m_fAngleOfAttack = -(float)atan2(m_vRelative.y, m_vRelative.x) * 180.0f / PI;
+    // Update sprite positions based on Box2D body position
+    m_pSprSpriteBody->SetX((int)position.x);
+    m_pSprSpriteBody->SetY((int)position.y);
 
-    if (m_fAngleOfAttack < 0)
-    {
-        m_fAngleOfAttack += 360.0f;
-    }
-
-    if (m_iFacingDirection < 0)
-    {
-        m_fAngleOfAttack += 180.0f;
-    }
-
-    // Checks for boundary collisions
-    if (m_vStandingPos.x > (m_vBoundaryHigh.x))
-    {
-        m_vPosition.x = m_vBoundaryHigh.x - 0.1f;
-        m_velocityBody.x = 0.0f;
-        m_vFeetPos.x = m_vBoundaryHigh.x - 0.1f;
-        m_vStandingPos.x = m_vBoundaryHigh.x - 0.1f;
-        m_velocityPos.x = 0.0f;
-    }
-    else if (m_vStandingPos.x < (m_vBoundaryLow.x))
-    {
-        m_vPosition.x = m_vBoundaryLow.x + 0.1f;
-        m_velocityBody.x = 0.0f;
-        m_vFeetPos.x = m_vBoundaryLow.x + 0.1f;
-        m_vStandingPos.x = m_vBoundaryLow.x + 0.1f;
-        m_velocityPos.x = 0.0f;
-    }
-
-    if (m_vStandingPos.y > (m_vBoundaryHigh.y))
-    {
-        m_velocityBody.y = 0.0f;
-        m_vStandingPos.y = m_vBoundaryHigh.y;
-        m_velocityPos.y = 0.0f;
-    }
-    else if (m_vStandingPos.y < (m_vBoundaryLow.y))
-    {
-        m_velocityBody.y = 0.0f;
-        m_vStandingPos.y = m_vBoundaryLow.y;
-        m_velocityPos.y = 0.0f;
-    }
-
-    m_vPosition += (m_velocityBody + m_velocityJump) * deltaTime;
-    m_vFeetPos += (m_velocityBody + m_velocityJump) * deltaTime;
-    m_vStandingPos += m_velocityPos * deltaTime;
-
-    // Update position of character's parts
-    m_pSprSpriteBody->SetX((int)m_vPosition.x);
-    m_pSprSpriteBody->SetY((int)m_vPosition.y);
-
-    m_pSprSpriteHead->SetX((int)m_vPosition.x);
-    m_pSprSpriteHead->SetY((int)m_vPosition.y - (int)(m_pSprSpriteBody->GetHeight() / 2.0f) - (int)m_fHeadBodyOffset);
-
-    // For future updates
-    m_pSprSpriteShadow->SetX((int)m_vStandingPos.x);
-    m_pSprSpriteShadow->SetY((int)m_vStandingPos.y);
-
-    // Update position of weapon
-    m_pSprWeapon->SetX((int)m_vPosition.x);
-    m_pSprWeapon->SetY((int)m_vPosition.y - 15);
-    m_pASprWeapAttack->SetX((int)m_vPosition.x);
-    m_pASprWeapAttack->SetY((int)m_vPosition.y - 15);
-
-    // Update angle of aim of attack
-    m_pSprWeapon->SetAngle(m_fAngleOfAttack);
-    m_pASprWeapAttack->SetAngle(m_fAngleOfAttack);
-
-    // Update scale of character based on distance from camera
+    // Scale based on camera distance or other factors
     m_pSprSpriteBody->SetScale(m_fScale);
     m_pSprSpriteHead->SetScale(m_fScale);
-    m_pSprSpriteLegLeft->SetScale(m_fScale);
-    m_pSprSpriteLegRight->SetScale(m_fScale);
-    m_pSprSpriteShadow->SetScale(m_fScale);
     m_pSprWeapon->SetScale(m_fScale);
     m_pASprWeapAttack->SetScale(m_fScale);
 
-    HandleLegs(deltaTime);
-    m_pASprWeapAttack->Process(deltaTime);
-
+    // Process projectiles or other entities
     if (m_iWeaponType == 1)
     {
         m_pEntArrow->Process(deltaTime, inputSystem);
     }
 
-    // Process healthbar
+    // Process health bar updates
     if (m_pHealthbar)
     {
         m_pHealthbar->Process(deltaTime, inputSystem);
     }
-
 }
 
+
 void
-Character::Draw(Renderer& renderer)
+Character::DrawWithCam(Renderer& renderer, Vector2* offset)
 {
     m_bAlive = m_pHealthbar->Living();
     if (m_bAlive)
     {
-        //m_pSprSpriteShadow->Draw(renderer, false, false); // For future updates
-        m_pSprSpriteLegLeft->Draw(renderer, false, false);
-        m_pSprSpriteLegRight->Draw(renderer, false, false);
+        ////m_pSprSpriteShadow->Draw(renderer, false, false); // For future updates
+        //m_pSprSpriteLegLeft->Draw(renderer, false, false);
+        //m_pSprSpriteLegRight->Draw(renderer, false, false);
 
+        m_pSprSpriteBody->SetX(m_pBody->GetPosition().x);
+        m_pSprSpriteBody->SetX(m_pBody->GetPosition().y);
+        
         m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, false);
-        m_pSprSpriteHead->Draw(renderer, m_bFlipHorizontally, false);
+       // m_pSprSpriteHead->Draw(renderer, m_bFlipHorizontally, false);
 
-        if (m_pASprWeapAttack->IsAnimating())
+   /*     if (m_pASprWeapAttack->IsAnimating())
         {
             m_pASprWeapAttack->Draw(renderer, m_bFlipHorizontally, false);
         }
@@ -316,7 +279,7 @@ Character::Draw(Renderer& renderer)
         if (m_iWeaponType == 1)
         {
             m_pEntArrow->Draw(renderer);
-        }
+        }*/
     }
     else
     {
@@ -383,179 +346,41 @@ Character::GetInputs(InputSystem& inputSystem)
     }
 }
 
-void
-Character::HandleInput(float deltaTime)
+void Character::HandleInput(float deltaTime, InputSystem& inputSystem)
 {
-    // Check for jump input
-    if (m_sKeyboardMotions.Heave > 0)
-    {
-        if (!m_bJumping && !m_bDoubleJump)
-        {
-            // Start jump
-            if (!m_bJumping)
-            {
-                m_bJumping = true;
-            }
+    b2Vec2 velocity = m_pBody->GetLinearVelocity();
 
-            m_bMovingX = false;
-            m_bMovingY = false;
-            //m_vFeetPos.y -= 1.0f;
-            m_velocityJump.y = -320.0f;
-            m_sKeyboardMotions.Heave = MOTION_DECENT;
-        }
-        else if (m_bJumping && !m_bDoubleJump)
-        {
-            // Start double jump
-            m_bDoubleJump = true;
-            m_velocityJump.y = -320.0f;
-            m_sKeyboardMotions.Heave = MOTION_DECENT;
-        }
-        else
-        {
-            m_sKeyboardMotions.Heave = MOTION_DECENT;
-        }
-        //else if (m_bJumping)
-        //{
-        //    // Start decent
-        //    if (m_velocityJump.y >= 0.0f)
-        //    {
-        //        m_sKeyboardMotions.Heave = MOTION_DECENT;
-        //        return;
-        //    }
-
-        //    m_velocityJump.y += 500.0f * deltaTime;
-        //}
+    // Move right when pressing D
+    if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD) {
+        velocity.x = 500.0f;  // Move right at a speed of 5
+        printf("d pressed\n");
+        m_pBody->SetLinearVelocity(velocity);
+        printf("x, y: %f, %f", m_pBody->GetPosition().x, m_pBody->GetPosition().y);
     }
-    // Start descent
-    else if (m_sKeyboardMotions.Heave < 0)
-    {
-        // Feet on ground
-        if (m_vFeetPos.y >= m_vStandingPos.y)
-        {
-            m_vPosition.y = m_vStandingPos.y - ((float)m_pSprSpriteBody->GetHeight() / 2.0f) - m_fLengthFootToBody;
-            m_bJumping = false;
-            m_bDoubleJump = false;
-            m_sKeyboardMotions.Heave = MOTION_NONE;
-            m_vFeetPos.y = m_vStandingPos.y;
-            m_velocityJump.y = 0.0f;
-            m_velocityBody.y = 0.0f;
-            return;
-        }
-
-        m_velocityJump.y += 500.0f * deltaTime;
+    // Move left when pressing A
+    else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD) {
+        velocity.x = -5.0f;  // Move left at a speed of 5
+    }
+    else {
+        velocity.x = 0.0f;  // Stop horizontal movement when no key is pressed
     }
 
-    // Handles main attack
-    if (m_sKeyboardMotions.Attack > 0)
-    {
-        switch (m_iWeaponType)
-        {
-        case 0:
-            m_pASprWeapAttack->Animate();
-            break;
-        case 1:
-            if (!m_pASprWeapAttack->IsAnimating() && !m_pEntArrow->IsAlive())
-            {
-                m_pASprWeapAttack->Animate();
-                m_pEntArrow->SetStartPos(m_vPosition.x, m_vPosition.y);
-                m_pEntArrow->SetTargetPos(m_vCursor.x, m_vCursor.y);
-                m_pEntArrow->Shoot();
-            }
-            break;
-        case 2:
-            m_pASprWeapAttack->Animate();
-            break;
-        }
+    // Jump when pressing space
+    if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED && !m_bJumping) {
+        m_pBody->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -10.0f), true);  // Apply upward impulse for jump
+        m_bJumping = true;
     }
 
-    // Handles forward and backward motions
-    if (m_sKeyboardMotions.Surge > 0)
-    {
-        if (!sm_bCameraCentered)
-        {
-            m_velocityBody.x = 200.0f;
-            m_velocityPos.x = 200.0f;
-        }
-        else
-        {
-            m_velocityBody.x = 0.0f;
-            m_velocityPos.x = 0.0f;
-        }
-        
-        m_iFacingDirection = 1;
-        m_bMovingX = true;
-    }
-    else if (m_sKeyboardMotions.Surge < 0)
-    {
-        if (!sm_bCameraCentered)
-        {
-            m_velocityBody.x = -200.0f;
-            m_velocityPos.x = -200.0f;
-        }
-        else
-        {
-            m_velocityBody.x = 0.0f;
-            m_velocityPos.x = 0.0f;
-        }
-        
-        m_iFacingDirection = -1;
-        m_bMovingX = true;
-    }
-    else if (m_sKeyboardMotions.Surge == 0)
-    {
-        m_velocityBody.x = 0.0f;
-        m_velocityPos.x = 0.0f;
+   
 
-        if (!m_bJumping && !m_bDoubleJump)
-        {
-            m_bMovingX = false;
-        }
-    }
-
-    //Handles up and down motions - For future updates
-    if (m_sKeyboardMotions.Sway > 0)
-    {
-        if (m_vStandingPos.y > m_vBoundaryLow.y)
-        {
-            m_velocityBody.y = -200.0f;
-            m_velocityPos.y = -200.0f;
-            m_fScale -= m_fScaleChangeRate * deltaTime;
-
-            if (m_fScale < m_fScaleMin)
-            {
-                m_fScale = m_fScaleMin;
-            }
-        }
-
-        m_bMovingY = true;
-    }
-    else if (m_sKeyboardMotions.Sway < 0)
-    {
-        if (m_vStandingPos.y < m_vBoundaryHigh.y)
-        {
-            m_velocityBody.y = 200.0f;
-            m_velocityPos.y = 200.0f;
-            m_fScale += m_fScaleChangeRate * deltaTime;
-
-            if (m_fScale > m_fScaleMax)
-            {
-                m_fScale = m_fScaleMax;
-            }
-        }
-
-        m_bMovingY = true;
-    }
-    else if (m_sKeyboardMotions.Sway == 0)
-    {
-        m_velocityBody.y = 0.0f;
-        m_velocityPos.y = 0.0f;
-
-        if (!m_bJumping)
-        {
-            m_bMovingY = false;
-        }
+    // Reset jumping flag when the body lands
+    if (m_bJumping && m_pBody->GetLinearVelocity().y == 0.0f) {
+        m_bJumping = false;
     }
 }
+
+
+
 
 bool
 Character::SetBodySprites(Renderer& renderer)
@@ -609,10 +434,10 @@ Character::SetBodySprites(Renderer& renderer)
     return true;
 }
 
-Vector2&
+b2Vec2
 Character::GetPosition()
 {
-    return m_vStandingPos;
+    return m_pBody->GetPosition();
 }
 
 Vector2&
@@ -839,6 +664,9 @@ Character::HandleLegs(float deltaTime)
         }
     }
 }
+
+void Character::Draw(Renderer& renderer)
+{}
 
 //void
 //Character::DebugDraw()

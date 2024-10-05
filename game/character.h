@@ -7,6 +7,9 @@
 #include "inputsystem.h"
 #include "healthbar.h"
 
+//Box2D
+#include <Box2D.h>
+
 // Forward declarations:
 class Renderer;
 class InputSystem;
@@ -19,20 +22,21 @@ class Character : public Entity
 {
     // Member methods:
 public:
-    Character();
+    Character(b2World* world);
     ~Character();
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;
+    void DrawWithCam(Renderer& renderer, Vector2* offset);
     void Draw(Renderer& renderer) override;
     bool SetBodySprites(Renderer& renderer) override;
     void SetNumSegments(int amount) override;
     void GetInputs(InputSystem& inputSystem) override;
-    void HandleInput(float deltaTime) override;
+    void HandleInput(float deltaTime, InputSystem& inputSystem);
     void SetTerrainMoving(bool moving) override;
     bool IsTerrainMoving() override;
 
-    Vector2& GetPosition();
+    b2Vec2 GetPosition();
     Vector2& GetFeetPos();
     Vector2& GetVelocityBody();
     int GetWeapontype();
@@ -73,6 +77,10 @@ protected:
     int m_iWeaponType;
     float m_fAngleOfAttack;
     bool m_bDoubleJump;
+
+    //Box2D verables
+    b2Body* m_pBody;
+    b2World* m_pWorld;
 
 
 private:

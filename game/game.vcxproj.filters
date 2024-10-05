@@ -16,6 +16,12 @@
     <Filter Include="Imgui">
       <UniqueIdentifier>{69c22732-600f-4095-9959-9f0c557424cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Rauen">
+      <UniqueIdentifier>{f3d94711-1412-4979-8441-cd99545b62d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rauen">
+      <UniqueIdentifier>{74f1cd59-a218-4b34-bc9b-5164766f62a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -116,6 +122,15 @@
     </ClCompile>
     <ClCompile Include="sceneManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyContactListener.cpp">
+      <Filter>Source Files\Rauen</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files\Rauen</Filter>
+    </ClCompile>
+    <ClCompile Include="Camara.cpp">
+      <Filter>Source Files\Rauen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -224,9 +239,19 @@
     <ClInclude Include="sceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MyContactListener.h">
+      <Filter>Header Files\Rauen</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Header Files\Rauen</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Rauen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="sprite.vert" />
     <None Include="sprite.frag" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

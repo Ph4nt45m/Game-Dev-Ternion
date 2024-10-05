@@ -1,5 +1,6 @@
 // This include: 
 #include "game.h"
+#include "MyContactListener.h"
 
 // Local includes:
 #include "renderer.h" 
@@ -15,11 +16,12 @@
 #include "animatedsprite.h"
 #include "forestscene.h"
 #include "vector2.h"
-#include "sceneManager.h"
 
 // Library includes:
 #include <windows.h>
+#include <Box2D.h>
 #include <iostream>
+#include <stdio.h>
 
 // Static Members:
 Game* Game::sm_pInstance = 0;
@@ -88,8 +90,13 @@ bool Game::Initialise()
 	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
 	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-	int bbWidth = 1536; // 1550 originally
-	int bbHeight = 846; // 800 originally
+	int bbWidth = 1550; // 1550 originally
+	int bbHeight = 800; // 800 originally
+
+	b2Vec2 gravity{ 0.0f, 0.0f };
+	world = new b2World{ gravity };
+
+	world->SetContactListener(&m_contactListener);
 
 	m_pRenderer = new Renderer();
 
@@ -113,19 +120,15 @@ bool Game::Initialise()
 		return false;
 	}
 
-	m_pEntCharacter = new Character();
+	m_pEntCharacter = new Character(world);
 
 	if (!m_pEntCharacter->Initialise(*m_pRenderer))
 	{
 		LogManager::GetInstance().Log("Character failed to initialise!");
 		return false;
 	}
+	m_pScForestScene = new ForestScene(world, m_pEntCharacter);
 
-	//Kyle Code
-
-	//First scene this what I kinda wanna deal with?
-	/*
-	m_pScForestScene = new ForestScene();
 	if (!m_pScForestScene->Initialise(*m_pRenderer))
 	{
 		LogManager::GetInstance().Log("ForestScene failed to initialise!");
@@ -135,25 +138,10 @@ bool Game::Initialise()
 	{
 		m_scenes.push_back(m_pScForestScene);
 		m_iCurrentScene = 0;
-		m_pScForestScene->SetCharacter(*m_pEntCharacter, *m_pRenderer);
-	}*/
-
-	// Initialize SceneManager and the first scene
-	SceneManager& sceneManager = SceneManager::GetInstance();
-	if (!sceneManager.Initialise(*m_pRenderer))
-	{
-		LogManager::GetInstance().Log("SceneManager failed to initialise!");
-		return false;
 	}
+	// Changes made by Karl - Start
+	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("Sprites\\explosion.png");
 
-	// Optionally, load the first scene if not using transitions right away
-	sceneManager.ChangeScene(0); // Load initial scene (e.g., splash screen, menu)
-	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
-
-	// Kyle code finish
-
-	//dealing with explosion
-	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("..\\Sprites\\explosion.png");
 	if (!m_pASprAnimatedSprite)
 	{
 		LogManager::GetInstance().Log("AnimatedSprite failed to initialise!");
@@ -165,8 +153,13 @@ bool Game::Initialise()
 		m_pASprAnimatedSprite->SetFrameDuration(0.08f);
 	}
 
-	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("..\\Sprites\\cursor.png");
-	m_sprCursorBodySprite = m_pRenderer->CreateSprite("..\\Sprites\\cursor.png");
+	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
+	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
+	// Changes made by Karl - End
+
+	for (b2Body* body = world->GetBodyList(); body != nullptr; body = body->GetNext()) {
+		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
+	}
 
 	return true;
 }
@@ -216,23 +209,27 @@ Game::Process(float deltaTime)
 	ProcessFrameCounting(deltaTime);
 
 	// TODO: Add game objects to process here!
-	// Kyle
-	//if (m_pScForestScene)
-	//{
-	//	//this what I wanna be dealing with
-	//	m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
-	//}
-	// Perform scene transition if flagged
-	SceneManager::GetInstance().Process(deltaTime, *m_pInputSystem);
-	//Kyle code ends
 
-	// Basically runs player?
-	m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
+
+	// Box2D time step
+	const float32 timeStep = 1.0f / 60.0f;  // 60Hz update rate
+	const int32 velocityIterations = 6;     // Box2D velocity solver iterations
+	const int32 positionIterations = 2;     // Box2D position solver iterations
+
+	// Step the Box2D world to simulate physics
 	
-	//gotta ask what's this?
+	// Step the world
+	world->Step(timeStep, velocityIterations, positionIterations);
+
+
+	if (m_pScForestScene)
+	{
+		m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
+	}
+
+	m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
 	m_pASprAnimatedSprite->Process(deltaTime);
 
-	// Just cursor stuff
 	if (m_sprCursorBorderSprite)
 	{
 		m_pCursor.SetPosition(m_pInputSystem->GetMousePosition());
@@ -251,6 +248,7 @@ Game::Process(float deltaTime)
 			m_pASprAnimatedSprite->Animate();
 		}
 	}
+
 }
 
 void
@@ -261,12 +259,9 @@ Game::Draw(Renderer& renderer)
 	renderer.Clear();
 
 	// TODO: Add game objects to draw here!
-	//Kyle Code
-//	m_scenes[m_iCurrentScene]->Draw(renderer);
-	SceneManager::GetInstance().Draw(renderer);
-	//Kyle Code end
-	m_pEntCharacter->Draw(renderer);
 
+	m_scenes[m_iCurrentScene]->Draw(renderer);
+	
 	if (m_pASprAnimatedSprite->IsAnimating())
 	{
 		m_pASprAnimatedSprite->Draw(renderer, false, false);
@@ -356,9 +351,4 @@ Game::ToggleDebugWindow()
 	m_bShowDebugWindow = !m_bShowDebugWindow;
 
 	m_pInputSystem->ShowMouseCursor(m_bShowDebugWindow);
-}
-
-Character* Game::GetCharacter() const
-{
-	return m_pEntCharacter;
 }

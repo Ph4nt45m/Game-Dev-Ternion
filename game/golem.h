@@ -6,6 +6,9 @@
 #include "vector2.h"
 #include "inputsystem.h"
 
+//Box2d
+#include<Box2D.h>
+
 // Forward declarations:
 class Renderer;
 class Sprite;
@@ -27,7 +30,7 @@ class Golem : public Entity
 {
     // Member methods:
 public:
-    Golem();
+    Golem(b2World* world);
     ~Golem();
 
     bool Initialise(Renderer& renderer) override;
@@ -36,7 +39,7 @@ public:
     bool SetBodySprites(Renderer& renderer) override;
     void SetNumSegments(int amount) override;
     void GetInputs(InputSystem& inputSystem) override;
-    void HandleInput(float deltaTime) override;
+    void HandleInput(float deltaTime);
     void SetTerrainMoving(bool moving) override;
     bool IsTerrainMoving() override;
 
@@ -59,6 +62,17 @@ protected:
 private:
     Golem(const Golem& golem);
     Golem& operator=(const Golem& golem);
+
+public: 
+    //box2d verables
+    b2World* m_pWorld;
+    b2Body* m_pBody;
+
+    //attacks
+    b2Body* slashBody;
+    float slashWidth;
+    float slashHeight;
+
 
     // Member data:
 protected:
@@ -90,5 +104,3 @@ private:
 };
 
 #endif // !GOLEM_H
-
-
