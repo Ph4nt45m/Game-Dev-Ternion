@@ -133,7 +133,12 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 		break;
 	case 2://Character select Scene
 		break;
-	case 3://Foreset Scene(first level
+	case 3://Foreset Scene(Dev Test Level)
+		m_pRenderer->SetClearColour(255, 255, 255);
+		newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
+		break;
+	case 4://Foreset Scene(first level)
+		m_pRenderer->SetClearColour(255, 255, 255);
 		newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
 		break;
 	default:

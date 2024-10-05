@@ -140,7 +140,6 @@ bool Game::Initialise()
 	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
 
-	// Changes made by Karl - Start
 	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("Sprites\\explosion.png");
 	if (!m_pASprAnimatedSprite)
 	{
@@ -155,7 +154,6 @@ bool Game::Initialise()
 
 	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
-	// Changes made by Karl - End
 
 	for (b2Body* body = world->GetBodyList(); body != nullptr; body = body->GetNext()) {
 		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
@@ -221,15 +219,14 @@ Game::Process(float deltaTime)
 	// Step the world
 	world->Step(timeStep, velocityIterations, positionIterations);
 
+	//Checks which scene, if scene is legal and runs process for scene.
+	SceneManager::GetInstance().Process(deltaTime, *m_pInputSystem);
 
-	if (m_pScForestScene)
-	{
-		m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
-	}
-
+	//I think this runs player character
 	m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
 	m_pASprAnimatedSprite->Process(deltaTime);
 
+	//Cursor that follows mouse and explodes when presses
 	if (m_sprCursorBorderSprite)
 	{
 		m_pCursor.SetPosition(m_pInputSystem->GetMousePosition());
