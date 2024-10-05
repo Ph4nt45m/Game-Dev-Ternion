@@ -260,8 +260,8 @@ Game::Draw(Renderer& renderer)
 
 	// TODO: Add game objects to draw here!
 
-	m_scenes[m_iCurrentScene]->Draw(renderer);
-	
+	SceneManager::GetInstance().Draw(renderer);
+
 	if (m_pASprAnimatedSprite->IsAnimating())
 	{
 		m_pASprAnimatedSprite->Draw(renderer, false, false);
