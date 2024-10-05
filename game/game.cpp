@@ -93,13 +93,13 @@ bool Game::Initialise()
 	int bbWidth = 1550; // 1550 originally
 	int bbHeight = 800; // 800 originally
 
+	//World init
 	b2Vec2 gravity{ 0.0f, 0.0f };
 	world = new b2World{ gravity };
-
 	world->SetContactListener(&m_contactListener);
 
+	//Renderder
 	m_pRenderer = new Renderer();
-
 	if (!m_pRenderer->Initialise(true, bbWidth, bbHeight)) // true = windowed, false = fullscreen
 	{
 		LogManager::GetInstance().Log("Renderer failed to initialise!"); 
@@ -112,21 +112,23 @@ bool Game::Initialise()
 	m_iLastTime = SDL_GetPerformanceCounter();
 	m_pRenderer->SetClearColour(255, 255, 255);
 
+	//Input System
 	m_pInputSystem = new InputSystem();
-	
 	if (!m_pInputSystem->Initialise())
 	{
 		LogManager::GetInstance().Log("InputSystem failed to initialise!");
 		return false;
 	}
 
+	//Character made
 	m_pEntCharacter = new Character(world);
-
 	if (!m_pEntCharacter->Initialise(*m_pRenderer))
 	{
 		LogManager::GetInstance().Log("Character failed to initialise!");
 		return false;
 	}
+
+	//Scene
 	m_pScForestScene = new ForestScene(world, m_pEntCharacter);
 
 	if (!m_pScForestScene->Initialise(*m_pRenderer))
@@ -139,6 +141,8 @@ bool Game::Initialise()
 		m_scenes.push_back(m_pScForestScene);
 		m_iCurrentScene = 0;
 	}
+
+
 	// Changes made by Karl - Start
 	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("Sprites\\explosion.png");
 
