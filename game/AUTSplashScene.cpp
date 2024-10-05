@@ -64,9 +64,6 @@ void SplashScene::Draw(Renderer& renderer)
     }
 }
 
-void SplashScene::SetCharacter(Character& character, Renderer& renderer)
-{
-}
 void SplashScene::DebugDraw()
 {
     // Implement any debug UI for this scene if necessary

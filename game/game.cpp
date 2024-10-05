@@ -352,3 +352,13 @@ Game::ToggleDebugWindow()
 
 	m_pInputSystem->ShowMouseCursor(m_bShowDebugWindow);
 }
+
+Character* Game::GetCharacter() const
+{
+	return m_pEntCharacter;
+}
+
+b2World* Game::GetWorld() const
+{
+	return world;
+}

@@ -134,7 +134,7 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 	case 2://Character select Scene
 		break;
 	case 3://Foreset Scene(first level
-		newScene = new ForestScene();
+		newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
 		break;
 	default:
 		// Handle invalid scene ID
@@ -149,8 +149,6 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 		delete newScene;
 		return nullptr;
 	}
-	//Set one character for the scene
-	newScene->SetCharacter(*Game::GetInstance().GetCharacter(), *m_pRenderer);
 
 	return newScene;
 }

@@ -33,6 +33,7 @@ public:
 	void Quit();
 
 	Character* GetCharacter() const;
+	b2World* GetWorld() const;
 
 protected:
 	void Process(float deltaTime);
