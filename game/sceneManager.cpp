@@ -125,6 +125,7 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 	switch (sceneID)
 	{
 	case 0://AUT Splash Scene
+		m_pRenderer->SetClearColour(0, 0, 0);
 		newScene = new SplashScene();
 		break;
 	case 1://Ternion Menu Scene

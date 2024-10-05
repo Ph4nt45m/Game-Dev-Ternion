@@ -40,7 +40,7 @@ SplashScene::~SplashScene()
 
 bool SplashScene::Initialise(Renderer& renderer)
 {
-    SceneManager::GetInstance().LoadImage(renderer, m_splashScene, "Sprites\\AUT-Logo-1.png");
+    SceneManager::GetInstance().LoadImage(renderer, m_splashScene, "..\\Sprites\\AUT-Logo-1.png");
     return (m_splashScene != nullptr);
 }
 
@@ -60,7 +60,7 @@ void SplashScene::Draw(Renderer& renderer)
 {
     if (m_splashScene)
     {
-        m_splashScene->Draw(renderer, false, false);
+        m_splashScene->Draw(renderer, true, false);
     }
 }
 
