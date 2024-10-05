@@ -145,7 +145,6 @@ bool Game::Initialise()
 
 	// Changes made by Karl - Start
 	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("Sprites\\explosion.png");
-
 	if (!m_pASprAnimatedSprite)
 	{
 		LogManager::GetInstance().Log("AnimatedSprite failed to initialise!");
