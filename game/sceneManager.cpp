@@ -11,6 +11,7 @@
 // Scenes
 #include "forestscene.h"
 #include "AUTSplashScene.h"
+#include "TernionMenu.h"
 
 // includes
 #include <cassert>
@@ -129,7 +130,7 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 		newScene = new SplashScene();
 		break;
 	case 1://Ternion Menu Scene
-//		newScene = new menuScene();
+		newScene = new MenuScene();
 		break;
 	case 2://Character select Scene
 		break;

@@ -1,4 +1,4 @@
-#include "AUTSplashScene.h"
+#include "TernionMenu.h"
 
 // Local includes:
 #include "renderer.h"
@@ -25,12 +25,12 @@
 #include <string>
 
 //construct
-SplashScene::SplashScene()
+MenuScene::MenuScene()
     : m_splashScene(nullptr)
     , m_fElapsedTime(0.0f)
 {
 }//destruct
-SplashScene::~SplashScene()
+MenuScene::~MenuScene()
 {
     LogManager::GetInstance().Log("Splash destructor called");
 
@@ -38,25 +38,19 @@ SplashScene::~SplashScene()
     m_splashScene = nullptr;
 }
 
-bool SplashScene::Initialise(Renderer& renderer)
+bool MenuScene::Initialise(Renderer& renderer)
 {
-    SceneManager::GetInstance().LoadImage(renderer, m_splashScene, "..\\Sprites\\AUT-Logo-1.png");
+    SceneManager::GetInstance().LoadImage(renderer, m_splashScene, "..\\Sprites\\Menus\\ternion_Menu.png");
     return (m_splashScene != nullptr);
 }
 
-void SplashScene::Process(float deltaTime, InputSystem& inputSystem)
+void MenuScene::Process(float deltaTime, InputSystem& inputSystem)
 {
     m_fElapsedTime += deltaTime;
 
-    // For now, just transition to the next scene after a set time
-    if (m_fElapsedTime > 3.0f) // e.g., 3 seconds
-    {
-        // Code to change scene (handled by Game or SceneManager)
-        SceneManager::GetInstance().ChangeScene(1);
-    }
 }
 
-void SplashScene::Draw(Renderer& renderer)
+void MenuScene::Draw(Renderer& renderer)
 {
     if (m_splashScene)
     {
@@ -64,7 +58,7 @@ void SplashScene::Draw(Renderer& renderer)
     }
 }
 
-void SplashScene::DebugDraw()
+void MenuScene::DebugDraw()
 {
     // Implement any debug UI for this scene if necessary
     ImGui::Text("Scene: splashSCreen");
