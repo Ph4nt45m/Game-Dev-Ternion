@@ -9,15 +9,9 @@
 #include "logmanager.h"
 #include "scene.h"
 
-#include "game.h"
-#include "logmanager.h"
-#include "renderer.h"
-#include "inputsystem.h"
-#include "sprite.h"
-#include "forest.h"
-#include "character.h"
-#include "golem.h"
-
+// Buttons
+#include "StartButton.h"
+#include "ExitButton.h"
 
 // Library includes:
 #include <cassert>
@@ -26,22 +20,45 @@
 
 //construct
 MenuScene::MenuScene()
-    : m_splashScene(nullptr)
+    : m_BackGroundScene(nullptr)
+    , m_pStartButton(nullptr)
+    , m_pExitButton(nullptr)
     , m_fElapsedTime(0.0f)
 {
 }//destruct
 MenuScene::~MenuScene()
 {
-    LogManager::GetInstance().Log("Splash destructor called");
+    delete m_pStartButton;
+    m_pStartButton = nullptr;
 
-    delete m_splashScene;
-    m_splashScene = nullptr;
+    delete m_pExitButton;
+    m_pExitButton = nullptr;
+
+    delete m_BackGroundScene;
+    m_BackGroundScene = nullptr;
 }
 
 bool MenuScene::Initialise(Renderer& renderer)
 {
-    SceneManager::GetInstance().LoadImage(renderer, m_splashScene, "..\\Sprites\\Menus\\ternion_Menu.png");
-    return (m_splashScene != nullptr);
+    SceneManager::GetInstance().LoadImage(renderer, m_BackGroundScene, "..\\Sprites\\Menus\\ternion_Menu.png");
+
+    int windowWidth = renderer.GetWidth();
+    int windowHeight = renderer.GetHeight();
+    // Calculate button position as a percentage of window size
+    float startButtonX = windowWidth * 0.2f; // 20% of the window width
+    float startButtonY = windowHeight * 0.5f; // 70% of the window height
+    float exitButtonX = windowWidth * 0.8f; // 20% of the window width
+    float exitButtonY = windowHeight * 0.5f; // 70% of the window height
+
+    // Initialize the StartButton with relative position and size
+    m_pStartButton = new StartButton(startButtonX, startButtonY); // 100x50 is the button size
+    m_pStartButton->Initialise(renderer);
+
+    m_pExitButton = new ExitButton(exitButtonX, exitButtonY);
+    m_pExitButton->Initialise(renderer);
+
+
+    return (m_BackGroundScene != nullptr);
 }
 
 void MenuScene::Process(float deltaTime, InputSystem& inputSystem)
@@ -52,9 +69,9 @@ void MenuScene::Process(float deltaTime, InputSystem& inputSystem)
 
 void MenuScene::Draw(Renderer& renderer)
 {
-    if (m_splashScene)
+    if (m_BackGroundScene)
     {
-        m_splashScene->Draw(renderer, true, false);
+        m_BackGroundScene->Draw(renderer, true, false);
     }
 }
 

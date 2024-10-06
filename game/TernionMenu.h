@@ -6,7 +6,10 @@
 #include "scene.h"
 #include "inputsystem.h"
 #include "sceneManager.h"
+#include "button.h"
 #include "game.h"
+
+//Libs
 #include <string>
 
 // Forward declarations: Always included.
@@ -35,7 +38,12 @@ private:
 
     // Member data:
 protected:
-    Sprite* m_splashScene;  // Pointer to the splash image sprite
+    Sprite* m_BackGroundScene;  // Pointer to the background image sprite
+
+    Button* m_pStartButton;  // Pointer to the start button
+    //will come a settings button
+    Button* m_pExitButton;   // Pointer to the exit button
+
     float m_fElapsedTime;     // To track how long the splash screen has been displayed
 
 private:
