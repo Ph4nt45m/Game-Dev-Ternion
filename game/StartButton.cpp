@@ -53,6 +53,7 @@ bool StartButton::Initialise(Renderer& renderer)
 
     // Apply scaling to sprites
     m_buttonSpriteNormal->SetScale(finalScale);
+    m_buttonSpriteHovered->SetScale(finalScale);
     m_buttonSpritePressed->SetScale(finalScale);
 
     // Set the size of the button interaction area (adjust scale for interaction zone)
@@ -62,6 +63,10 @@ bool StartButton::Initialise(Renderer& renderer)
     // Position the button (this assumes m_x and m_y are already set to the correct positions)
     m_buttonSpriteNormal->SetX(m_x);
     m_buttonSpriteNormal->SetY(m_y);
+    m_buttonSpriteHovered->SetX(m_x);
+    m_buttonSpriteHovered->SetY(m_y);
+    m_buttonSpritePressed->SetX(m_x);
+    m_buttonSpritePressed->SetY(m_y);
 
     // Ensure all sprites are loaded
     return (m_buttonSpriteNormal && m_buttonSpriteHovered && m_buttonSpritePressed);
@@ -72,7 +77,7 @@ void StartButton::Update(float deltaTime, InputSystem& inputSystem)
     Button::Update(deltaTime, inputSystem);
     if (m_isReleased)
     {
-        SceneManager::GetInstance().ChangeScene(2);
+        SceneManager::GetInstance().ChangeScene(4);
     }
 }
 
@@ -80,14 +85,14 @@ void StartButton::Draw(Renderer& renderer)
 {
     if (m_isHeld)
     {
-        m_buttonSpritePressed->Draw(renderer, false, false);
+        m_buttonSpritePressed->Draw(renderer, true, false);
     }
     else if (m_isHovered)
     {
-        m_buttonSpriteHovered->Draw(renderer, false, false);
+        m_buttonSpriteHovered->Draw(renderer, true, false);
     }
     else
     {
-        m_buttonSpriteNormal->Draw(renderer, false, false);
+        m_buttonSpriteNormal->Draw(renderer, true, false);
     }
 }

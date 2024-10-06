@@ -65,6 +65,16 @@ void MenuScene::Process(float deltaTime, InputSystem& inputSystem)
 {
     m_fElapsedTime += deltaTime;
 
+    //Call button updates
+    if (m_pStartButton)
+    {
+        m_pStartButton->Update(deltaTime, inputSystem);
+    }
+    if (m_pExitButton)
+    {
+        m_pExitButton->Update(deltaTime, inputSystem);
+    }
+
 }
 
 void MenuScene::Draw(Renderer& renderer)
@@ -72,6 +82,14 @@ void MenuScene::Draw(Renderer& renderer)
     if (m_BackGroundScene)
     {
         m_BackGroundScene->Draw(renderer, true, false);
+    }
+    if (m_pStartButton)
+    {
+        m_pStartButton->Draw(renderer);
+    }
+    if (m_pExitButton)
+    {
+        m_pExitButton->Draw(renderer);
     }
 }
 
