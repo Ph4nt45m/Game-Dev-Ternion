@@ -167,40 +167,42 @@ ForestScene::Initialise(Renderer& renderer)
 
 //Made by Rauen
 	  // Define some terrain segments at different positions and sizes
-		float terrainWidth = 300.0f;  // Example width
-		float terrainHeight = 150.0f;  // Example height
-		float wallWidth = 10.0f;  // Thin wall
-		float wallHeight = 1000.0f;  // Tall enough to act as a boundary
-		float worldWidth = 50000.0f;
-		float worldHeight = 1000.0f;
-		float windowHeight = renderer.GetHeight();
-		float windowWidth = renderer.GetWidth();
+	const float SCALE = 30.0f;
+	float terrainWidth = 300.0f / SCALE;  // Convert pixel width to meters
+	float terrainHeight = 200.0f / SCALE;  // Convert pixel height to meters
+	float wallWidth = 10.0f / SCALE;  // Thin wall, converted to meters
+	float wallHeight = 1000.0f / SCALE;  // Wall height in meters
+	float worldWidth = 50000.0f / SCALE;  // World width converted to meters
+	float worldHeight = 1000.0f / SCALE;  // World height converted to meters
+	float windowHeight = renderer.GetHeight();
+	float windowWidth = renderer.GetWidth();
 
-		// Set the Y position to the bottom of the window
-		float groundY = windowHeight - terrainHeight;
+	// Set the Y position to the bottom of the window and convert to meters
+	float groundY = (windowHeight - terrainHeight) / SCALE;  // Convert to meters
 
-	    ground = new Terrain(m_pWorld, 0.0f, groundY, worldWidth, terrainHeight);
-		m_terrainSegments.push_back(ground);  // Ground
-		ground->SetSprite(renderer, GROUND, worldWidth, terrainHeight);
+	// Create the ground object, converting width/height to meters
+	ground = new Terrain(m_pWorld, 0.0f, groundY, worldWidth, terrainHeight);
+	m_terrainSegments.push_back(ground);  // Ground
+	ground->SetSprite(renderer, GROUND, worldWidth * SCALE, terrainHeight * SCALE);
 
-		//
-		//Terrain* platform = new Terrain(m_pWorld, 100.0f, groundY - terrainHeight, terrainWidth, terrainHeight);
-		//m_terrainSegments.push_back(platform);  // Another platform
-		//platform->SetSprite(renderer, PLATFORM, terrainWidth, terrainHeight);
-		//
-		//// Add a left wall
-		//Terrain* leftWall = new Terrain(m_pWorld, -wallWidth, groundY, wallWidth, wallHeight);
-		//m_terrainSegments.push_back(leftWall);  // Left boundary
-		//leftWall->SetSprite(renderer, LEFT_WALL, wallWidth, wallHeight);
-		//
-		//// Add a right wall 
-		//Terrain* rightWall = new Terrain(m_pWorld, worldWidth + wallWidth, groundY, wallWidth, wallHeight);
-		//m_terrainSegments.push_back(rightWall);  // Right boundary
-		//rightWall->SetSprite(renderer, RIGHT_WALL, wallWidth, wallHeight);
+	
+	platform = new Terrain(m_pWorld, 1000.0f/ SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
+	m_terrainSegments.push_back(platform);  // Another platform
+	platform->SetSprite(renderer, PLATFORM, terrainWidth * SCALE, terrainHeight*SCALE);
+	
+	// Add a left wall
+	leftWall = new Terrain(m_pWorld, -wallWidth, groundY, wallWidth, wallHeight);
+	m_terrainSegments.push_back(leftWall);  // Left boundary
+	leftWall->SetSprite(renderer, LEFT_WALL, wallWidth, wallHeight);
+	
+	// Add a right wall 
+	rightWall = new Terrain(m_pWorld, worldWidth + wallWidth, groundY, wallWidth, wallHeight);
+	m_terrainSegments.push_back(rightWall);  // Right boundary
+	rightWall->SetSprite(renderer, RIGHT_WALL, wallWidth, wallHeight);
 
-		//m_terrainSegments.push_back(new Terrain(m_pWorld, 450.0f, 450.0f, terrainWidth, terrainHeight));  // Elevated platform
-		
-		camera.SetCamera(windowWidth, windowHeight, worldWidth, worldHeight);
+	//m_terrainSegments.push_back(new Terrain(m_pWorld, 450.0f, 450.0f, terrainWidth, terrainHeight));  // Elevated platform
+
+	camera.SetCamera(windowWidth, windowHeight, worldWidth, worldHeight);
 
 	return true;
 }
@@ -209,6 +211,8 @@ void
 ForestScene::Process(float deltaTime, InputSystem& inputSystem)
 {
 	//m_pGolem->Process(deltaTime, inputSystem);
+	camera.Update(*m_pCharacter);
+	//printf("char: %f\n", m_pCharacter->GetPosition().x - platform->GetPosition().x);
 }
 
 void
@@ -216,15 +220,14 @@ ForestScene::Draw(Renderer& renderer)
 {
 	
 	// Update camera based on player position
-	camera.Update(*m_pCharacter);
-
-	// Get the current view (camera position)
-	Vector2* view = camera.GetOffset();
-
-	// When rendering, offset everything by the camera's position
-	m_pCharacter->DrawWithCam(renderer, view);
+	m_pCharacter->DrawWithCam(renderer, camera);
+	//printf("Char: %f\n", m_pCharacter->GetPosition().x);
 
 	ground->Draw(renderer);
+	platform->Draw(renderer);
+	leftWall->Draw(renderer);
+	rightWall->Draw(renderer);
+
 	//m_pGolem->Draw(renderer);
 }
 

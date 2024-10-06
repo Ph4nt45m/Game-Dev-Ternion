@@ -4,6 +4,7 @@
 #include <Box2D.h>
 #include "renderer.h"
 #include "sprite.h"
+#include "Camera.h"
 
 enum TerrainType {
     GROUND,
@@ -12,13 +13,15 @@ enum TerrainType {
     RIGHT_WALL
 };
 
-class Terrain {
+class Terrain 
+{
 public:
     Terrain(b2World* world, float x, float y, float width, float height);
     ~Terrain();
 
     // Function to render the terrain
-    void Draw(Renderer& renderer);
+    void Draw(Renderer& renderer); 
+
 
     // Getter for position 
     b2Vec2 GetPosition() const { return m_pBody->GetPosition(); }

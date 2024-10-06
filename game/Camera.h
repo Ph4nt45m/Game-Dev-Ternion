@@ -1,8 +1,11 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Character.h"  // Assuming you have a Player class
 #include "vector2.h"
+#include <Box2D.h>
+
+
+class Character;
 
 class Camera {
 public:
@@ -12,9 +15,10 @@ public:
 
     void Update(Character& player);
     Vector2* GetOffset();
+public:
+    Vector2 m_position;  // The camera's position in the world
 
 private:
-    Vector2 m_position;  // The camera's position in the world
     int m_screenWidth;
     int m_screenHeight;
     int m_worldWidth;

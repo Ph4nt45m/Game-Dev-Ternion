@@ -54,6 +54,9 @@ protected:
 	Character* m_pCharacter;
 	Camera camera;
 	Terrain* ground;
+	Terrain* leftWall;
+	Terrain* rightWall;
+	Terrain* platform;
 private:
 	std::vector<Terrain*> m_terrainSegments;
 };
