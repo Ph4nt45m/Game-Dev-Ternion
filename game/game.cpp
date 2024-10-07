@@ -11,11 +11,10 @@
 #include "../imgui/imgui_impl_opengl3.h"
 #include "inputsystem.h"
 #include "SDL_scancode.h"
-#include "forestscene.h"
 #include "character.h"
 #include "animatedsprite.h"
-#include "forestscene.h"
 #include "vector2.h"
+#include "sceneManager.h"
 
 // Library includes:
 #include <windows.h>
@@ -93,13 +92,13 @@ bool Game::Initialise()
 	int bbWidth = 1550; // 1550 originally
 	int bbHeight = 800; // 800 originally
 
-	b2Vec2 gravity{ 0.0f, 1.0f };
+	//World init
+	b2Vec2 gravity{ 0.0f, 0.0f };
 	world = new b2World{ gravity };
-
 	world->SetContactListener(&m_contactListener);
 
+	//Renderder
 	m_pRenderer = new Renderer();
-
 	if (!m_pRenderer->Initialise(true, bbWidth, bbHeight)) // true = windowed, false = fullscreen
 	{
 		LogManager::GetInstance().Log("Renderer failed to initialise!"); 
@@ -112,36 +111,36 @@ bool Game::Initialise()
 	m_iLastTime = SDL_GetPerformanceCounter();
 	m_pRenderer->SetClearColour(255, 255, 255);
 
+	//Input System
 	m_pInputSystem = new InputSystem();
-	
 	if (!m_pInputSystem->Initialise())
 	{
 		LogManager::GetInstance().Log("InputSystem failed to initialise!");
 		return false;
 	}
 
+	//Character made
 	m_pEntCharacter = new Character(world);
-
 	if (!m_pEntCharacter->Initialise(*m_pRenderer))
 	{
 		LogManager::GetInstance().Log("Character failed to initialise!");
 		return false;
 	}
-	m_pScForestScene = new ForestScene(world, m_pEntCharacter);
 
-	if (!m_pScForestScene->Initialise(*m_pRenderer))
+	//Scene
+	// Initialize SceneManager and the first scene
+	SceneManager& sceneManager = SceneManager::GetInstance();
+	if (!sceneManager.Initialise(*m_pRenderer))
 	{
-		LogManager::GetInstance().Log("ForestScene failed to initialise!");
+		LogManager::GetInstance().Log("SceneManager failed to initialise!");
 		return false;
 	}
-	else
-	{
-		m_scenes.push_back(m_pScForestScene);
-		m_iCurrentScene = 0;
-	}
-	// Changes made by Karl - Start
-	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("Sprites\\explosion.png");
+	// Optionally, load the first scene if not using transitions right away
+	sceneManager.ChangeScene(0); // Load initial scene (e.g., splash screen, menu)
+	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
+
+	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("Sprites\\explosion.png");
 	if (!m_pASprAnimatedSprite)
 	{
 		LogManager::GetInstance().Log("AnimatedSprite failed to initialise!");
@@ -155,7 +154,6 @@ bool Game::Initialise()
 
 	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
-	// Changes made by Karl - End
 
 	for (b2Body* body = world->GetBodyList(); body != nullptr; body = body->GetNext()) {
 		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
@@ -221,15 +219,14 @@ Game::Process(float deltaTime)
 	// Step the world
 	world->Step(timeStep, velocityIterations, positionIterations);
 
+	//Checks which scene, if scene is legal and runs process for scene.
+	SceneManager::GetInstance().Process(deltaTime, *m_pInputSystem);
 
-	if (m_pScForestScene)
-	{
-		m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
-	}
-
+	//I think this runs player character
 	m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
 	m_pASprAnimatedSprite->Process(deltaTime);
 
+	//Cursor that follows mouse and explodes when presses
 	if (m_sprCursorBorderSprite)
 	{
 		m_pCursor.SetPosition(m_pInputSystem->GetMousePosition());
@@ -260,8 +257,8 @@ Game::Draw(Renderer& renderer)
 
 	// TODO: Add game objects to draw here!
 
-	m_scenes[m_iCurrentScene]->Draw(renderer);
-	
+	SceneManager::GetInstance().Draw(renderer);
+
 	if (m_pASprAnimatedSprite->IsAnimating())
 	{
 		m_pASprAnimatedSprite->Draw(renderer, false, false);
@@ -351,4 +348,14 @@ Game::ToggleDebugWindow()
 	m_bShowDebugWindow = !m_bShowDebugWindow;
 
 	m_pInputSystem->ShowMouseCursor(m_bShowDebugWindow);
+}
+
+Character* Game::GetCharacter() const
+{
+	return m_pEntCharacter;
+}
+
+b2World* Game::GetWorld() const
+{
+	return world;
 }

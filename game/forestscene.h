@@ -31,11 +31,7 @@ public:
 	virtual void Draw(Renderer& renderer);
 	virtual void DebugDraw();
 
-	//virtual void SetCharacter(Character& character, Renderer& renderer);
-	virtual void SetCharPos(Vector2& characterPos);
-	virtual void SetCharFeetPos(Vector2& feetPos);
-	virtual void SetCharWidth(int width);
-	virtual bool SetEnemies(Character& character, Renderer& renderer);
+	bool SetEnemies(Character& character, Renderer& renderer);
 
 protected:
 	

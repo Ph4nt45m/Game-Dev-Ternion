@@ -231,24 +231,7 @@ ForestScene::Draw(Renderer& renderer)
 	//m_pGolem->Draw(renderer);
 }
 
-void
-ForestScene::SetCharPos(Vector2& characterPos)
-{
-	//m_vCharPos = &characterPos;
-}
-
-void
-ForestScene::SetCharFeetPos(Vector2& feetPos)
-{
-	//m_vFeetPos = &feetPos;
-}
-
-void
-ForestScene::SetCharWidth(int width)
-{
-	//m_iCharWidth = width;
-}
-
+//Testing stuff with enemies for later
 bool
 ForestScene::SetEnemies(Character& character, Renderer& renderer)
 {
