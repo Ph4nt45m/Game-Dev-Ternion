@@ -6,6 +6,7 @@
 #include "vector2.h"
 #include "inputsystem.h"
 #include "healthbar.h"
+#include "Camera.h"
 
 //Box2D
 #include <Box2D.h>
@@ -17,6 +18,7 @@ class Sprite;
 class AnimatedSprite;
 class Projectile;
 class Game;
+
 // Class declaration:
 class Character : public Entity
 {
@@ -27,7 +29,7 @@ public:
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;
-    void DrawWithCam(Renderer& renderer, Vector2* offset);
+    void DrawWithCam(Renderer& renderer, Camera& camera);
     void Draw(Renderer& renderer) override;
     bool SetBodySprites(Renderer& renderer) override;
     void SetNumSegments(int amount) override;
@@ -56,7 +58,6 @@ public:
 
 protected:
     void ComputeBounds(float width, float height);
-    void HandleLegs(float deltaTime);
 
 private:
     Character(const Character& character);

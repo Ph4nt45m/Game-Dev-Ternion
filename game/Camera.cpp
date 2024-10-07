@@ -1,5 +1,8 @@
 #include "Camera.h"
+#include "character.h"
 #include <stdio.h>
+
+
 Camera::Camera()
     : m_screenWidth(0)
     , m_screenHeight(0)
@@ -20,34 +23,34 @@ void Camera::SetCamera(int screenWidth, int screenHeight, int worldWidth, int wo
 
 }
 
-// Update the camera to follow the player
-void Camera::Update(Character& player) {
-    // Center the camera horizontally on the player
-   
+void Camera::Update(Character& player)
+{
+    const float SCALE = 30.0f;  // Scaling factor from Box2D meters to pixels
 
-    m_position.x = player.GetPosition().x - (m_screenWidth / 2);
+    // Get the player's Box2D body position in meters, no need to adjust
+    b2Vec2 playerPosition = player.GetPosition();
 
-    // If you want vertical movement, uncomment the following line:
-    //m_position.y = player.GetPosition().y - (m_screenHeight / 2);
+    // Convert Box2D meters to pixel space using the scale factor
+    float playerXInPixels = playerPosition.x * SCALE;
 
-    // Clamp the camera position to ensure it doesn't go outside the world boundaries
+    // Center the camera on the player's position
+    m_position.x = playerXInPixels - (m_screenWidth / 2);
+
+    // Clamp the camera within the world boundaries (in pixels)
     if (m_position.x < 0) {
         m_position.x = 0;
     }
-    if (m_position.x > m_worldWidth - m_screenWidth) {
-        m_position.x = m_worldWidth - m_screenWidth;
-    }
-
-    // Uncomment this block if you want to clamp the camera vertically
-    /*
     if (m_position.y < 0) {
         m_position.y = 0;
     }
-    if (m_position.y > m_worldHeight - m_screenHeight) {
-        m_position.y = m_worldHeight - m_screenHeight;
+    if (m_position.x > m_worldWidth) {
+        m_position.x = m_worldWidth;
     }
-    */
+    if (m_position.y > m_worldHeight) {
+        m_position.y = m_worldHeight;
+    }
 }
+
 
 // Get the camera offset (used for adjusting the rendering positions)
 Vector2* Camera::GetOffset() {

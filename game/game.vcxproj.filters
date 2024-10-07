@@ -129,7 +129,7 @@
     <ClCompile Include="Terrain.cpp">
       <Filter>Source Files\Rauen</Filter>
     </ClCompile>
-    <ClCompile Include="Camara.cpp">
+    <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Rauen</Filter>
     </ClCompile>
   </ItemGroup>
