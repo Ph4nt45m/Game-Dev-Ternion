@@ -147,7 +147,6 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 		return nullptr;
 	}
 
-
 	// Initialize the scene
 	if (newScene && !newScene->Initialise(*m_pRenderer))
 	{

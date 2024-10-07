@@ -156,7 +156,7 @@
     <ClCompile Include="AUTSplashScene.h" />
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="button.cpp" />
-    <ClCompile Include="Camara.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="character.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="ExitButton.cpp" />

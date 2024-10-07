@@ -49,10 +49,10 @@ void SplashScene::Process(float deltaTime, InputSystem& inputSystem)
     m_fElapsedTime += deltaTime;
 
     // For now, just transition to the next scene after a set time
-    if (m_fElapsedTime > 3.0f) // e.g., 3 seconds
+    if (m_fElapsedTime > 0.1f) // e.g., 3 seconds
     {
         // Code to change scene (handled by Game or SceneManager)
-        SceneManager::GetInstance().ChangeScene(1);
+        SceneManager::GetInstance().ChangeScene(4);
     }
 }
 

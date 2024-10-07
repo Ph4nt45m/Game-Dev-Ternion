@@ -26,6 +26,10 @@ ForestScene::ForestScene(b2World* world, Character* character)
 	, m_pWorld(world)
 	, camera()
 	, m_pCharacter(character)
+	, ground(nullptr)
+	, leftWall(nullptr)
+	, rightWall(nullptr)
+	, platform(nullptr)
 {
 
 }
@@ -167,7 +171,10 @@ ForestScene::Initialise(Renderer& renderer)
 
 //Made by Rauen
 	  // Define some terrain segments at different positions and sizes
-	const float SCALE = 30.0f;
+b2Vec2 gravity{ 0.0f, 1.0f };
+
+m_pWorld->SetGravity(gravity);
+const float SCALE = 30.0f;
 	float terrainWidth = 300.0f / SCALE;  // Convert pixel width to meters
 	float terrainHeight = 200.0f / SCALE;  // Convert pixel height to meters
 	float wallWidth = 10.0f / SCALE;  // Thin wall, converted to meters
@@ -181,11 +188,11 @@ ForestScene::Initialise(Renderer& renderer)
 	float groundY = (windowHeight - terrainHeight) / SCALE;  // Convert to meters
 
 	// Create the ground object, converting width/height to meters
-	ground = new Terrain(m_pWorld, 0.0f, groundY, worldWidth, terrainHeight);
+	ground = new Terrain(m_pWorld, 0.0f, groundY + 1.0, worldWidth, terrainHeight);
 	m_terrainSegments.push_back(ground);  // Ground
 	ground->SetSprite(renderer, GROUND, worldWidth * SCALE, terrainHeight * SCALE);
+	printf("Im here\n");
 
-	
 	platform = new Terrain(m_pWorld, 1000.0f/ SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
 	m_terrainSegments.push_back(platform);  // Another platform
 	platform->SetSprite(renderer, PLATFORM, terrainWidth * SCALE, terrainHeight*SCALE);
@@ -201,6 +208,7 @@ ForestScene::Initialise(Renderer& renderer)
 	rightWall->SetSprite(renderer, RIGHT_WALL, wallWidth * SCALE, wallHeight * SCALE);
 
 	//m_terrainSegments.push_back(new Terrain(m_pWorld, 450.0f, 450.0f, terrainWidth, terrainHeight));  // Elevated platform
+
 
 	camera.SetCamera(windowWidth, windowHeight, worldWidth, worldHeight);
 
