@@ -1,5 +1,5 @@
 // This include:
-#include "skeleton.h"
+#include "spider.h"
 
 // Local includes:
 #include "renderer.h"
@@ -13,7 +13,7 @@
 #include <cassert>
 #include <cstdio>
 
-Skeleton::Skeleton()
+Spider::Spider()
     : m_pEntCharacter(0)
     , m_pSprSpriteBody(0)
     , m_sAnimations{ 0, 0, 0 }
@@ -35,39 +35,37 @@ Skeleton::Skeleton()
 
 }
 
-Skeleton::~Skeleton()
+Spider::~Spider()
 {
     delete m_pSprSpriteBody;
     m_pSprSpriteBody = 0;
 
-    delete m_sAnimations.m_pASprSkelIdle;
-    m_sAnimations.m_pASprSkelIdle = 0;
+    delete m_sAnimations.m_pASprSpdrSleep;
+    m_sAnimations.m_pASprSpdrSleep = 0;
 
-    delete m_sAnimations.m_pASprSkelWalk;
-    m_sAnimations.m_pASprSkelWalk = 0;
+    delete m_sAnimations.m_pASprSpdrWalk;
+    m_sAnimations.m_pASprSpdrWalk = 0;
 
-    delete m_sAnimations.m_pASprSkelAttack;
-    m_sAnimations.m_pASprSkelAttack = 0;
+    delete m_sAnimations.m_pASprSpdrAttack;
+    m_sAnimations.m_pASprSpdrAttack = 0;
 }
 
 bool
-Skeleton::Initialise(Renderer& renderer)
+Spider::Initialise(Renderer& renderer)
 {
     if (!SetBodySprites(renderer))
     {
-        LogManager::GetInstance().Log("Skeleton Sprites failed to initialise!");
+        LogManager::GetInstance().Log("Spider Sprites failed to initialise!");
         return false;
     }
 
-    m_iFacingDirection = -1;
-    m_bFlipHorizontally = true;
     m_fScale = 1.0f;
     m_fScaleChangeRate = 0.125f;
     m_fScaleMin = 0.92f;
     m_fScaleMax = 1.08f;
     m_fAnimateScale = 0.435f;
     m_fHitBoxRange = 50.0f;
-    m_fAttackRangeMax = (m_sAnimations.m_pASprSkelAttack->GetWidth() / 2.0f);
+    m_fAttackRangeMax = (m_sAnimations.m_pASprSpdrAttack->GetWidth() / 2.0f);
     m_fGroundY = ((sm_fBoundaryHeight / 7.0f) * 5.0f);
     m_bAlive = true;
 
@@ -78,7 +76,7 @@ Skeleton::Initialise(Renderer& renderer)
 }
 
 void
-Skeleton::Process(float deltaTime, InputSystem& inputSystem)
+Spider::Process(float deltaTime, InputSystem& inputSystem)
 {
     GetInputs(inputSystem);
     HandleInput(deltaTime);
@@ -97,47 +95,45 @@ Skeleton::Process(float deltaTime, InputSystem& inputSystem)
         {
             Move();
 
-            if (!m_sAnimations.m_pASprSkelWalk->IsAnimating())
+            if (!m_sAnimations.m_pASprSpdrWalk->IsAnimating())
             {
-                m_sAnimations.m_pASprSkelWalk->Animate();
-                m_sAnimations.m_pASprSkelWalk->SetLooping(true);
+                m_sAnimations.m_pASprSpdrWalk->Animate();
+                m_sAnimations.m_pASprSpdrWalk->SetLooping(true);
             }
         }
         else
         {
-            m_sAnimations.m_pASprSkelWalk->Inanimate();
-            m_sAnimations.m_pASprSkelWalk->SetLooping(false);
-            m_sAnimations.m_pASprSkelIdle->Animate();
-            m_sAnimations.m_pASprSkelIdle->SetLooping(true);
+            m_sAnimations.m_pASprSpdrWalk->Inanimate();
+            m_sAnimations.m_pASprSpdrWalk->SetLooping(false);
         }
     }
     else
     {
         m_fExecutionTime = 0.0f;
-        m_sAnimations.m_pASprSkelIdle->Animate();
-        m_sAnimations.m_pASprSkelIdle->SetLooping(true);
+        m_sAnimations.m_pASprSpdrSleep->Animate();
+        m_sAnimations.m_pASprSpdrSleep->SetLooping(true);
     }
 
     ProcessAction();
 
     m_vPosition += (m_velocityPos + m_velocityBody) * deltaTime;
 
-    m_sAnimations.m_pASprSkelIdle->SetX((int)m_vPosition.x);
-    m_sAnimations.m_pASprSkelIdle->SetY((int)m_vPosition.y);
+    m_sAnimations.m_pASprSpdrSleep->SetX((int)m_vPosition.x);
+    m_sAnimations.m_pASprSpdrSleep->SetY((int)m_vPosition.y);
 
-    m_sAnimations.m_pASprSkelWalk->SetX((int)m_vPosition.x);
-    m_sAnimations.m_pASprSkelWalk->SetY((int)m_vPosition.y);
+    m_sAnimations.m_pASprSpdrWalk->SetX((int)m_vPosition.x);
+    m_sAnimations.m_pASprSpdrWalk->SetY((int)m_vPosition.y);
 
-    m_sAnimations.m_pASprSkelAttack->SetX((int)m_vPosition.x);
-    m_sAnimations.m_pASprSkelAttack->SetY((int)m_vPosition.y);
+    m_sAnimations.m_pASprSpdrAttack->SetX((int)m_vPosition.x);
+    m_sAnimations.m_pASprSpdrAttack->SetY((int)m_vPosition.y);
 
-    m_sAnimations.m_pASprSkelIdle->Process(deltaTime);
-    m_sAnimations.m_pASprSkelWalk->Process(deltaTime);
-    m_sAnimations.m_pASprSkelAttack->Process(deltaTime);
+    m_sAnimations.m_pASprSpdrSleep->Process(deltaTime);
+    m_sAnimations.m_pASprSpdrWalk->Process(deltaTime);
+    m_sAnimations.m_pASprSpdrAttack->Process(deltaTime);
 }
 
 void
-Skeleton::Draw(Renderer& renderer)
+Spider::Draw(Renderer& renderer)
 {
     if (m_bAlive)
     {
@@ -145,13 +141,13 @@ Skeleton::Draw(Renderer& renderer)
         {
             if (m_bRun)
             {
-                m_sAnimations.m_pASprSkelWalk->Draw(renderer, m_bFlipHorizontally, false);
+                m_sAnimations.m_pASprSpdrWalk->Draw(renderer, m_bFlipHorizontally, false);
             }
             else if (m_bAttack)
             {
-                if (m_sAnimations.m_pASprSkelAttack->IsAnimating())
+                if (m_sAnimations.m_pASprSpdrAttack->IsAnimating())
                 {
-                    m_sAnimations.m_pASprSkelAttack->Draw(renderer, m_bFlipHorizontally, false);
+                    m_sAnimations.m_pASprSpdrAttack->Draw(renderer, m_bFlipHorizontally, false);
                 }
                 else
                 {
@@ -161,18 +157,18 @@ Skeleton::Draw(Renderer& renderer)
             }
             else
             {
-                m_sAnimations.m_pASprSkelIdle->Draw(renderer, m_bFlipHorizontally, false);
+                m_sAnimations.m_pASprSpdrWalk->Draw(renderer, m_bFlipHorizontally, false);
             }
         }
         else
         {
-            m_sAnimations.m_pASprSkelIdle->Draw(renderer, m_bFlipHorizontally, false);
+            m_sAnimations.m_pASprSpdrSleep->Draw(renderer, m_bFlipHorizontally, false);
         }
     }
 }
 
 void
-Skeleton::GetInputs(InputSystem& inputSystem)
+Spider::GetInputs(InputSystem& inputSystem)
 {
     // Gets movement keys' states
     m_sMotionKeyStates.MoveForward = inputSystem.GetKeyState(SDL_SCANCODE_D);
@@ -193,7 +189,7 @@ Skeleton::GetInputs(InputSystem& inputSystem)
 }
 
 void
-Skeleton::HandleInput(float deltaTime)
+Spider::HandleInput(float deltaTime)
 {
     // Handles left and right shift whilst player is out of range
     if (m_sKeyboardMotions.Surge > 0)
@@ -234,73 +230,73 @@ Skeleton::HandleInput(float deltaTime)
 }
 
 bool
-Skeleton::SetBodySprites(Renderer& renderer)
+Spider::SetBodySprites(Renderer& renderer)
 {
-    m_sAnimations.m_pASprSkelIdle = renderer.CreateAnimatedSprite("..\\Sprites\\skeleton\\anim8skelidle.png");
+    m_sAnimations.m_pASprSpdrSleep = renderer.CreateAnimatedSprite("..\\Sprites\\spider\\anim8spdrsleep.png");
 
-    if (!(m_sAnimations.m_pASprSkelIdle))
+    if (!(m_sAnimations.m_pASprSpdrSleep))
     {
-        LogManager::GetInstance().Log("Skeleton idle animation failed to initialise!");
+        LogManager::GetInstance().Log("Spider sleep animation failed to initialise!");
         return false;
     }
     else
     {
-        m_sAnimations.m_pASprSkelIdle->SetupFrames(96, 64);
-        m_sAnimations.m_pASprSkelIdle->SetFrameDuration(0.07f);
-        m_sAnimations.m_pASprSkelIdle->SetScale(2.5f);
+        m_sAnimations.m_pASprSpdrSleep->SetupFrames(56, 34);
+        m_sAnimations.m_pASprSpdrSleep->SetFrameDuration(0.1f);
+        m_sAnimations.m_pASprSpdrSleep->SetScale(2.5f);
     }
 
-    m_sAnimations.m_pASprSkelAttack = renderer.CreateAnimatedSprite("..\\Sprites\\skeleton\\anim8skelattack.png");
+    m_sAnimations.m_pASprSpdrAttack = renderer.CreateAnimatedSprite("..\\Sprites\\spider\\anim8spdrattack.png");
 
-    if (!(m_sAnimations.m_pASprSkelAttack))
+    if (!(m_sAnimations.m_pASprSpdrAttack))
     {
-        LogManager::GetInstance().Log("Skeleton attack animation failed to initialise!");
+        LogManager::GetInstance().Log("Spider attack animation failed to initialise!");
         return false;
     }
     else
     {
-        m_sAnimations.m_pASprSkelAttack->SetupFrames(96, 64);
-        m_sAnimations.m_pASprSkelAttack->SetFrameDuration(0.15f);
-        m_sAnimations.m_pASprSkelAttack->SetScale(2.5f);
+        m_sAnimations.m_pASprSpdrAttack->SetupFrames(56, 34);
+        m_sAnimations.m_pASprSpdrAttack->SetFrameDuration(0.15f);
+        m_sAnimations.m_pASprSpdrAttack->SetScale(2.5f);
     }
 
-    m_sAnimations.m_pASprSkelWalk = renderer.CreateAnimatedSprite("..\\Sprites\\skeleton\\anim8skelwalk.png");
+    m_sAnimations.m_pASprSpdrWalk = renderer.CreateAnimatedSprite("..\\Sprites\\spider\\anim8spdrwalk.png");
 
-    if (!(m_sAnimations.m_pASprSkelWalk))
+    if (!(m_sAnimations.m_pASprSpdrWalk))
     {
         LogManager::GetInstance().Log("Skeleton run animation failed to initialise!");
         return false;
     }
     else
     {
-        m_sAnimations.m_pASprSkelWalk->SetupFrames(96, 64);
-        m_sAnimations.m_pASprSkelWalk->SetFrameDuration(0.1f);
-        m_sAnimations.m_pASprSkelWalk->SetScale(2.5f);
+        m_sAnimations.m_pASprSpdrWalk->SetupFrames(56, 34);
+        m_sAnimations.m_pASprSpdrWalk->SetFrameDuration(0.07f);
+        m_sAnimations.m_pASprSpdrWalk->SetScale(2.5f);
     }
 
     return true;
 }
 
 void
-Skeleton::Move(void)
+Spider::Move(void)
 {
     if (m_bPlayerInRange)
     {
         if (m_pEntCharacter->GetPosition().x < (m_vPosition.x - m_fAttackRangeMax) &&
             m_pEntCharacter->GetPosition().x < m_vPosition.x)
         {
-            m_iFacingDirection = -1;
-            m_bFlipHorizontally = true;
+            m_iFacingDirection = 1;
+            m_bFlipHorizontally = false;
             m_bIsAnimating = true;
-            m_velocityBody.x = -150.0f;
+            m_velocityBody.x = -250.0f;
         }
         else if (m_pEntCharacter->GetPosition().x > (m_vPosition.x + m_fAttackRangeMax) &&
             m_pEntCharacter->GetPosition().x > m_vPosition.x)
         {
-            m_iFacingDirection = 1;
-            m_bFlipHorizontally = false;
+            m_iFacingDirection = -1;
+            m_bFlipHorizontally = true;
             m_bIsAnimating = true;
-            m_velocityBody.x = 150.0f;
+            m_velocityBody.x = 250.0f;
         }
         else
         {
@@ -313,25 +309,25 @@ Skeleton::Move(void)
 }
 
 void
-Skeleton::Action()
+Spider::Action()
 {
     if (m_fDistToPlayer < m_fAttackRangeMax && m_fDistToPlayer >= 0.0f)
     {
         if (!m_bRun)
         {
-            m_sAnimations.m_pASprSkelWalk->SetLooping(false);
-            m_sAnimations.m_pASprSkelWalk->Inanimate();
+            m_sAnimations.m_pASprSpdrWalk->SetLooping(false);
+            m_sAnimations.m_pASprSpdrWalk->Inanimate();
         }
 
-        if (m_sAnimations.m_pASprSkelIdle->IsAnimating())
+        if (m_sAnimations.m_pASprSpdrSleep->IsAnimating())
         {
-            m_sAnimations.m_pASprSkelIdle->Inanimate();
-            m_sAnimations.m_pASprSkelIdle->SetLooping(false);
+            m_sAnimations.m_pASprSpdrSleep->Inanimate();
+            m_sAnimations.m_pASprSpdrSleep->SetLooping(false);
         }
 
-        if (!m_sAnimations.m_pASprSkelAttack->IsAnimating() && !m_bAttack)
+        if (!m_sAnimations.m_pASprSpdrAttack->IsAnimating() && !m_bAttack)
         {
-            m_sAnimations.m_pASprSkelAttack->Animate();
+            m_sAnimations.m_pASprSpdrAttack->Animate();
             m_bAttack = true;
         }
     }
@@ -342,37 +338,37 @@ Skeleton::Action()
 }
 
 void
-Skeleton::ProcessAction()
+Spider::ProcessAction()
 {
 
 }
 
 void
-Skeleton::SetTerrainMoving(bool moving)
+Spider::SetTerrainMoving(bool moving)
 {
     sm_bTerrainMoving = moving;
 }
 
 bool
-Skeleton::IsTerrainMoving()
+Spider::IsTerrainMoving()
 {
     return sm_bTerrainMoving;
 }
 
 Vector2&
-Skeleton::GetPosition()
+Spider::GetPosition()
 {
     return m_vStandingPos;
 }
 
 void
-Skeleton::SetCharacter(Character& character)
+Spider::SetCharacter(Character& character)
 {
     m_pEntCharacter = &character;
 }
 
 void
-Skeleton::CheckPlayerDist()
+Spider::CheckPlayerDist()
 {
     m_fDistToPlayer = m_vPosition.x - m_pEntCharacter->GetPosition().x;
 
@@ -394,38 +390,38 @@ Skeleton::CheckPlayerDist()
     {
         m_bPlayerInRange = false;
         m_bSpotted = false;
-        m_sAnimations.m_pASprSkelIdle->Animate();
-        m_sAnimations.m_pASprSkelIdle->SetLooping(true);
+        m_sAnimations.m_pASprSpdrSleep->Animate();
+        m_sAnimations.m_pASprSpdrSleep->SetLooping(true);
     }
 }
 
 int
-Skeleton::GetBodyWidth()
+Spider::GetBodyWidth()
 {
     return (int)(m_fHitBoxRange * 2);
 }
 
 void
-Skeleton::ShiftX(float amount)
+Spider::ShiftX(float amount)
 {
     m_vPosition.x += amount;
     m_vStandingPos.x += amount;
 }
 
 void
-Skeleton::SetNumSegments(int amount)
+Spider::SetNumSegments(int amount)
 {
     m_iNumSegments = amount;
 }
 
 void
-Skeleton::SetNumWalkableSegs(int amount)
+Spider::SetNumWalkableSegs(int amount)
 {
     m_iNumWalkableSegs = amount;
 }
 
 void
-Skeleton::ComputeBounds(float width, float height)
+Spider::ComputeBounds(float width, float height)
 {
     // Set boundaries
     m_vBoundaryLow.x = (m_pSprSpriteBody->GetWidth() / 2.0f);
@@ -436,7 +432,7 @@ Skeleton::ComputeBounds(float width, float height)
 }
 
 //void
-//Skeleton::DebugDraw()
+//Spider::DebugDraw()
 //{
 //
 //}

@@ -383,7 +383,7 @@ Golem::SetBodySprites(Renderer& renderer)
     else
     {
         m_sAnimations.m_pASprGolemSlash->SetupFrames(391, 391);
-        m_sAnimations.m_pASprGolemSlash->SetFrameDuration(0.15f);
+        m_sAnimations.m_pASprGolemSlash->SetFrameDuration(0.15f);   
     }
 
     m_sAnimations.m_pASprGolemJump = renderer.CreateAnimatedSprite("Sprites\\golem\\anim8golemjump.png");

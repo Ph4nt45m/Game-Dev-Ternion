@@ -14,7 +14,7 @@ class Renderer;
 class Sprite; // Changes made by Karl
 class Character;
 class scene;
-class Skeleton;
+class Spider;
 
 class Game
 {
@@ -77,6 +77,6 @@ private: // Changes made by Karl
 	Sprite* m_sprCursorBodySprite;
 	Sprite* m_sprCursorBorderSprite;
 	int m_iMouseState;
-	Skeleton* skeleton;
+	Spider* spider;
 };
 #endif // __GAME_H_

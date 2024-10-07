@@ -15,7 +15,7 @@
 #include "animatedsprite.h"
 #include "forestscene.h"
 #include "vector2.h"
-#include "skeleton.h"
+#include "spider.h"
 
 // Library includes:
 #include <windows.h>
@@ -55,7 +55,7 @@ Game::Game()
 	, m_pInputSystem(0)
 	, m_iMouseState(0)
 	, m_bLooping(true)
-	, skeleton(0)
+	, spider(0)
 {
 
 }
@@ -74,8 +74,8 @@ Game::~Game()
 	delete m_pEntCharacter;
 	m_pEntCharacter = 0;
 
-	delete skeleton;
-	skeleton = 0;
+	delete spider;
+	spider = 0;
 }
 
 void Game::Quit()
@@ -138,17 +138,17 @@ bool Game::Initialise()
 	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 
-	skeleton = new Skeleton();
+	/*spider = new Spider();
 
-	if (!skeleton->Initialise(*m_pRenderer))
+	if (!spider->Initialise(*m_pRenderer))
 	{
 		LogManager::GetInstance().Log("Mushroom failed to initialise!");
 		return false;
 	}
 	else
 	{
-		skeleton->SetCharacter(*m_pEntCharacter);
-	}
+		spider->SetCharacter(*m_pEntCharacter);
+	}*/
 
 	return true;
 }
@@ -223,7 +223,7 @@ Game::Process(float deltaTime)
 		}
 	}
 
-	skeleton->Process(deltaTime, *m_pInputSystem);
+	//spider->Process(deltaTime, *m_pInputSystem);
 }
 
 void
@@ -249,7 +249,7 @@ Game::Draw(Renderer& renderer)
 		m_sprCursorBodySprite->Draw(renderer, false, false);
 	}
 
-	skeleton->Draw(renderer);
+	//spider->Draw(renderer);
 
 	DebugDraw();
 

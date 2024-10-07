@@ -1,5 +1,5 @@
-#ifndef SKELETON_H
-#define SKELETON_H
+#ifndef SPIDER_H
+#define SPIDER_H
 
 // Local includes:
 #include "entity.h"
@@ -15,18 +15,18 @@ class Character;
 
 // Golem animations:
 typedef struct {
-    AnimatedSprite* m_pASprSkelIdle;
-    AnimatedSprite* m_pASprSkelWalk;
-    AnimatedSprite* m_pASprSkelAttack;
+    AnimatedSprite* m_pASprSpdrSleep;
+    AnimatedSprite* m_pASprSpdrWalk;
+    AnimatedSprite* m_pASprSpdrAttack;
 } Animations;
 
 // Class declaration:
-class Skeleton : public Enemy
+class Spider : public Enemy
 {
     // Member methods:
 public:
-    Skeleton();
-    ~Skeleton();
+    Spider();
+    ~Spider();
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;
@@ -55,8 +55,8 @@ protected:
     void ComputeBounds(float width, float height);
 
 private:
-    Skeleton(const Skeleton& skeleton);
-    Skeleton& operator=(const Skeleton& skeleton);
+    Spider(const Spider& spider);
+    Spider& operator=(const Spider& spider);
 
     // Member data:
 protected:
@@ -83,6 +83,6 @@ private:
 
 };
 
-#endif // !SKELETON_H
+#endif // !SPIDER_H
 
 
