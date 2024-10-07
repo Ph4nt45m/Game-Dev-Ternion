@@ -193,7 +193,7 @@ const float SCALE = 30.0f;
 	ground->SetSprite(renderer, GROUND, worldWidth * SCALE, terrainHeight * SCALE);
 	printf("Im here\n");
 
-	platform = new Terrain(m_pWorld, 1000.0f/ SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
+	platform = new Terrain(m_pWorld, 40000.0/SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
 	m_terrainSegments.push_back(platform);  // Another platform
 	platform->SetSprite(renderer, PLATFORM, terrainWidth * SCALE, terrainHeight*SCALE);
 	
