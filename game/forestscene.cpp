@@ -171,10 +171,10 @@ ForestScene::Initialise(Renderer& renderer)
 
 //Made by Rauen
 	  // Define some terrain segments at different positions and sizes
-b2Vec2 gravity{ 0.0f, 1.0f };
+	Game::GetInstance().SetGravity(0.0f, 1.0f);
+	m_pWorld->SetGravity(Game::GetInstance().GetGravity());
 
-m_pWorld->SetGravity(gravity);
-const float SCALE = 30.0f;
+	const float SCALE = 30.0f;
 	float terrainWidth = 300.0f / SCALE;  // Convert pixel width to meters
 	float terrainHeight = 200.0f / SCALE;  // Convert pixel height to meters
 	float wallWidth = 10.0f / SCALE;  // Thin wall, converted to meters
@@ -188,14 +188,13 @@ const float SCALE = 30.0f;
 	float groundY = (windowHeight - terrainHeight) / SCALE;  // Convert to meters
 
 	// Create the ground object, converting width/height to meters
-	ground = new Terrain(m_pWorld, 0.0f, groundY + 1.0, worldWidth, terrainHeight);
+	ground = new Terrain(m_pWorld, 0.0f, groundY, worldWidth, terrainHeight);
 	m_terrainSegments.push_back(ground);  // Ground
 	ground->SetSprite(renderer, GROUND, worldWidth * SCALE, terrainHeight * SCALE);
-	printf("Im here\n");
 
-	platform = new Terrain(m_pWorld, 40000.0/SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
+	platform = new Terrain(m_pWorld, 1200.0/SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
 	m_terrainSegments.push_back(platform);  // Another platform
-	platform->SetSprite(renderer, PLATFORM, terrainWidth * SCALE, terrainHeight*SCALE);
+	platform->SetSprite(renderer, PLATFORM, terrainWidth * SCALE, terrainHeight * SCALE);
 	
 	// Add a left wall
 	leftWall = new Terrain(m_pWorld, 0.0f, groundY, wallWidth, wallHeight);
@@ -231,10 +230,9 @@ ForestScene::Draw(Renderer& renderer)
 	m_pCharacter->DrawWithCam(renderer, camera);
 	//printf("Char: %f\n", m_pCharacter->GetPosition().x);
 
-	ground->Draw(renderer);
-	platform->Draw(renderer);
-	leftWall->Draw(renderer);
-	rightWall->Draw(renderer);
+	for (auto* terrain : m_terrainSegments) {
+		terrain->Draw(renderer, camera);  // Pass the camera object to adjust positions based on the camera's position
+	}
 
 	//m_pGolem->Draw(renderer);
 }

@@ -90,6 +90,7 @@ private:
     float m_fLegBodyOffset;
     float m_fStepTimer;
     float m_fStepDuration;
+    float m_jumpTimer;
 };
 
 #endif // !CHARACTER_H

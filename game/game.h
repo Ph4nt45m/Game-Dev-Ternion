@@ -32,6 +32,9 @@ public:
 	bool DoGameLoop();
 	void Quit();
 
+	b2Vec2 GetGravity();
+	void SetGravity(float x, float y);
+
 	Character* GetCharacter() const;
 	b2World* GetWorld() const;
 
@@ -57,6 +60,7 @@ public:
 	//Box2D
 	
 	b2World* world;
+	b2Vec2 m_gravity;
 
 	//Box2D stuff
 
