@@ -164,6 +164,7 @@
     <ClCompile Include="logmanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix4.cpp" />
+    <ClCompile Include="mushroom.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="projectile.cpp" />
     <ClCompile Include="renderer.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="scenebouncingballs.cpp" />
     <ClCompile Include="scenecheckerboards.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="skeleton.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="texturemanager.cpp" />
@@ -201,6 +203,7 @@
     <ClInclude Include="inputsystem.h" />
     <ClInclude Include="logmanager.h" />
     <ClInclude Include="matrix4.h" />
+    <ClInclude Include="mushroom.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="renderer.h" />
@@ -208,6 +211,7 @@
     <ClInclude Include="scenebouncingballs.h" />
     <ClInclude Include="scenecheckerboards.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="skeleton.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="texturemanager.h" />

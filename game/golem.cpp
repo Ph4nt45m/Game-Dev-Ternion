@@ -106,7 +106,7 @@ Golem::Initialise(Renderer& renderer)
         m_pEntProjectile->SetTimeToTarget(1.5f);
     }
 
-    return true;
+	return true;
 }
 
 void
@@ -124,7 +124,7 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         {
             Action();
         }
-
+        
         if (m_bWalk)
         {
             Move(m_iAttackType);
@@ -133,7 +133,7 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
             {
                 m_sAnimations.m_pASprGolemWalk->Animate();
                 m_sAnimations.m_pASprGolemWalk->SetLooping(true);
-            }
+            }        
         }
         else
         {
@@ -230,7 +230,7 @@ Golem::Draw(Renderer& renderer)
                     {
                         m_bSlam = false;
                         m_bIsAnimating = false;
-
+                        
                         if (m_fDistToPlayer < m_fSlamRangeMax)
                         {
                             m_iAttackType = 0;
@@ -257,7 +257,7 @@ Golem::Draw(Renderer& renderer)
                     m_bShoot = false;
                     m_bProjectile = false;
                     m_bIsAnimating = false;
-
+                    
                     if (m_fDistToPlayer < m_fSlashRangeMax)
                     {
                         m_iAttackType = 0;

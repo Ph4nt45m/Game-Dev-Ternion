@@ -279,7 +279,7 @@ Character::Draw(Renderer& renderer)
 {
     if (m_bAlive)
     {
-        //m_pSprSpriteShadow->Draw(renderer, false, false); // For future updates
+        m_pSprSpriteShadow->Draw(renderer, false, false);
         m_pSprSpriteLegLeft->Draw(renderer, false, false);
         m_pSprSpriteLegRight->Draw(renderer, false, false);
 
