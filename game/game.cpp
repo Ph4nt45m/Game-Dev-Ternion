@@ -93,7 +93,7 @@ bool Game::Initialise()
 	int bbWidth = 1550; // 1550 originally
 	int bbHeight = 800; // 800 originally
 
-	b2Vec2 gravity{ 0.0f, 0.0f };
+	b2Vec2 gravity{ 0.0f, 1.0f };
 	world = new b2World{ gravity };
 
 	world->SetContactListener(&m_contactListener);

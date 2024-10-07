@@ -191,14 +191,14 @@ ForestScene::Initialise(Renderer& renderer)
 	platform->SetSprite(renderer, PLATFORM, terrainWidth * SCALE, terrainHeight*SCALE);
 	
 	// Add a left wall
-	leftWall = new Terrain(m_pWorld, -wallWidth, groundY, wallWidth, wallHeight);
+	leftWall = new Terrain(m_pWorld, 0.0f, groundY, wallWidth, wallHeight);
 	m_terrainSegments.push_back(leftWall);  // Left boundary
-	leftWall->SetSprite(renderer, LEFT_WALL, wallWidth, wallHeight);
+	leftWall->SetSprite(renderer, LEFT_WALL, wallWidth * SCALE, wallHeight * SCALE);
 	
 	// Add a right wall 
-	rightWall = new Terrain(m_pWorld, worldWidth + wallWidth, groundY, wallWidth, wallHeight);
+	rightWall = new Terrain(m_pWorld, worldWidth, groundY, wallWidth, wallHeight);
 	m_terrainSegments.push_back(rightWall);  // Right boundary
-	rightWall->SetSprite(renderer, RIGHT_WALL, wallWidth, wallHeight);
+	rightWall->SetSprite(renderer, RIGHT_WALL, wallWidth * SCALE, wallHeight * SCALE);
 
 	//m_terrainSegments.push_back(new Terrain(m_pWorld, 450.0f, 450.0f, terrainWidth, terrainHeight));  // Elevated platform
 

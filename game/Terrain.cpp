@@ -17,7 +17,7 @@ Terrain::Terrain(b2World* world, float x, float y, float width, float height)
 
     // Define the shape (box) of the terrain
     b2PolygonShape boxShape;
-    boxShape.SetAsBox(width/2, height/2);
+    boxShape.SetAsBox(width/2.0f, height/2.0f);
 
     // Create a fixture for the body (attaches the shape)
     b2FixtureDef fixtureDef;

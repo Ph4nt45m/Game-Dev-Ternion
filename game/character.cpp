@@ -337,20 +337,17 @@ void Character::HandleInput(float deltaTime, InputSystem& inputSystem)
     if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED) {
         if (!m_bJumping) {
             // First jump
-            velocity.y = -1.0f;  // Apply upward force
+            velocity.y = -5.0f;  // Apply upward force
             m_bJumping = true;        // Character is now jumping
         }
         else if (m_bJumping && !m_bDoubleJump) {
             // Double jump
-            velocity.y = -1.0f;  // Apply upward force
+            velocity.y = -5.0f;  // Apply upward force
             m_bDoubleJump = true;     // Double jump has been used
         }
     }
-
-
+    
     m_pBody->SetLinearVelocity(velocity);
-
-   
 
     // Get the body's position in Box2D
     b2Vec2 bodyPos = m_pBody->GetPosition();
