@@ -152,6 +152,7 @@
     <ClCompile Include="..\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
     <ClCompile Include="animatedsprite.cpp" />
+    <ClCompile Include="armour.cpp" />
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="character.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="..\imgui\imstb_textedit.h" />
     <ClInclude Include="..\imgui\imstb_truetype.h" />
     <ClInclude Include="animatedsprite.h" />
+    <ClInclude Include="armour.h" />
     <ClInclude Include="ball.h" />
     <ClInclude Include="button.h" />
     <ClInclude Include="character.h" />
