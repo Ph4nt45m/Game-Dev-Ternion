@@ -9,7 +9,7 @@
 // Library includes:
 
 Armour::Armour()
-	: m_fHealthModifier(0)
+	: m_fHealthModifier(0), m_fSpeedModifier(0)
 {
 
 }
@@ -32,4 +32,9 @@ void Armour::Draw(Renderer& renderer)
 float Armour::GetHealthModifier() const
 {
 	return m_fHealthModifier;
+}
+
+float Armour::GetSpeedModifier() const
+{
+	return m_fSpeedModifier;
 }

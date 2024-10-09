@@ -19,6 +19,7 @@ public:
 	void Process(float deltaTime);
 	void Draw(Renderer& renderer);
 	float GetHealthModifier() const;
+	float GetSpeedModifier() const;
 protected:
 
 private:
@@ -31,6 +32,7 @@ protected:
 private:
 	Sprite* m_pArmourSprite;
 	float m_fHealthModifier;
+	float m_fSpeedModifier;
 };
 
 #endif // !ARMOUR_H
