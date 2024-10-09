@@ -10,6 +10,8 @@
 
 // Scenes
 #include "forestscene.h"
+#include "AUTSplashScene.h"
+#include "TernionMenu.h"
 
 // includes
 #include <cassert>
@@ -123,17 +125,27 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 
 	switch (sceneID)
 	{
-	case 0:
-		newScene = new ForestScene();
+	case 0://AUT Splash Scene
+		m_pRenderer->SetClearColour(0, 0, 0);
+		newScene = new SplashScene();
 		break;
-	case 1:
-//		newScene = new menuScene();
+	case 1://Ternion Menu Scene
+		newScene = new MenuScene();
+		break;
+	case 2://Character select Scene
+		break;
+	case 3://Foreset Scene(Dev Test Level)
+		m_pRenderer->SetClearColour(255, 255, 255);
+		newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
+		break;
+	case 4://Foreset Scene(first level)
+		m_pRenderer->SetClearColour(255, 255, 255);
+		newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
 		break;
 	default:
 		// Handle invalid scene ID
 		return nullptr;
 	}
-
 
 	// Initialize the scene
 	if (newScene && !newScene->Initialise(*m_pRenderer))
@@ -142,8 +154,6 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 		delete newScene;
 		return nullptr;
 	}
-	//Set one character for the scene
-	newScene->SetCharacter(*Game::GetInstance().GetCharacter(), *m_pRenderer);
 
 	return newScene;
 }

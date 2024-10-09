@@ -56,7 +56,6 @@ public:
 	virtual bool SetBodySprites(Renderer& renderer) = 0;
 	virtual void SetNumSegments(int amount) = 0;
 	virtual void GetInputs(InputSystem& inputSystem) = 0;
-	virtual void HandleInput(float deltaTime) = 0;
 	virtual void SetTerrainMoving(bool moving) = 0;
 	virtual bool IsTerrainMoving() = 0;
 

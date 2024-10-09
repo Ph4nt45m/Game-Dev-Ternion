@@ -5,9 +5,13 @@
 #include "scene.h"
 #include "vector2.h"
 #include "inputsystem.h"
+#include "MyContactListener.h"
 
 // Library includes:
 #include <vector>
+
+//box2D
+#include <Box2D.h>
 
 // Forward declarations:
 class Renderer;
@@ -29,6 +33,7 @@ public:
 	void Quit();
 
 	Character* GetCharacter() const;
+	b2World* GetWorld() const;
 
 protected:
 	void Process(float deltaTime);
@@ -45,8 +50,15 @@ private:
 	Game(const Game& game);
 	Game& operator=(const Game& game);
 
+
+
 	// Member data:
 public:
+	//Box2D
+	
+	b2World* world;
+
+	//Box2D stuff
 
 protected:
 	static Game* sm_pInstance;
@@ -80,5 +92,7 @@ private:
 	Sprite* m_sprCursorBodySprite;
 	Sprite* m_sprCursorBorderSprite;
 	int m_iMouseState;
+
+	MyContactListener m_contactListener;
 };
 #endif // __GAME_H_

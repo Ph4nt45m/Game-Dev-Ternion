@@ -11,12 +11,16 @@
 #include "projectile.h"
 #include "healthbar.h"
 #include "game.h"
+#include "MyContactListener.h"
 
 // Library includes:
 #include <cassert>
 #include <cstdio>
 
-Character::Character()
+//Box2D world
+#define SCALE 30.0f
+
+Character::Character(b2World* world)
     : m_pSprSpriteHead(0)
     , m_pSprSpriteLegLeft(0)
     , m_pSprSpriteLegRight(0)
@@ -33,6 +37,8 @@ Character::Character()
     , m_fLegBodyOffset(0.0f)
     , m_fStepTimer(0.0f)
     , m_fStepDuration(0.0f)
+    , m_pWorld(world)
+    , m_pBody(nullptr)
 {
 
 }
@@ -65,10 +71,11 @@ Character::~Character()
 
     delete m_pHealthbar;
     m_pHealthbar = 0;
+
+    m_pWorld->DestroyBody(m_pBody);
 }
 
-bool
-Character::Initialise(Renderer& renderer)
+bool Character::Initialise(Renderer& renderer)
 {
     if (!SetBodySprites(renderer))
     {
@@ -78,39 +85,22 @@ Character::Initialise(Renderer& renderer)
 
     m_iFacingDirection = 1;
     m_fScale = 1.0f;
-    m_fScaleChangeRate = 0.125f;
-    m_fScaleMin = 0.92f;
-    m_fScaleMax = 1.08f;
-    m_fHeadBodyOffset = 14.0f;
-    m_fLegBodyOffset = 15.0f;
-    m_fStepTimer = 0.0f;
-    m_fStepDuration = 0.5f;
     m_iWeaponType = 1;
     m_bAlive = true;
 
     Entity::SetWindowBoundaries(renderer);
 
-    m_vPosition.x = sm_fBoundaryWidth / 5.0f;
-    m_vPosition.y = ((sm_fBoundaryHeight / 7.0f) * 5.0f);
-
-    m_fLengthFootToBody = ((float)m_pSprSpriteLegLeft->GetHeight() + 1.0f) / 2.0f;
-
-    m_vFeetPos.x = sm_fBoundaryWidth / 5.0f;
-    m_vFeetPos.y = (((sm_fBoundaryHeight / 7.0f) * 5.0f) + ((float)m_pSprSpriteBody->GetHeight() / 2.0f) +
-        m_fLengthFootToBody);
-
-    m_vStandingPos.x = sm_fBoundaryWidth / 5.0f;
-    m_vStandingPos.y = (((sm_fBoundaryHeight / 7.0f) * 5.0f) + ((float)m_pSprSpriteBody->GetHeight() / 2.0f) +
-        m_fLengthFootToBody);
+    m_vPosition.x = 50.0f;  // Position in pixels
+    m_vPosition.y = 500.0f; // Position in pixels
 
     ComputeBounds(sm_fBoundaryWidth, sm_fBoundaryHeight);
 
+    // Weapon initialization based on type
     switch (m_iWeaponType)
     {
-    case 0:// Changes made by Karl - Start
+    case 0:
         m_pSprWeapon = renderer.CreateSprite("Sprites\\weaponsstatic\\sword.png");
         m_pASprWeapAttack = renderer.CreateAnimatedSprite("Sprites\\weaponsanim8\\anim8sword.png");
-
         if (m_pSprWeapon && m_pASprWeapAttack)
         {
             m_pASprWeapAttack->SetupFrames(213, 150);
@@ -121,13 +111,11 @@ Character::Initialise(Renderer& renderer)
             LogManager::GetInstance().Log("Sword Weapon failed to initialise!");
             return false;
         }
-
         break;
     case 1:
         m_pSprWeapon = renderer.CreateSprite("Sprites\\weaponsstatic\\bow.png");
         m_pASprWeapAttack = renderer.CreateAnimatedSprite("Sprites\\weaponsanim8\\anim8bow.png");
         m_pEntArrow = new Projectile();
-
         if (m_pSprWeapon && m_pASprWeapAttack)
         {
             m_pASprWeapAttack->SetupFrames(161, 119);
@@ -139,7 +127,7 @@ Character::Initialise(Renderer& renderer)
             return false;
         }
 
-        if (!(m_pEntArrow->Initialise(renderer)))
+        if (!m_pEntArrow->Initialise(renderer))
         {
             LogManager::GetInstance().Log("Projectile Arrow failed to initialise!");
             return false;
@@ -149,12 +137,10 @@ Character::Initialise(Renderer& renderer)
             m_pEntArrow->SetProjectileSprite(renderer, "Sprites\\characterprojectile\\arrow.png");
             m_pEntArrow->SetGroundY(sm_fBoundaryHeight);
         }
-
         break;
     case 2:
         m_pSprWeapon = renderer.CreateSprite("Sprites\\weaponsstatic\\staff.png");
         m_pASprWeapAttack = renderer.CreateAnimatedSprite("Sprites\\weaponsanim8\\anim8staff.png");
-        // Changes made by Karl - End
         if (m_pSprWeapon && m_pASprWeapAttack)
         {
             m_pASprWeapAttack->SetupFrames(67, 119);
@@ -165,24 +151,57 @@ Character::Initialise(Renderer& renderer)
             LogManager::GetInstance().Log("Staff Weapon failed to initialise!");
             return false;
         }
-
         break;
     }
 
-    // Initialise healthbar
+    // Initialize healthbar
     m_pHealthbar = new Healthbar(renderer);
+
+    // Box2D Body Initialization (Changes made by Rauen)
+
+    // Create the Box2D body definition
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(m_vPosition.x / SCALE, m_vPosition.y / SCALE);  // Convert from pixels to meters
+
+    // Create the Box2D body in the world
+    m_pBody = m_pWorld->CreateBody(&bodyDef);
+
+    // Define the character's shape as a box (in meters)
+    b2PolygonShape characterBox;
+    float boxWidth = (m_pSprSpriteBody->GetWidth() /2.0f) / SCALE;   // Convert pixel width to meters (half-width for Box2D)
+    float boxHeight = (m_pSprSpriteBody->GetHeight()/2.0f)/ SCALE; // Convert pixel height to meters (half-height for Box2D)
+    characterBox.SetAsBox(boxWidth, boxHeight);
+
+    // Create a fixture for the body (set density, friction, etc.)
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &characterBox;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
+
+    // Attach the fixture to the body
+    m_pBody->CreateFixture(&fixtureDef);
+
+    // Set user data for collision detection
+    m_pBody->SetUserData((void*)PLAYER);
 
     return true;
 }
 
-void
-Character::Process(float deltaTime, InputSystem& inputSystem)
+void Character::Process(float deltaTime, InputSystem& inputSystem)
 {
-    m_vCursor.SetPosition(inputSystem.GetMousePosition());
-    GetInputs(inputSystem);
-    HandleInput(deltaTime);
+    // Handle user input for movement
+    HandleInput(deltaTime, inputSystem);
 
-    // Sets facing orientation
+    // Get the current Box2D body position (in meters) and convert it back to pixels for rendering
+    b2Vec2 bodyPosition = m_pBody->GetPosition();
+
+    // Update the character's position in pixels (scaling from meters)
+    m_vPosition.x = bodyPosition.x * SCALE;
+    m_vPosition.y = bodyPosition.y * SCALE;
+
+    // Set facing orientation based on mouse cursor position
+    m_vCursor.SetPosition(inputSystem.GetMousePosition());
     if (m_vPosition.x < m_vCursor.x)
     {
         m_iFacingDirection = 1;
@@ -194,142 +213,57 @@ Character::Process(float deltaTime, InputSystem& inputSystem)
         m_bFlipHorizontally = true;
     }
 
-    // Calculates angle of aim
-    m_vRelative.x = m_vCursor.x - m_vPosition.x;
-    m_vRelative.y = m_vCursor.y - m_vPosition.y;
-    m_fAngleOfAttack = -(float)atan2(m_vRelative.y, m_vRelative.x) * 180.0f / PI;
-
-    if (m_fAngleOfAttack < 0)
-    {
-        m_fAngleOfAttack += 360.0f;
-    }
-
-    if (m_iFacingDirection < 0)
-    {
-        m_fAngleOfAttack += 180.0f;
-    }
-
-    // Checks for boundary collisions
-    if (m_vStandingPos.x > (m_vBoundaryHigh.x))
-    {
-        m_vPosition.x = m_vBoundaryHigh.x - 0.1f;
-        m_velocityBody.x = 0.0f;
-        m_vFeetPos.x = m_vBoundaryHigh.x - 0.1f;
-        m_vStandingPos.x = m_vBoundaryHigh.x - 0.1f;
-        m_velocityPos.x = 0.0f;
-    }
-    else if (m_vStandingPos.x < (m_vBoundaryLow.x))
-    {
-        m_vPosition.x = m_vBoundaryLow.x + 0.1f;
-        m_velocityBody.x = 0.0f;
-        m_vFeetPos.x = m_vBoundaryLow.x + 0.1f;
-        m_vStandingPos.x = m_vBoundaryLow.x + 0.1f;
-        m_velocityPos.x = 0.0f;
-    }
-
-    if (m_vStandingPos.y > (m_vBoundaryHigh.y))
-    {
-        m_velocityBody.y = 0.0f;
-        m_vStandingPos.y = m_vBoundaryHigh.y;
-        m_velocityPos.y = 0.0f;
-    }
-    else if (m_vStandingPos.y < (m_vBoundaryLow.y))
-    {
-        m_velocityBody.y = 0.0f;
-        m_vStandingPos.y = m_vBoundaryLow.y;
-        m_velocityPos.y = 0.0f;
-    }
-
-    m_vPosition += (m_velocityBody + m_velocityJump) * deltaTime;
-    m_vFeetPos += (m_velocityBody + m_velocityJump) * deltaTime;
-    m_vStandingPos += m_velocityPos * deltaTime;
-
-    // Update position of character's parts
+    // Set the sprite's position to match the Box2D body position
     m_pSprSpriteBody->SetX((int)m_vPosition.x);
     m_pSprSpriteBody->SetY((int)m_vPosition.y);
 
-    m_pSprSpriteHead->SetX((int)m_vPosition.x);
-    m_pSprSpriteHead->SetY((int)m_vPosition.y - (int)(m_pSprSpriteBody->GetHeight() / 2.0f) - (int)m_fHeadBodyOffset);
-
-    // For future updates
-    m_pSprSpriteShadow->SetX((int)m_vStandingPos.x);
-    m_pSprSpriteShadow->SetY((int)m_vStandingPos.y);
-
-    // Update position of weapon
-    m_pSprWeapon->SetX((int)m_vPosition.x);
-    m_pSprWeapon->SetY((int)m_vPosition.y - 15);
-    m_pASprWeapAttack->SetX((int)m_vPosition.x);
-    m_pASprWeapAttack->SetY((int)m_vPosition.y - 15);
-
-    // Update angle of aim of attack
-    m_pSprWeapon->SetAngle(m_fAngleOfAttack);
-    m_pASprWeapAttack->SetAngle(m_fAngleOfAttack);
-
-    // Update scale of character based on distance from camera
+    // Scale the sprite based on camera distance or other factors (you can adjust the scaling factor)
     m_pSprSpriteBody->SetScale(m_fScale);
-    m_pSprSpriteHead->SetScale(m_fScale);
-    m_pSprSpriteLegLeft->SetScale(m_fScale);
-    m_pSprSpriteLegRight->SetScale(m_fScale);
-    m_pSprSpriteShadow->SetScale(m_fScale);
-    m_pSprWeapon->SetScale(m_fScale);
-    m_pASprWeapAttack->SetScale(m_fScale);
 
-    HandleLegs(deltaTime);
-    m_pASprWeapAttack->Process(deltaTime);
-
-    if (m_iWeaponType == 1)
-    {
-        m_pEntArrow->Process(deltaTime, inputSystem);
-    }
-
-    // Process healthbar
+    // Process health bar updates (ensure health bar reflects player's current status)
     if (m_pHealthbar)
     {
         m_pHealthbar->Process(deltaTime, inputSystem);
     }
 
+
 }
 
-void
-Character::Draw(Renderer& renderer)
+void Character::DrawWithCam(Renderer& renderer, Camera& camera)
 {
-    m_bAlive = m_pHealthbar->Living();
-    if (m_bAlive)
-    {
-        //m_pSprSpriteShadow->Draw(renderer, false, false); // For future updates
-        m_pSprSpriteLegLeft->Draw(renderer, false, false);
-        m_pSprSpriteLegRight->Draw(renderer, false, false);
+    // Get the camera offset
+    Vector2* cameraOffset = camera.GetOffset();
 
-        m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, false);
-        m_pSprSpriteHead->Draw(renderer, m_bFlipHorizontally, false);
+    // Adjust the character position based on the camera offset
+    int adjustedX = m_pSprSpriteBody->GetX() - cameraOffset->x;
 
-        if (m_pASprWeapAttack->IsAnimating())
-        {
-            m_pASprWeapAttack->Draw(renderer, m_bFlipHorizontally, false);
-        }
-        else
-        {
-            m_pSprWeapon->Draw(renderer, m_bFlipHorizontally, true);
-            m_bShoot = false;
-        }
+    // Update sprite position
+    m_pSprSpriteBody->SetX(adjustedX);
 
-        if (m_iWeaponType == 1)
-        {
-            m_pEntArrow->Draw(renderer);
-        }
-    }
-    else
-    {
-        Game::GetInstance().Quit();
-    }
+    // Draw character sprite with adjusted position
+    m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, false);
 
-    // Draw healthbar
+    //// Draw weapon
+    //if (m_pASprWeapAttack->IsAnimating())
+    //{
+    //    m_pASprWeapAttack->SetX(adjustedX);
+    //    m_pASprWeapAttack->SetY(adjustedY - 15);
+    //    m_pASprWeapAttack->Draw(renderer, m_bFlipHorizontally, false);
+    //}
+    //else
+    //{
+    //    m_pSprWeapon->SetX(adjustedX);
+    //    m_pSprWeapon->SetY(adjustedY - 15);
+    //    m_pSprWeapon->Draw(renderer, m_bFlipHorizontally, true);
+    //}
+
+    // If the character has a health bar, draw it adjusted as well
     if (m_pHealthbar)
     {
         m_pHealthbar->Draw(renderer);
     }
-
 }
+
 
 void
 Character::GetInputs(InputSystem& inputSystem)
@@ -383,179 +317,52 @@ Character::GetInputs(InputSystem& inputSystem)
     }
 }
 
-void
-Character::HandleInput(float deltaTime)
+
+void Character::HandleInput(float deltaTime, InputSystem& inputSystem)
 {
-    // Check for jump input
-    if (m_sKeyboardMotions.Heave > 0)
-    {
-        if (!m_bJumping && !m_bDoubleJump)
-        {
-            // Start jump
-            if (!m_bJumping)
-            {
-                m_bJumping = true;
-            }
+    b2Vec2 velocity = m_pBody->GetLinearVelocity();
 
-            m_bMovingX = false;
-            m_bMovingY = false;
-            //m_vFeetPos.y -= 1.0f;
-            m_velocityJump.y = -320.0f;
-            m_sKeyboardMotions.Heave = MOTION_DECENT;
-        }
-        else if (m_bJumping && !m_bDoubleJump)
-        {
-            // Start double jump
-            m_bDoubleJump = true;
-            m_velocityJump.y = -320.0f;
-            m_sKeyboardMotions.Heave = MOTION_DECENT;
-        }
-        else
-        {
-            m_sKeyboardMotions.Heave = MOTION_DECENT;
-        }
-        //else if (m_bJumping)
-        //{
-        //    // Start decent
-        //    if (m_velocityJump.y >= 0.0f)
-        //    {
-        //        m_sKeyboardMotions.Heave = MOTION_DECENT;
-        //        return;
-        //    }
-
-        //    m_velocityJump.y += 500.0f * deltaTime;
-        //}
+    // Move right when pressing D
+    if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD) {
+        velocity.x = 1.0f;  // Set a fixed speed to move right
     }
-    // Start descent
-    else if (m_sKeyboardMotions.Heave < 0)
-    {
-        // Feet on ground
-        if (m_vFeetPos.y >= m_vStandingPos.y)
-        {
-            m_vPosition.y = m_vStandingPos.y - ((float)m_pSprSpriteBody->GetHeight() / 2.0f) - m_fLengthFootToBody;
-            m_bJumping = false;
-            m_bDoubleJump = false;
-            m_sKeyboardMotions.Heave = MOTION_NONE;
-            m_vFeetPos.y = m_vStandingPos.y;
-            m_velocityJump.y = 0.0f;
-            m_velocityBody.y = 0.0f;
-            return;
-        }
-
-        m_velocityJump.y += 500.0f * deltaTime;
+    else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD) {
+        velocity.x = -1.0f;  // Set a fixed speed to move left
+    }
+    else {
+        velocity.x = 0.0f;  // No horizontal movement
     }
 
-    // Handles main attack
-    if (m_sKeyboardMotions.Attack > 0)
-    {
-        switch (m_iWeaponType)
-        {
-        case 0:
-            m_pASprWeapAttack->Animate();
-            break;
-        case 1:
-            if (!m_pASprWeapAttack->IsAnimating() && !m_pEntArrow->IsAlive())
-            {
-                m_pASprWeapAttack->Animate();
-                m_pEntArrow->SetStartPos(m_vPosition.x, m_vPosition.y);
-                m_pEntArrow->SetTargetPos(m_vCursor.x, m_vCursor.y);
-                m_pEntArrow->Shoot();
-            }
-            break;
-        case 2:
-            m_pASprWeapAttack->Animate();
-            break;
+    // Jumping logic
+    if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED) {
+        if (!m_bJumping) {
+            // First jump
+            velocity.y = -5.0f;  // Apply upward force
+            m_bJumping = true;        // Character is now jumping
+        }
+        else if (m_bJumping && !m_bDoubleJump) {
+            // Double jump
+            velocity.y = -5.0f;  // Apply upward force
+            m_bDoubleJump = true;     // Double jump has been used
         }
     }
+    
+    m_pBody->SetLinearVelocity(velocity);
 
-    // Handles forward and backward motions
-    if (m_sKeyboardMotions.Surge > 0)
-    {
-        if (!sm_bCameraCentered)
-        {
-            m_velocityBody.x = 200.0f;
-            m_velocityPos.x = 200.0f;
-        }
-        else
-        {
-            m_velocityBody.x = 0.0f;
-            m_velocityPos.x = 0.0f;
-        }
-        
-        m_iFacingDirection = 1;
-        m_bMovingX = true;
-    }
-    else if (m_sKeyboardMotions.Surge < 0)
-    {
-        if (!sm_bCameraCentered)
-        {
-            m_velocityBody.x = -200.0f;
-            m_velocityPos.x = -200.0f;
-        }
-        else
-        {
-            m_velocityBody.x = 0.0f;
-            m_velocityPos.x = 0.0f;
-        }
-        
-        m_iFacingDirection = -1;
-        m_bMovingX = true;
-    }
-    else if (m_sKeyboardMotions.Surge == 0)
-    {
-        m_velocityBody.x = 0.0f;
-        m_velocityPos.x = 0.0f;
+    // Get the body's position in Box2D
+    b2Vec2 bodyPos = m_pBody->GetPosition();
 
-        if (!m_bJumping && !m_bDoubleJump)
-        {
-            m_bMovingX = false;
-        }
-    }
+    // Update sprite position based on Box2D body position, applying the scale factor
+    float spriteX = bodyPos.x * SCALE;  // Convert from Box2D meters to pixels
+    float spriteY = bodyPos.y * SCALE;  // Convert from Box2D meters to pixels
 
-    //Handles up and down motions - For future updates
-    if (m_sKeyboardMotions.Sway > 0)
-    {
-        if (m_vStandingPos.y > m_vBoundaryLow.y)
-        {
-            m_velocityBody.y = -200.0f;
-            m_velocityPos.y = -200.0f;
-            m_fScale -= m_fScaleChangeRate * deltaTime;
 
-            if (m_fScale < m_fScaleMin)
-            {
-                m_fScale = m_fScaleMin;
-            }
-        }
+    // Apply the calculated position to the sprite
+    m_pSprSpriteBody->SetX(static_cast<int>(spriteX));
+    m_pSprSpriteBody->SetY(static_cast<int>(spriteY));
 
-        m_bMovingY = true;
-    }
-    else if (m_sKeyboardMotions.Sway < 0)
-    {
-        if (m_vStandingPos.y < m_vBoundaryHigh.y)
-        {
-            m_velocityBody.y = 200.0f;
-            m_velocityPos.y = 200.0f;
-            m_fScale += m_fScaleChangeRate * deltaTime;
-
-            if (m_fScale > m_fScaleMax)
-            {
-                m_fScale = m_fScaleMax;
-            }
-        }
-
-        m_bMovingY = true;
-    }
-    else if (m_sKeyboardMotions.Sway == 0)
-    {
-        m_velocityBody.y = 0.0f;
-        m_velocityPos.y = 0.0f;
-
-        if (!m_bJumping)
-        {
-            m_bMovingY = false;
-        }
-    }
 }
+
 
 bool
 Character::SetBodySprites(Renderer& renderer)
@@ -609,10 +416,10 @@ Character::SetBodySprites(Renderer& renderer)
     return true;
 }
 
-Vector2&
+b2Vec2
 Character::GetPosition()
 {
-    return m_vStandingPos;
+    return m_pBody->GetPosition();
 }
 
 Vector2&
@@ -746,99 +553,8 @@ Character::ComputeBounds(float width, float height)
     m_vBoundaryHigh.x = width - (m_pSprSpriteBody->GetWidth() / 2.0f);
     m_vBoundaryHigh.y = height;
 }
-
-void
-Character::HandleLegs(float deltaTime)
-{
-    // Calculate positions of legs at resting state
-    int restingLeftLegX = (int)m_vPosition.x - (m_pSprSpriteBody->GetWidth() / 5);
-    int restingRightLegX = (int)m_vPosition.x + (m_pSprSpriteBody->GetWidth() / 5);
-    int restingLegY = (int)m_vPosition.y + (m_pSprSpriteBody->GetHeight() / 2);
-
-    if ((!m_bMovingX && !m_bMovingY) || m_bJumping || m_bDoubleJump)
-    {
-        // Set positions of legs at resting state
-        m_pSprSpriteLegLeft->SetX(restingLeftLegX);
-        m_pSprSpriteLegLeft->SetY(restingLegY);
-
-        m_pSprSpriteLegRight->SetX(restingRightLegX);
-        m_pSprSpriteLegRight->SetY(restingLegY);
-
-        // Reset step timer for next moving state
-        m_fStepTimer = 0.0f;
-    }
-    else
-    {
-        // Increments step timer
-        m_fStepTimer += deltaTime;
-
-        // Calculates step progress through step cycle (0.0 to 1.0)
-        float progress = (float)fmod(m_fStepTimer, m_fStepDuration) / m_fStepDuration;
-
-        // Calculate leg movement positions based on cycle progress
-        float halfWidth = (float)m_pSprSpriteBody->GetWidth() / 5.0f;
-        float maxStepHeight = m_fLegBodyOffset;
-
-        if (m_iFacingDirection > 0)
-        {
-            // Clockwise cycle
-            float leftLegX = restingLeftLegX + halfWidth * sinf(progress * PI);
-            float leftLegY = restingLegY - maxStepHeight * sinf(progress * PI);
-
-            float rightLegX = restingRightLegX - 2 * halfWidth * progress;
-            float rightLegY = (float)restingLegY;
-
-            // Swap legs' roles halfway through the step cycle
-            if (progress >= 0.5f)
-            {
-                float tempX = leftLegX;
-                float tempY = leftLegY;
-
-                leftLegX = rightLegX;
-                leftLegY = rightLegY;
-
-                rightLegX = tempX;
-                rightLegY = tempY;
-            }
-
-            // Set new positions for the legs
-            m_pSprSpriteLegLeft->SetX((int)leftLegX);
-            m_pSprSpriteLegLeft->SetY((int)leftLegY);
-
-            m_pSprSpriteLegRight->SetX((int)rightLegX);
-            m_pSprSpriteLegRight->SetY((int)rightLegY);
-        }
-        else if (m_iFacingDirection < 0)
-        {
-            // Anti-clockwise cycle
-            float leftLegX = restingLeftLegX + 2 * halfWidth * progress;
-            float leftLegY = (float)restingLegY;
-
-            float rightLegX = restingRightLegX - halfWidth * sinf(progress * PI);
-            float rightLegY = restingLegY - maxStepHeight * sinf(progress * PI);
-
-            // Swap legs' roles halfway through the step cycle
-            if (progress >= 0.5f)
-            {
-                float tempX = leftLegX;
-                float tempY = leftLegY;
-
-                leftLegX = rightLegX;
-                leftLegY = rightLegY;
-
-                rightLegX = tempX;
-                rightLegY = tempY;
-            }
-
-            // Set new positions for the legs
-            m_pSprSpriteLegLeft->SetX((int)leftLegX);
-            m_pSprSpriteLegLeft->SetY((int)leftLegY);
-
-            m_pSprSpriteLegRight->SetX((int)rightLegX);
-            m_pSprSpriteLegRight->SetY((int)rightLegY);
-        }
-    }
-}
+void Character::Draw(Renderer& renderer)
+{}
 
 //void
 //Character::DebugDraw()

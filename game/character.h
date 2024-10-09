@@ -6,6 +6,10 @@
 #include "vector2.h"
 #include "inputsystem.h"
 #include "healthbar.h"
+#include "Camera.h"
+
+//Box2D
+#include <Box2D.h>
 
 // Forward declarations:
 class Renderer;
@@ -14,25 +18,27 @@ class Sprite;
 class AnimatedSprite;
 class Projectile;
 class Game;
+
 // Class declaration:
 class Character : public Entity
 {
     // Member methods:
 public:
-    Character();
+    Character(b2World* world);
     ~Character();
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;
+    void DrawWithCam(Renderer& renderer, Camera& camera);
     void Draw(Renderer& renderer) override;
     bool SetBodySprites(Renderer& renderer) override;
     void SetNumSegments(int amount) override;
     void GetInputs(InputSystem& inputSystem) override;
-    void HandleInput(float deltaTime) override;
+    void HandleInput(float deltaTime, InputSystem& inputSystem);
     void SetTerrainMoving(bool moving) override;
     bool IsTerrainMoving() override;
 
-    Vector2& GetPosition();
+    b2Vec2 GetPosition();
     Vector2& GetFeetPos();
     Vector2& GetVelocityBody();
     int GetWeapontype();
@@ -52,7 +58,6 @@ public:
 
 protected:
     void ComputeBounds(float width, float height);
-    void HandleLegs(float deltaTime);
 
 private:
     Character(const Character& character);
@@ -73,6 +78,10 @@ protected:
     int m_iWeaponType;
     float m_fAngleOfAttack;
     bool m_bDoubleJump;
+
+    //Box2D verables
+    b2Body* m_pBody;
+    b2World* m_pWorld;
 
 
 private:
