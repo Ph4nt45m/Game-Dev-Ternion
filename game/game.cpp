@@ -159,6 +159,10 @@ bool Game::Initialise()
 		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
 	}
 
+	// Change made by: Ethan
+	// Initialise Inventory
+	m_pInventory = new Inventory(*m_pRenderer);
+
 	return true;
 }
 
@@ -246,6 +250,10 @@ Game::Process(float deltaTime)
 		}
 	}
 
+	// Change made by: Ethan
+	// Process Inventory
+	m_pInventory->Process(deltaTime, *m_pInputSystem);
+
 }
 
 void
@@ -273,6 +281,10 @@ Game::Draw(Renderer& renderer)
 	{
 		m_sprCursorBodySprite->Draw(renderer, false, false);
 	}
+
+	// Change made by: Ethan
+	// Draw Inventory
+	m_pInventory->Draw(renderer);
 
 	DebugDraw();
 

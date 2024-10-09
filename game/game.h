@@ -6,6 +6,8 @@
 #include "vector2.h"
 #include "inputsystem.h"
 #include "MyContactListener.h"
+// Change made by: Ethan
+#include "inventory.h"
 
 // Library includes:
 #include <vector>
@@ -78,6 +80,9 @@ protected:
 	Vector2 m_pCursor;
 	Scene* m_pScForestScene;
 	Character* m_pEntCharacter;
+
+	// Change made by: Ethan
+	Inventory* m_pInventory;
 
 #ifdef USE_LAG
 	float m_fLag;

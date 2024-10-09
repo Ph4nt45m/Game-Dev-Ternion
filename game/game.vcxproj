@@ -168,6 +168,8 @@
     <ClCompile Include="golem.cpp" />
     <ClCompile Include="healthbar.cpp" />
     <ClCompile Include="inputsystem.cpp" />
+    <ClCompile Include="inventory.cpp" />
+    <ClCompile Include="InventoryButton.cpp" />
     <ClCompile Include="logmanager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix4.cpp" />
@@ -213,6 +215,8 @@
     <ClInclude Include="healthbar.h" />
     <ClInclude Include="inlinehelpers.h" />
     <ClInclude Include="inputsystem.h" />
+    <ClInclude Include="inventory.h" />
+    <ClInclude Include="InventoryButton.h" />
     <ClInclude Include="logmanager.h" />
     <ClInclude Include="matrix4.h" />
     <ClInclude Include="MyContactListener.h" />
