@@ -158,6 +158,10 @@
     <ClCompile Include="button.cpp" />
     <ClCompile Include="Camara.cpp" />
     <ClCompile Include="character.cpp" />
+    <ClCompile Include="CharacterOne.cpp" />
+    <ClCompile Include="CharacterSelect.cpp" />
+    <ClCompile Include="CharacterThree.cpp" />
+    <ClCompile Include="CharacterTwo.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="ExitButton.cpp" />
     <ClCompile Include="ExitButton.h" />
@@ -203,6 +207,10 @@
     <ClInclude Include="button.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="character.h" />
+    <ClInclude Include="CharacterOne.h" />
+    <ClInclude Include="CharacterSelect.h" />
+    <ClInclude Include="CharacterThree.h" />
+    <ClInclude Include="CharacterTwo.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="forest.h" />
     <ClInclude Include="forestscene.h" />

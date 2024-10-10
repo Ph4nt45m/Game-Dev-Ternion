@@ -77,7 +77,7 @@ void StartButton::Update(float deltaTime, InputSystem& inputSystem)
     Button::Update(deltaTime, inputSystem);
     if (m_isReleased)
     {
-        SceneManager::GetInstance().ChangeScene(4);
+        SceneManager::GetInstance().ChangeScene(2); // Changes made by Karl
     }
 }
 
