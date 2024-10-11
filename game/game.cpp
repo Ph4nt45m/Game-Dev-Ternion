@@ -174,13 +174,13 @@ bool Game::Initialise()
 		return false;
 	}
 	//// Load sounds and music
-	//soundManager->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
-	//soundManager->loadMusic("background", "..\\Sprites\\sounds\\JoshWoodward-Circles-NoVox.mp3");
+	soundManager->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
+	soundManager->loadMusic("background", "..\\Sprites\\sounds\\JoshWoodward-Circles-NoVox.mp3");
 	//// Load and play the new music
-	//soundManager->loadMusic("newBackground", "..\\Sprites\\sounds\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
+	soundManager->loadMusic("newBackground", "..\\Sprites\\sounds\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
 
 	// Play the background music (loop infinitely)
-	//soundManager->playMusic("background", -1);	//Kyle end
+	soundManager->playMusic("background", -1);	//Kyle end
 	//Kyle code end
 
 
