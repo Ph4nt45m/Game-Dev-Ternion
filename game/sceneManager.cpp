@@ -12,6 +12,7 @@
 #include "forestscene.h"
 #include "AUTSplashScene.h"
 #include "TernionMenu.h"
+#include "CharacterSelect.h" // Changes made by Karl
 
 // includes
 #include <cassert>
@@ -133,6 +134,7 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 		newScene = new MenuScene();
 		break;
 	case 2://Character select Scene
+		newScene = new CharacterSelectScene(); // Changes made by Karl
 		break;
 	case 3://Foreset Scene(Dev Test Level)
 		m_pRenderer->SetClearColour(255, 255, 255);
