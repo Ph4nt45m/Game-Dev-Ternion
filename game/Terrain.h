@@ -20,7 +20,7 @@ public:
     ~Terrain();
 
     // Function to render the terrain
-    void Draw(Renderer& renderer); 
+    void Draw(Renderer& renderer, Camera& camera); 
 
 
     // Getter for position 

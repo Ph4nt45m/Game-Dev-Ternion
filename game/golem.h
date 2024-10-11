@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "vector2.h"
 #include "inputsystem.h"
+#include "Camera.h"
 
 //Box2d
 #include<Box2D.h>
@@ -35,29 +36,21 @@ public:
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;
-    void Draw(Renderer& renderer) override;
+    void Draw(Renderer& renderer, Camera& camera) override;
     bool SetBodySprites(Renderer& renderer) override;
-    void SetNumSegments(int amount) override;
-    void GetInputs(InputSystem& inputSystem) override;
-    void HandleInput(float deltaTime);
-    void SetTerrainMoving(bool moving) override;
-    bool IsTerrainMoving() override;
 
     Vector2& GetPosition();
-    void SetCharacter(Character& character);
     void CheckPlayerDist();
-    int GetBodyWidth();
-    void ShiftX(float amount);
-    void SetNumWalkableSegs(int amount);
+    void SetCamera(Camera* camera);
 
     void Move(int attackType);
     void Action();
     void ProcessAction();
+    void SetPlayer(Character* player);
 
     //void DebugDraw() override;
 
 protected:
-    void ComputeBounds(float width, float height);
 
 private:
     Golem(const Golem& golem);
@@ -73,6 +66,9 @@ public:
     float slashWidth;
     float slashHeight;
 
+    Camera* m_pcamera;
+    bool IsCameraSet;
+    const float SCALE = 30.0f;
 
     // Member data:
 protected:
@@ -81,13 +77,10 @@ protected:
     Projectile* m_pEntProjectile;
     Vector2 m_vStartingPos;
     Animations m_sAnimations;
-    int m_iNumSegments;
-    int m_iNumWalkableSegs;
     float m_fAnimateScale;
     float m_fExecutionTime;
     int m_iAttackType;
     float m_fDistToPlayer;
-    float m_fHitBoxRange;
     float m_fSlashRangeMax;
     float m_fSlamRangeMax;
     float m_fThrowRangeMax;

@@ -99,8 +99,8 @@ bool Game::Initialise()
 	int bbHeight = 800; // 800 originally
 
 	//World init
-	b2Vec2 gravity{ 0.0f, 0.0f };
-	world = new b2World{ gravity };
+	SetGravity(0.0f, 0.0f);
+	world = new b2World{ m_gravity };
 	world->SetContactListener(&m_contactListener);
 
 	//Renderder
@@ -142,7 +142,7 @@ bool Game::Initialise()
 		return false;
 	}
 	// Optionally, load the first scene if not using transitions right away
-	sceneManager.ChangeScene(1); // Load initial scene (e.g., splash screen, menu)
+	sceneManager.ChangeScene(3); // Load initial scene (e.g., splash screen, menu)
 	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
 
@@ -161,6 +161,7 @@ bool Game::Initialise()
 	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 
+<<<<<<< HEAD
 	for (b2Body* body = world->GetBodyList(); body != nullptr; body = body->GetNext()) {
 		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
 	}
@@ -184,6 +185,8 @@ bool Game::Initialise()
 	//Kyle code end
 
 
+=======
+>>>>>>> origin/backto2d
 	return true;
 }
 
@@ -382,4 +385,15 @@ Character* Game::GetCharacter() const
 b2World* Game::GetWorld() const
 {
 	return world;
+}
+
+b2Vec2 Game::GetGravity()
+{
+	return m_gravity;
+}
+
+void Game::SetGravity(float x, float y)
+{
+	m_gravity.x = x;
+	m_gravity.y = y;
 }

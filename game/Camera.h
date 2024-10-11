@@ -12,9 +12,11 @@ public:
     Camera();
 
    void SetCamera(int screenWidth, int screenHeight, int worldWidth, int worldHeight);
+   int GetWidth() { return m_screenWidth; }
+   int GetHeight() { return m_screenHeight; }
 
-    void Update(Character& player);
-    Vector2* GetOffset();
+   void Update(Character& player);
+   Vector2* GetOffset();
 public:
     Vector2 m_position;  // The camera's position in the world
 
