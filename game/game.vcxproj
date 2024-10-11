@@ -163,8 +163,9 @@
     <ClCompile Include="CharacterThree.cpp" />
     <ClCompile Include="CharacterTwo.cpp" />
     <ClCompile Include="entity.cpp" />
-    <ClCompile Include="ExitButton.cpp" />
-    <ClCompile Include="ExitButton.h" />
+    <ClCompile Include="ExitButton.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="forest.cpp" />
     <ClCompile Include="forestscene.cpp" />
     <ClCompile Include="game.cpp" />
@@ -213,6 +214,9 @@
     <ClInclude Include="CharacterThree.h" />
     <ClInclude Include="CharacterTwo.h" />
     <ClInclude Include="entity.h" />
+    <ClInclude Include="ExitButton.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="forest.h" />
     <ClInclude Include="forestscene.h" />
     <ClInclude Include="game.h" />
