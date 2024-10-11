@@ -4,6 +4,7 @@
 
 #include "button.h"
 #include "sceneManager.h"
+#include "sprite.h" // Changes made by Karl
 #include "animatedsprite.h"
 
 class CharacterThree : public Button
@@ -17,6 +18,7 @@ public:
     void Update(float deltaTime, InputSystem& inputSystem) override;
     void Draw(Renderer& renderer) override;
 private:
+    Sprite* m_buttonFrame; // Changes made by Karl
     AnimatedSprite* m_buttonSpriteNormal;   // Sprite for normal state
     AnimatedSprite* m_buttonSpriteHovered;  // Sprite for hovered state
 };

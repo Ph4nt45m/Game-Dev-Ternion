@@ -50,7 +50,7 @@ CharacterSelectScene::~CharacterSelectScene()
 
 bool CharacterSelectScene::Initialise(Renderer& renderer)
 {
-    SceneManager::GetInstance().LoadImage(renderer, m_ChrSelectScene, "..\\Sprites\\temp.png");
+    SceneManager::GetInstance().LoadImage(renderer, m_ChrSelectScene, "..\\Sprites\\characterselect\\charselectbg.png"); // Changes made by Karl
 
     int windowWidth = renderer.GetWidth();
     int windowHeight = renderer.GetHeight();

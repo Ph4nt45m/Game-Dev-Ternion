@@ -11,13 +11,17 @@
 
 CharacterTwo::CharacterTwo(float x, float y)
     : Button(x, y),
+    m_buttonFrame(nullptr), // Changes made by Karl
     m_buttonSpriteNormal(nullptr),
     m_buttonSpriteHovered(nullptr)
 {
 }
 
 CharacterTwo::~CharacterTwo()
-{
+{   // Changes made by Karl
+    delete m_buttonFrame;
+    m_buttonFrame = nullptr;
+
     delete m_buttonSpriteNormal;
     m_buttonSpriteNormal = nullptr;
 
@@ -28,6 +32,7 @@ CharacterTwo::~CharacterTwo()
 bool CharacterTwo::Initialise(Renderer& renderer)
 {
     // Load the button sprites
+    m_buttonFrame = renderer.CreateSprite("..\\Sprites\\characterselect\\mageframe.png"); // Changes made by Karl
     m_buttonSpriteNormal = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8mageidle.png");
     m_buttonSpriteHovered = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8magerun.png");
     m_buttonSpriteNormal->SetupFrames(212, 124);
@@ -53,6 +58,7 @@ bool CharacterTwo::Initialise(Renderer& renderer)
     float finalScale = std::min(scaleX, scaleY) / -5.0f; // Adjust denominator for desired size
 
     // Apply scaling to sprites
+    m_buttonFrame->SetScale(finalScale); // Changes made by Karl
     m_buttonSpriteNormal->SetScale(finalScale);
     m_buttonSpriteHovered->SetScale(finalScale);
 
@@ -61,6 +67,8 @@ bool CharacterTwo::Initialise(Renderer& renderer)
     SetHeight(spriteHeight * finalScale);
 
     // Position the button (this assumes m_x and m_y are already set to the correct positions)
+    m_buttonFrame->SetX(m_x); // Changes made by Karl
+    m_buttonFrame->SetY(m_y);
     m_buttonSpriteNormal->SetX(m_x);
     m_buttonSpriteNormal->SetY(m_y);
     m_buttonSpriteHovered->SetX(m_x);
@@ -106,13 +114,16 @@ void CharacterTwo::Update(float deltaTime, InputSystem& inputSystem)
             m_buttonSpriteHovered->SetLooping(false);
         }
     }
-
+    // Changes made by Karl
+    m_buttonFrame->Process(deltaTime);
     m_buttonSpriteNormal->Process(deltaTime);
     m_buttonSpriteHovered->Process(deltaTime);
 }
 
 void CharacterTwo::Draw(Renderer& renderer)
-{
+{   // Changes made by Karl
+    m_buttonFrame->Draw(renderer, true, false);
+
     if (m_isHovered)
     {
         m_buttonSpriteHovered->Draw(renderer, true, true);
