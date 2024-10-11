@@ -6,6 +6,7 @@
 #include "vector2.h"
 #include "inputsystem.h"
 #include "MyContactListener.h"
+#include "SoundManager.h"
 
 // Library includes:
 #include <vector>
@@ -92,6 +93,8 @@ private:
 	Sprite* m_sprCursorBodySprite;
 	Sprite* m_sprCursorBorderSprite;
 	int m_iMouseState;
+
+	SoundManager* soundManager;
 
 	MyContactListener m_contactListener;
 };
