@@ -6,8 +6,6 @@
 
 void MyContactListener::BeginContact(b2Contact* contact)
 {
-    printf("Started contact\n");
-
     b2Fixture* fixtureA = contact->GetFixtureA();
     b2Fixture* fixtureB = contact->GetFixtureB();
 
@@ -25,19 +23,30 @@ void MyContactListener::BeginContact(b2Contact* contact)
     // Check for terrain collisions
     if ((int)userDataA == PLAYER && (int)userDataB == TERRAIN) {
         // Player collided with terrain
-        printf("Player collided with terrain!\n");
+        //printf("Player collided with terrain!\n");
     }
     else if ((int)userDataA == TERRAIN && (int)userDataB == PLAYER) {
         // Reverse case: terrain collided with player
-        printf("Player collided with terrain (reverse case)!\n");
+        //printf("Player collided with terrain (reverse case)!\n");
     }
 
     // Golem's slash attack collision with player
     if ((int)userDataA == PLAYER && (int)userDataB == GOLEM_SLASH) {
-        printf("Player hit by golem's slash!\n");
+        //printf("Player hit by golem's slash!\n");
     }
     else if ((int)userDataA == GOLEM_SLASH && (int)userDataB == PLAYER) {
-        printf("Player hit by golem's slash (reverse case)!\n");
+        //("Player hit by golem's slash (reverse case)!\n");
+    }
+    if ((int)userDataA == PLAYER && (int)userDataB == GOLEM) {
+    }
+    else if ((int)userDataA == GOLEM && (int)userDataB == PLAYER) {
+    }
+    // Check for terrain collisions
+    if ((int)userDataA == GOLEM && (int)userDataB == TERRAIN) {
+        // Player collided with terrain
+    }
+    else if ((int)userDataA == TERRAIN && (int)userDataB == GOLEM) {
+        // Reverse case: terrain collided with player
     }
 
     // Handle other collisions, like GOLEM_SLAM, PROJECTILE, etc.
@@ -58,18 +67,18 @@ void MyContactListener::EndContact(b2Contact* contact)
     if (userDataA && userDataB) {
         // Check for end of player and terrain collision
         if ((int)userDataA == PLAYER && (int)userDataB == TERRAIN) {
-            printf("Player no longer colliding with terrain!\n");
+            //printf("Player no longer colliding with terrain!\n");
         }
         else if ((int)userDataA == TERRAIN && (int)userDataB == PLAYER) {
-            printf("Player no longer colliding with terrain (reverse case)!\n");
+            //printf("Player no longer colliding with terrain (reverse case)!\n");
         }
 
         // Handle golem's slash ending
         if ((int)userDataA == PLAYER && (int)userDataB == GOLEM_SLASH) {
-            printf("Player no longer hit by golem's slash!\n");
+         //   printf("Player no longer hit by golem's slash!\n");
         }
         else if ((int)userDataA == GOLEM_SLASH && (int)userDataB == PLAYER) {
-            printf("Player no longer hit by golem's slash (reverse case)!\n");
+            //printf("Player no longer hit by golem's slash (reverse case)!\n");
         }
     }
 }

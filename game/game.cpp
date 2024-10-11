@@ -155,10 +155,6 @@ bool Game::Initialise()
 	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 
-	for (b2Body* body = world->GetBodyList(); body != nullptr; body = body->GetNext()) {
-		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
-	}
-
 	return true;
 }
 

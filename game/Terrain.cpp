@@ -28,7 +28,6 @@ Terrain::Terrain(b2World* world, float x, float y, float width, float height)
     // set user data to recognize the terrain
     m_pBody->SetUserData((void*)TERRAIN);
 
-    printf("%f: \n", m_pBody->GetPosition().x);
 
 }
 

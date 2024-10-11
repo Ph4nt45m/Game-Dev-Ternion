@@ -21,13 +21,8 @@ public:
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;
-    void Draw(Renderer& renderer) override;
+    void Draw(Renderer& renderer, Camera& camera) override;
     bool SetBodySprites(Renderer& renderer) override;
-    void SetNumSegments(int amount) override;
-    void GetInputs(InputSystem& inputSystem) override;
-    void HandleInput(float deltaTime);
-    void SetTerrainMoving(bool moving) override;
-    bool IsTerrainMoving() override;
 
     Vector2& GetPosition();
     bool SetProjectileSprite(Renderer& renderer, const char* filePath);

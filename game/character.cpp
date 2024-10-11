@@ -94,8 +94,6 @@ bool Character::Initialise(Renderer& renderer)
     m_vPosition.x = 50.0f;  // Position in pixels
     m_vPosition.y = 500.0f; // Position in pixels
 
-    ComputeBounds(sm_fBoundaryWidth, sm_fBoundaryHeight);
-
     // Weapon initialization based on type
     switch (m_iWeaponType)
     {
@@ -328,7 +326,6 @@ void Character::HandleInput(float deltaTime, InputSystem& inputSystem)
     // Move right when pressing D
     if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD) {
         velocity.x = 1.0f;  // Set a fixed speed to move right
-        printf("player: %f\n", m_pBody->GetPosition().x);
         
     }
     else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD) {
@@ -438,12 +435,6 @@ Character::GetPosition()
 }
 
 Vector2&
-Character::GetFeetPos()
-{
-    return m_vFeetPos;
-}
-
-Vector2&
 Character::GetVelocityBody()
 {
     return m_velocityBody;
@@ -485,90 +476,7 @@ Character::SetProjAlive(bool alive)
     m_pEntArrow->SetAlive(alive);
 }
 
-void
-Character::SetCentered(bool centered)
-{
-    sm_bCameraCentered = centered;
-}
-
-bool
-Character::IsCentered()
-{
-    return sm_bCameraCentered;
-}
-
-void
-Character::SetTerrainMoving(bool moving)
-{
-    sm_bTerrainMoving = moving;
-}
-
-bool
-Character::IsTerrainMoving()
-{
-    return sm_bTerrainMoving;
-}
-
-int
-Character::GetBodyWidth()
-{
-    return m_pSprSpriteBody->GetWidth();
-}
-
-int
-Character::GetBodyHeight()
-{
-    return m_pSprSpriteBody->GetHeight();
-}
-
-void
-Character::SetNumSegments(int amount)
-{
-    sm_iNumSegments = amount;
-}
-
-void
-Character::ShiftX(float amount)
-{
-    m_vPosition.x += amount;
-    m_vFeetPos.x += amount;
-    m_vStandingPos.x += amount;
-}
-
-void
-Character::ShiftY(float amount)
-{
-    m_vStandingPos.y += amount;
-    m_vBoundaryLow.y += amount;
-    m_vBoundaryHigh.y += amount;
-
-    if (m_vFeetPos.y < m_vStandingPos.y)
-    {
-        if (m_velocityJump.y == 0.0f)
-        {
-            m_bJumping = true;
-
-            if (amount < 90)
-            {
-                m_bDoubleJump = true;
-            }
-
-            m_sKeyboardMotions.Heave = MOTION_DECENT;
-        }
-    }
-}
-
-void
-Character::ComputeBounds(float width, float height)
-{
-    // Set boundaries
-    m_vBoundaryLow.x = (m_pSprSpriteBody->GetWidth() / 2.0f);
-    m_vBoundaryLow.y = ((sm_fBoundaryHeight / 7.0f) * 5.0f);
-
-    m_vBoundaryHigh.x = width - (m_pSprSpriteBody->GetWidth() / 2.0f);
-    m_vBoundaryHigh.y = height;
-}
-void Character::Draw(Renderer& renderer)
+void Character::Draw(Renderer& renderer, Camera& camera)
 {}
 
 //void

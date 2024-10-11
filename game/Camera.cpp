@@ -39,14 +39,12 @@ void Camera::Update(Character& player)
     // Clamp the camera within the world boundaries (in pixels)
     if (m_position.x < 0) {
         m_position.x = 0;
-        printf("Begin\n");
     }
     if (m_position.y < 0) {
         m_position.y = 0;
     }
     if (m_position.x > m_worldWidth) {
         m_position.x = m_worldWidth;
-        printf("End\n");
     }
     if (m_position.y > m_worldHeight) {
         m_position.y = m_worldHeight;

@@ -31,7 +31,7 @@ public:
 	virtual void Draw(Renderer& renderer);
 	virtual void DebugDraw();
 
-	bool SetEnemies(Character& character, Renderer& renderer);
+	bool SetEnemies(Renderer& renderer);
 
 protected:
 	
