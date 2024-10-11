@@ -57,6 +57,7 @@ Game::Game()
 	, m_pInputSystem(0)
 	, m_iMouseState(0)
 	, m_bLooping(true)
+	, soundManager(0)
 {
 
 }
@@ -77,6 +78,11 @@ Game::~Game()
 
 	delete m_pEntCharacter;
 	m_pEntCharacter = 0;
+
+	if (soundManager) {
+		delete soundManager;
+		soundManager = nullptr;
+	}
 }
 
 void Game::Quit()
@@ -159,6 +165,25 @@ bool Game::Initialise()
 		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
 	}
 
+	//Kyle code
+	// Initialize the SoundManager
+	soundManager = new SoundManager();
+
+	// Initialize SDL_mixer
+	if (!soundManager->init()) {
+		return false;
+	}
+	//// Load sounds and music
+	//soundManager->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
+	//soundManager->loadMusic("background", "..\\Sprites\\sounds\\JoshWoodward-Circles-NoVox.mp3");
+	//// Load and play the new music
+	//soundManager->loadMusic("newBackground", "..\\Sprites\\sounds\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
+
+	// Play the background music (loop infinitely)
+	//soundManager->playMusic("background", -1);	//Kyle end
+	//Kyle code end
+
+
 	return true;
 }
 
@@ -207,7 +232,6 @@ Game::Process(float deltaTime)
 	ProcessFrameCounting(deltaTime);
 
 	// TODO: Add game objects to process here!
-
 
 	// Box2D time step
 	const float32 timeStep = 1.0f / 60.0f;  // 60Hz update rate
