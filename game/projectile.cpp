@@ -72,7 +72,7 @@ Projectile::Process(float deltaTime, InputSystem& inputSystem)
 }
 
 void
-Projectile::Draw(Renderer& renderer, Camera& camera)
+Projectile::Draw(Renderer& renderer)
 {
 	if (m_bAlive)
 	{
@@ -91,6 +91,36 @@ Projectile::SetBodySprites(Renderer& renderer)
 	}*/
 
 	return true;
+}
+
+void
+Projectile::SetNumSegments(int amount)
+{
+
+}
+
+void
+Projectile::GetInputs(InputSystem& inputSystem)
+{
+
+}
+
+void
+Projectile::HandleInput(float deltaTime)
+{
+
+}
+
+void
+Projectile::SetTerrainMoving(bool moving)
+{
+
+}
+
+bool
+Projectile::IsTerrainMoving()
+{
+	return sm_bTerrainMoving;
 }
 
 Vector2&
@@ -116,16 +146,17 @@ Projectile::SetProjectileSprite(Renderer& renderer, const char* filePath)
 
 	return true;
 }
+// Changes made by Karl
+void
+Projectile::SetScale(float scale)
+{
+	m_pSprSpriteBody->SetScale(scale);
+}
 
 float
 Projectile::GetWidth()
 {
 	return (float)m_pSprSpriteBody->GetWidth();
-}
-
-Sprite* Projectile::GetSprite()
-{
-	return m_pSprSpriteBody;
 }
 
 float
@@ -148,7 +179,6 @@ Projectile::SetTargetPos(float t_x, float t_y)
 {
 	m_vTarget.x = t_x;
 	m_vTarget.y = t_y;
-	targetSet = true;
 }
 
 void
@@ -185,5 +215,3 @@ Projectile::SetAlive(bool alive)
 {
 	m_bAlive = alive;
 }
-
-

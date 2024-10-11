@@ -3,6 +3,7 @@
 
 // Local includes:
 #include "entity.h"
+#include "player.h" // Changes made by Karl
 #include "vector2.h"
 #include "inputsystem.h"
 #include "healthbar.h"
@@ -20,7 +21,7 @@ class Projectile;
 class Game;
 
 // Class declaration:
-class Character : public Entity
+class Character : public Player // Changes made by Karl
 {
     // Member methods:
 public:
