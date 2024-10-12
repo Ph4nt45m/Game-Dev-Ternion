@@ -20,6 +20,8 @@ private:
     Sprite* m_buttonSpriteNormal;   // Sprite for normal state
     Sprite* m_buttonSpriteHovered;  // Sprite for hovered state
     Sprite* m_buttonSpritePressed;  // Sprite for pressed state
+    Sprite* m_buttonSpriteHighlight;    // Sprite for highlighting in hovered state // Changes made by Karl
+    float m_fBlueTint;  // Adjustable value to handle button highlighting // Changes made by Karl
 };
 
 #endif // !__EXITBUTTON_H_
