@@ -15,6 +15,7 @@
 #include "animatedsprite.h"
 #include "vector2.h"
 #include "sceneManager.h"
+#include "Warrior.h" // Changes made by Karl
 
 // Library includes:
 #include <windows.h>
@@ -126,12 +127,12 @@ bool Game::Initialise()
 	}
 
 	//Character made
-	m_pEntCharacter = new Character(world);
+	/*m_pEntCharacter = new Character(world); // Changes made by Karl
 	if (!m_pEntCharacter->Initialise(*m_pRenderer))
 	{
 		LogManager::GetInstance().Log("Character failed to initialise!");
 		return false;
-	}
+	}*/
 
 	//Scene
 	// Initialize SceneManager and the first scene
@@ -180,7 +181,7 @@ bool Game::Initialise()
 	soundManager->loadMusic("newBackground", "..\\Sprites\\sounds\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
 
 	// Play the background music (loop infinitely)
-	soundManager->playMusic("background", -1);	//Kyle end
+	//soundManager->playMusic("background", -1);	//Kyle end
 	//Kyle code end
 
 	return true;
@@ -246,7 +247,11 @@ Game::Process(float deltaTime)
 	SceneManager::GetInstance().Process(deltaTime, *m_pInputSystem);
 
 	//I think this runs player character
-	m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
+	/*if (m_pEntCharacter->IsDefined()) // Changes made by Karl
+	{
+		m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
+	}*/
+	
 	m_pASprAnimatedSprite->Process(deltaTime);
 
 	//Cursor that follows mouse and explodes when presses
@@ -372,8 +377,37 @@ Game::ToggleDebugWindow()
 
 	m_pInputSystem->ShowMouseCursor(m_bShowDebugWindow);
 }
+// Changes made by Karl
+void
+Game::CreateCharacter(int type)
+{
+	switch (type)
+	{
+	case 0:
+		m_pEntCharacter = new Warrior(world);
+		break;
+	case 1:
+		break;
+	case 2:
+		break;
+	}
 
-Character* Game::GetCharacter() const
+	if (!m_pEntCharacter->Initialise(*m_pRenderer))
+	{
+		LogManager::GetInstance().Log("Character failed to initialise!");
+	}
+	else
+	{
+		m_pEntCharacter->SetCharacterType(*m_pRenderer, type);
+	}
+}
+// Changes made by Karl
+//Character* Game::GetCharacter() const
+//{
+//	return m_pEntCharacter;
+//}
+
+Player* Game::GetCharacter() const
 {
 	return m_pEntCharacter;
 }

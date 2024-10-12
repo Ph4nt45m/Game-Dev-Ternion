@@ -2,6 +2,7 @@
 
 // Local Include
 #include "game.h"
+#include "character.h" // Changes made by Karl
 #include "renderer.h"
 #include "logmanager.h"
 
@@ -11,19 +12,19 @@
 
 CharacterThree::CharacterThree(float x, float y)
     : Button(x, y),
-    m_buttonFrameNormal(nullptr), // Changes made by Karl
-    m_buttonFrameHovered(nullptr), // Changes made by Karl
+    m_buttonFrameNormal(nullptr),
+    m_buttonFrameHovered(nullptr),
     m_buttonSpriteNormal(nullptr),
     m_buttonSpriteHovered(nullptr),
-    m_fBlueTint(0.0f) // Changes made by Karl
+    m_fBlueTint(0.0f)
 {
 }
 
 CharacterThree::~CharacterThree()
-{   // Changes made by Karl
+{ 
     delete m_buttonFrameNormal;
     m_buttonFrameNormal = nullptr;
-    // Changes made by Karl
+    
     delete m_buttonFrameHovered;
     m_buttonFrameHovered = nullptr;
 
@@ -37,8 +38,8 @@ CharacterThree::~CharacterThree()
 bool CharacterThree::Initialise(Renderer& renderer)
 {
     // Load the button sprites
-    m_buttonFrameNormal = renderer.CreateSprite("..\\Sprites\\characterselect\\archerframe.png"); // Changes made by Karl
-    m_buttonFrameHovered = renderer.CreateSprite("..\\Sprites\\characterselect\\framehighlight.png"); // Changes made by Karl
+    m_buttonFrameNormal = renderer.CreateSprite("..\\Sprites\\characterselect\\archerframe.png");
+    m_buttonFrameHovered = renderer.CreateSprite("..\\Sprites\\characterselect\\framehighlight.png");
     m_buttonSpriteNormal = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\archer\\anim8archidle.png");
     m_buttonSpriteHovered = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\archer\\anim8archrun.png");
 
@@ -66,8 +67,8 @@ bool CharacterThree::Initialise(Renderer& renderer)
     float finalScale = std::min(scaleX, scaleY) / -5.0f; // Adjust denominator for desired size
 
     // Apply scaling to sprites
-    m_buttonFrameNormal->SetScale(finalScale); // Changes made by Karl
-    m_buttonFrameHovered->SetScale(finalScale); // Changes made by Karl
+    m_buttonFrameNormal->SetScale(finalScale);
+    m_buttonFrameHovered->SetScale(finalScale);
     m_buttonSpriteNormal->SetScale(finalScale);
     m_buttonSpriteHovered->SetScale(finalScale);
 
@@ -76,15 +77,15 @@ bool CharacterThree::Initialise(Renderer& renderer)
     SetHeight(spriteHeight * finalScale);
 
     // Position the button (this assumes m_x and m_y are already set to the correct positions)
-    m_buttonFrameNormal->SetX(m_x); // Changes made by Karl
+    m_buttonFrameNormal->SetX(m_x);
     m_buttonFrameNormal->SetY(m_y);
-    m_buttonFrameHovered->SetX(m_x); // Changes made by Karl
+    m_buttonFrameHovered->SetX(m_x);
     m_buttonFrameHovered->SetY(m_y);
     m_buttonSpriteNormal->SetX(m_x);
     m_buttonSpriteNormal->SetY(m_y);
     m_buttonSpriteHovered->SetX(m_x);
     m_buttonSpriteHovered->SetY(m_y);
-    // Changes made by Karl
+    
     // Set initial blue tint values
     m_fBlueTint = 1.0f;
 
@@ -98,6 +99,7 @@ void CharacterThree::Update(float deltaTime, InputSystem& inputSystem)
 
     if (m_isReleased)
     {
+        //Game::GetInstance().GetCharacter()->SetCharacterType(2); // Changes made by Karl
         SceneManager::GetInstance().ChangeScene(4);
     }
     else if (m_isHovered)
@@ -113,7 +115,7 @@ void CharacterThree::Update(float deltaTime, InputSystem& inputSystem)
             m_buttonSpriteHovered->Animate();
             m_buttonSpriteHovered->SetLooping(true);
         }
-        // Changes made by Karl
+        
         if (m_fBlueTint > 0.0f)
         {
             m_fBlueTint -= 2.0f * deltaTime;
@@ -135,7 +137,7 @@ void CharacterThree::Update(float deltaTime, InputSystem& inputSystem)
             m_buttonSpriteHovered->Inanimate();
             m_buttonSpriteHovered->SetLooping(false);
         }
-        // Changes made by Karl
+        
         if (m_fBlueTint < 1.0f)
         {
             m_fBlueTint += 2.0f * deltaTime;
@@ -145,7 +147,7 @@ void CharacterThree::Update(float deltaTime, InputSystem& inputSystem)
             m_fBlueTint = 1.0f;
         }
     }
-    // Changes made by Karl
+    
     // Set blue tint for frame highlight
     m_buttonFrameHovered->SetBlueTint(m_fBlueTint);
 
@@ -154,7 +156,7 @@ void CharacterThree::Update(float deltaTime, InputSystem& inputSystem)
 }
 
 void CharacterThree::Draw(Renderer& renderer)
-{   // Changes made by Karl
+{   
     m_buttonFrameNormal->Draw(renderer, true, false);
     m_buttonFrameHovered->Draw(renderer, true, false);
 

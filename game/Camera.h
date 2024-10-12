@@ -5,7 +5,8 @@
 #include <Box2D.h>
 
 
-class Character;
+//class Character; // Changes made be Karl
+class Player;
 
 class Camera {
 public:
@@ -15,7 +16,8 @@ public:
    int GetWidth() { return m_screenWidth; }
    int GetHeight() { return m_screenHeight; }
 
-   void Update(Character& player);
+   //void Update(Character& player); // Changes made by Karl
+   void Update(Player& player);
    Vector2* GetOffset();
 public:
     Vector2 m_position;  // The camera's position in the world

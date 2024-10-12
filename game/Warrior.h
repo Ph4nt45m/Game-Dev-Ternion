@@ -1,8 +1,9 @@
-#ifndef CHARACTER_H
-#define CHARACTER_H
+#ifndef WARRIOR_H
+#define WARRIOR_H
 
 // Local includes:
 #include "entity.h"
+#include "player.h"
 #include "vector2.h"
 #include "inputsystem.h"
 #include "healthbar.h"
@@ -19,25 +20,37 @@ class AnimatedSprite;
 class Projectile;
 class Game;
 
+typedef struct
+{
+    AnimatedSprite* m_pASpriteIdle;
+    AnimatedSprite* m_pASpriteRun;
+    AnimatedSprite* m_pASpriteJump;
+    AnimatedSprite* m_pASpriteAttack;
+} Actions;
+
 // Class declaration:
-class Character : public Entity
+class Warrior : public Player
 {
     // Member methods:
 public:
-    Character(b2World* world);
-    ~Character();
+    Warrior(b2World* world);
+    ~Warrior();
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;
-    void DrawWithCam(Renderer& renderer, Camera& camera);
+    void DrawWithCam(Renderer& renderer, Camera& camera) override;
     void Draw(Renderer& renderer, Camera& camera) override;
     bool SetBodySprites(Renderer& renderer) override;
     void GetInputs(InputSystem& inputSystem);
     void HandleInput(float deltaTime, InputSystem& inputSystem);
 
-    b2Vec2 GetPosition();
+    b2Vec2 GetPosition() override;
     Vector2& GetVelocityBody();
-    int GetWeapontype();
+    int GetCharactertype() override; // Changes made by Karl
+    void SetCharacterType(Renderer& renderer, int type) override; // Changes made by Karl
+    void DefineCharacter(Renderer& renderer);
+    bool IsDefined();
+    void SetDefined(bool define);
     Vector2& GetProjectilePos();
     float GetProjWidth();
     float GetProjHeight();
@@ -49,8 +62,8 @@ public:
 protected:
 
 private:
-    Character(const Character& character);
-    Character& operator=(const Character& character);
+    Warrior(const Warrior& warrior);
+    Warrior& operator=(const Warrior& warrior);
 
     // Member data:
 protected:
@@ -64,15 +77,16 @@ protected:
     Projectile* m_pEntArrow;
     AnimatedSprite* m_pASprWeapAttack;
     Healthbar* m_pHealthbar;
-    int m_iWeaponType;
+    int m_iCharacterType;
     float m_fAngleOfAttack;
     bool m_bDoubleJump;
+    bool m_bDefined;
 
     //Box2D verables
     b2Body* m_pBody;
     b2World* m_pWorld;
 
-
+    Actions m_sActions;
 private:
     float m_fHeadBodyOffset;
     float m_fLengthFootToBody;
@@ -80,6 +94,8 @@ private:
     float m_fStepTimer;
     float m_fStepDuration;
     float m_jumpTimer;
+    float offset;
 };
 
-#endif // !CHARACTER_H
+#endif // !WARRIOR_H
+

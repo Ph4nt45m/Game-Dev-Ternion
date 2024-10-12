@@ -15,6 +15,7 @@ class Renderer;
 class Sprite;
 class AnimatedSprite;
 class Character;
+class Player;
 class Projectile;
 
 // Golem animations:
@@ -46,7 +47,8 @@ public:
     void Move(int attackType);
     void Action();
     void ProcessAction();
-    void SetPlayer(Character* player);
+    //void SetPlayer(Character* player); // Changes made by Karl
+    void SetPlayer(Player* player);
 
     //void DebugDraw() override;
 
@@ -72,7 +74,8 @@ public:
 
     // Member data:
 protected:
-    Character* m_pEntCharacter;
+    //Character* m_pEntCharacter; // Changes made by Karl
+    Player* m_pEntCharacter;
     Sprite* m_pSprSpriteBody;
     Projectile* m_pEntProjectile;
     Vector2 m_vStartingPos;

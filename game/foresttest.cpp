@@ -1,7 +1,7 @@
 // COMP710 GP Framework 2022
 
 // This include:
-#include "forestscene.h"
+#include "foresttest.h"
 
 // Local includes:
 #include "game.h"
@@ -11,6 +11,7 @@
 #include "sprite.h"
 #include "forest.h"
 #include "character.h"
+#include "player.h"
 #include "golem.h"
 
 // Library includes:
@@ -19,9 +20,9 @@
 #include "Camera.h"
 
 // Static members:
-//int ForestScene::sm_iSegmentWidth = 0;
+//int ForestTest::sm_iSegmentWidth = 0;
 
-ForestScene::ForestScene(b2World* world, Character* character)
+ForestTest::ForestTest(b2World* world, Player* character)
 	: m_pGolem(0)
 	, m_pWorld(world)
 	, camera()
@@ -34,16 +35,16 @@ ForestScene::ForestScene(b2World* world, Character* character)
 
 }
 
-ForestScene::~ForestScene()
+ForestTest::~ForestTest()
 {
 }
 
 bool
-ForestScene::Initialise(Renderer& renderer)
+ForestTest::Initialise(Renderer& renderer)
 {
 
-//Made by Rauen
-	  // Define some terrain segments at different positions and sizes
+	//Made by Rauen
+		  // Define some terrain segments at different positions and sizes
 	Game::GetInstance().SetGravity(0.0f, 1.0f);
 	m_pWorld->SetGravity(Game::GetInstance().GetGravity());
 
@@ -65,15 +66,15 @@ ForestScene::Initialise(Renderer& renderer)
 	m_terrainSegments.push_back(ground);  // Ground
 	ground->SetSprite(renderer, GROUND, worldWidth * SCALE, terrainHeight * SCALE);
 
-	platform = new Terrain(m_pWorld, 1200.0/SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
+	platform = new Terrain(m_pWorld, 1200.0 / SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
 	m_terrainSegments.push_back(platform);  // Another platform
 	platform->SetSprite(renderer, PLATFORM, terrainWidth * SCALE, terrainHeight * SCALE);
-	
+
 	// Add a left wall
 	leftWall = new Terrain(m_pWorld, 0.0f, groundY, wallWidth, wallHeight);
 	m_terrainSegments.push_back(leftWall);  // Left boundary
 	leftWall->SetSprite(renderer, LEFT_WALL, wallWidth * SCALE, wallHeight * SCALE);
-	
+
 	// Add a right wall 
 	rightWall = new Terrain(m_pWorld, worldWidth, groundY, wallWidth, wallHeight);
 	m_terrainSegments.push_back(rightWall);  // Right boundary
@@ -89,7 +90,7 @@ ForestScene::Initialise(Renderer& renderer)
 }
 
 void
-ForestScene::Process(float deltaTime, InputSystem& inputSystem)
+ForestTest::Process(float deltaTime, InputSystem& inputSystem)
 {
 	//if (m_pCharacter->IsDefined()) // Changes made by Karl
 	//{
@@ -97,14 +98,14 @@ ForestScene::Process(float deltaTime, InputSystem& inputSystem)
 	//}
 	m_pCharacter->Process(deltaTime, inputSystem);
 	m_pGolem->Process(deltaTime, inputSystem);
-	//camera.Update(*m_pCharacter); // Changes made by Karl
+	camera.Update(*m_pCharacter);
 	//printf("char: %f\n", m_pCharacter->GetPosition().x - platform->GetPosition().x);
 }
 
 void
-ForestScene::Draw(Renderer& renderer)
+ForestTest::Draw(Renderer& renderer)
 {
-	
+
 	// Update camera based on player position
 	//if (m_pCharacter->IsDefined()) // Changes made by Karl
 	//{
@@ -122,11 +123,11 @@ ForestScene::Draw(Renderer& renderer)
 
 //Testing stuff with enemies for later
 bool
-ForestScene::SetEnemies(Renderer& renderer)
+ForestTest::SetEnemies(Renderer& renderer)
 {
 	m_pGolem = new Golem(m_pWorld);
 	m_pGolem->SetCamera(&camera);
-	//m_pGolem->SetPlayer(m_pCharacter);
+	m_pGolem->SetPlayer(m_pCharacter);
 
 	if (!(m_pGolem->Initialise(renderer)))
 	{
@@ -138,7 +139,7 @@ ForestScene::SetEnemies(Renderer& renderer)
 }
 
 void
-ForestScene::DebugDraw()
+ForestTest::DebugDraw()
 {
 
 }

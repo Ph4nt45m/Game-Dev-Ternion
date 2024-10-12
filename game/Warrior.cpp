@@ -1,5 +1,5 @@
 // This include:
-#include "character.h"
+#include "Warrior.h"
 
 // Local includes:
 #include "renderer.h"
@@ -20,7 +20,7 @@
 //Box2D world
 #define SCALE 30.0f
 
-Character::Character(b2World* world)
+Warrior::Warrior(b2World* world)
     : m_pSprSpriteHead(0)
     , m_pSprSpriteLegLeft(0)
     , m_pSprSpriteLegRight(0)
@@ -28,10 +28,11 @@ Character::Character(b2World* world)
     , m_pSprWeapon(0)
     , m_pEntArrow(0)
     , m_pASprWeapAttack(0)
-    , m_iWeaponType(0)
+    , m_iCharacterType(0)
     , m_pHealthbar(0)
     , m_fAngleOfAttack(0.0f)
     , m_bDoubleJump(false)
+    , m_bDefined(false)
     , m_fHeadBodyOffset(0.0f)
     , m_fLengthFootToBody(0.0f)
     , m_fLegBodyOffset(0.0f)
@@ -40,11 +41,13 @@ Character::Character(b2World* world)
     , m_pWorld(world)
     , m_pBody(nullptr)
     , m_jumpTimer(0.0f)
+    , m_sActions{ 0, 0, 0, 0 }
+    , offset(0.0f)
 {
 
 }
 
-Character::~Character()
+Warrior::~Warrior()
 {
     delete m_pSprSpriteHead;
     m_pSprSpriteHead = 0;
@@ -73,121 +76,37 @@ Character::~Character()
     delete m_pHealthbar;
     m_pHealthbar = 0;
 
+    delete m_sActions.m_pASpriteIdle;
+    m_sActions.m_pASpriteIdle = 0;
+
+    delete m_sActions.m_pASpriteRun;
+    m_sActions.m_pASpriteRun = 0;
+
+    delete m_sActions.m_pASpriteJump;
+    m_sActions.m_pASpriteJump = 0;
+
+    delete m_sActions.m_pASpriteAttack;
+    m_sActions.m_pASpriteAttack = 0;
+
     m_pWorld->DestroyBody(m_pBody);
 }
 
-bool Character::Initialise(Renderer& renderer)
+bool Warrior::Initialise(Renderer& renderer)
 {
-    if (!SetBodySprites(renderer))
-    {
-        LogManager::GetInstance().Log("Character Sprites failed to initialise!");
-        return false;
-    }
-
     m_iFacingDirection = 1;
-    m_fScale = 1.0f;
-    m_iWeaponType = 1;
+    m_fScale = 1.0f; // Changes made by Karl
     m_bAlive = true;
 
     Entity::SetWindowBoundaries(renderer);
-
-    m_vPosition.x = 50.0f;  // Position in pixels
+    // Changes made by Karl
+    m_vPosition.x = 100.0f;  // Position in pixels
     m_vPosition.y = 500.0f; // Position in pixels
-
-    // Weapon initialization based on type
-    switch (m_iWeaponType)
-    {
-    case 0:
-        m_pSprWeapon = renderer.CreateSprite("Sprites\\weaponsstatic\\sword.png");
-        m_pASprWeapAttack = renderer.CreateAnimatedSprite("Sprites\\weaponsanim8\\anim8sword.png");
-        if (m_pSprWeapon && m_pASprWeapAttack)
-        {
-            m_pASprWeapAttack->SetupFrames(213, 150);
-            m_pASprWeapAttack->SetFrameDuration(0.02f);
-        }
-        else
-        {
-            LogManager::GetInstance().Log("Sword Weapon failed to initialise!");
-            return false;
-        }
-        break;
-    case 1:
-        m_pSprWeapon = renderer.CreateSprite("Sprites\\weaponsstatic\\bow.png");
-        m_pASprWeapAttack = renderer.CreateAnimatedSprite("Sprites\\weaponsanim8\\anim8bow.png");
-        m_pEntArrow = new Projectile();
-        if (m_pSprWeapon && m_pASprWeapAttack)
-        {
-            m_pASprWeapAttack->SetupFrames(161, 119);
-            m_pASprWeapAttack->SetFrameDuration(0.03f);
-        }
-        else
-        {
-            LogManager::GetInstance().Log("Bow Weapon failed to initialise!");
-            return false;
-        }
-
-        if (!m_pEntArrow->Initialise(renderer))
-        {
-            LogManager::GetInstance().Log("Projectile Arrow failed to initialise!");
-            return false;
-        }
-        else
-        {
-            m_pEntArrow->SetProjectileSprite(renderer, "Sprites\\characterprojectile\\arrow.png");
-            m_pEntArrow->SetGroundY(sm_fBoundaryHeight);
-        }
-        break;
-    case 2:
-        m_pSprWeapon = renderer.CreateSprite("Sprites\\weaponsstatic\\staff.png");
-        m_pASprWeapAttack = renderer.CreateAnimatedSprite("Sprites\\weaponsanim8\\anim8staff.png");
-        if (m_pSprWeapon && m_pASprWeapAttack)
-        {
-            m_pASprWeapAttack->SetupFrames(67, 119);
-            m_pASprWeapAttack->SetFrameDuration(0.15f);
-        }
-        else
-        {
-            LogManager::GetInstance().Log("Staff Weapon failed to initialise!");
-            return false;
-        }
-        break;
-    }
-
-    // Initialize healthbar
-    m_pHealthbar = new Healthbar(renderer);
-
-    // Box2D Body Initialization (Changes made by Rauen)
-
-    // Create the Box2D body definition
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(m_vPosition.x / SCALE, m_vPosition.y / SCALE);  // Convert from pixels to meters
-
-    // Create the Box2D body in the world
-    m_pBody = m_pWorld->CreateBody(&bodyDef);
-
-    // Define the character's shape as a box (in meters)
-    b2PolygonShape characterBox;
-    float boxWidth = (m_pSprSpriteBody->GetWidth() / 2.0f) / SCALE;   // Convert pixel width to meters (half-width for Box2D)
-    float boxHeight = (m_pSprSpriteBody->GetHeight() / 2.0f) / SCALE; // Convert pixel height to meters (half-height for Box2D)
-    characterBox.SetAsBox(boxWidth, boxHeight);
-
-    // Create a fixture for the body (set density, friction, etc.)
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &characterBox;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
-
-    // Attach the fixture to the body
-    m_pBody->CreateFixture(&fixtureDef);
-
-    // Set user data for collision detection
-    m_pBody->SetUserData((void*)PLAYER);
+    offset = 95.0f;
 
     return true;
 }
 
-void Character::Process(float deltaTime, InputSystem& inputSystem)
+void Warrior::Process(float deltaTime, InputSystem& inputSystem)
 {
     // Handle user input for movement
     HandleInput(deltaTime, inputSystem);
@@ -200,7 +119,7 @@ void Character::Process(float deltaTime, InputSystem& inputSystem)
     m_vPosition.y = bodyPosition.y * SCALE;
 
     // Set facing orientation based on mouse cursor position
-    m_vCursor.SetPosition(inputSystem.GetMousePosition());
+    /*m_vCursor.SetPosition(inputSystem.GetMousePosition());
     if (m_vPosition.x < m_vCursor.x)
     {
         m_iFacingDirection = 1;
@@ -210,37 +129,63 @@ void Character::Process(float deltaTime, InputSystem& inputSystem)
     {
         m_iFacingDirection = -1;
         m_bFlipHorizontally = true;
-    }
-
+    }*/
+    
     // Set the sprite's position to match the Box2D body position
-    m_pSprSpriteBody->SetX((int)m_vPosition.x);
-    m_pSprSpriteBody->SetY((int)m_vPosition.y);
+    m_sActions.m_pASpriteIdle->SetX((int)m_vPosition.x);
+    m_sActions.m_pASpriteIdle->SetY((int)m_vPosition.y);
+    m_sActions.m_pASpriteRun->SetX((int)m_vPosition.x);
+    m_sActions.m_pASpriteRun->SetY((int)m_vPosition.y);
+    m_sActions.m_pASpriteJump->SetX((int)m_vPosition.x);
+    m_sActions.m_pASpriteJump->SetY((int)m_vPosition.y - offset);
+    m_sActions.m_pASpriteAttack->SetX((int)m_vPosition.x);
+    m_sActions.m_pASpriteAttack->SetY((int)m_vPosition.y);
+
+    m_sActions.m_pASpriteIdle->Process(deltaTime);
+    m_sActions.m_pASpriteRun->Process(deltaTime);
+    m_sActions.m_pASpriteJump->Process(deltaTime);
+    m_sActions.m_pASpriteAttack->Process(deltaTime);
 
     // Scale the sprite based on camera distance or other factors (you can adjust the scaling factor)
-    m_pSprSpriteBody->SetScale(m_fScale);
+    //m_pSprSpriteBody->SetScale(m_fScale);
 
     // Process health bar updates (ensure health bar reflects player's current status)
     if (m_pHealthbar)
     {
         m_pHealthbar->Process(deltaTime, inputSystem);
     }
-
-
 }
 
-void Character::DrawWithCam(Renderer& renderer, Camera& camera)
+void Warrior::DrawWithCam(Renderer& renderer, Camera& camera)
 {
     // Get the camera offset
     Vector2* cameraOffset = camera.GetOffset();
 
     // Adjust the character position based on the camera offset
-    int adjustedX = m_pSprSpriteBody->GetX() - cameraOffset->x;
+    int adjustedX = m_sActions.m_pASpriteIdle->GetX() - cameraOffset->x;
 
     // Update sprite position
-    m_pSprSpriteBody->SetX(adjustedX);
+    m_sActions.m_pASpriteIdle->SetX(adjustedX);
+    m_sActions.m_pASpriteRun->SetX(adjustedX);
+    m_sActions.m_pASpriteJump->SetX(adjustedX);
+    m_sActions.m_pASpriteAttack->SetX(adjustedX);
 
     // Draw character sprite with adjusted position
-    m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, false);
+    if (m_bMovingX || m_bJumping || m_bDoubleJump)
+    {
+        if (m_bJumping || m_bDoubleJump)
+        {
+            m_sActions.m_pASpriteJump->Draw(renderer, m_bFlipHorizontally, false);
+        }
+        else
+        {
+            m_sActions.m_pASpriteRun->Draw(renderer, m_bFlipHorizontally, false);
+        }
+    }
+    else
+    {
+        m_sActions.m_pASpriteIdle->Draw(renderer, m_bFlipHorizontally, false);
+    }
 
     //// Draw weapon
     //if (m_pASprWeapAttack->IsAnimating())
@@ -265,7 +210,7 @@ void Character::DrawWithCam(Renderer& renderer, Camera& camera)
 
 
 void
-Character::GetInputs(InputSystem& inputSystem)
+Warrior::GetInputs(InputSystem& inputSystem)
 {
     // Gets movement keys' states
     m_sMotionKeyStates.MoveForward = inputSystem.GetKeyState(SDL_SCANCODE_D);
@@ -292,12 +237,10 @@ Character::GetInputs(InputSystem& inputSystem)
     if (m_sMotionKeyStates.MoveForward == BS_PRESSED || m_sMotionKeyStates.MoveForward == BS_HELD)
     {
         m_sKeyboardMotions.Surge = MOTION_FORWARD;
-
     }
     else if (m_sMotionKeyStates.MoveBackward == BS_PRESSED || m_sMotionKeyStates.MoveBackward == BS_HELD)
     {
         m_sKeyboardMotions.Surge = MOTION_BACKWARD;
-
     }
     else
     {
@@ -319,20 +262,86 @@ Character::GetInputs(InputSystem& inputSystem)
 }
 
 
-void Character::HandleInput(float deltaTime, InputSystem& inputSystem)
+void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
 {
     b2Vec2 velocity = m_pBody->GetLinearVelocity();
 
     // Move right when pressing D
     if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD) {
-        velocity.x = 1.0f;  // Set a fixed speed to move right
+        if (!m_sActions.m_pASpriteAttack->IsAnimating())
+        {
+            velocity.x = 1.0f;  // Set a fixed speed to move right
 
+            if (!m_bMovingX)
+            {
+                if (m_sActions.m_pASpriteIdle->IsAnimating())
+                {
+                    m_sActions.m_pASpriteIdle->Inanimate();
+                    m_sActions.m_pASpriteIdle->SetLooping(false);
+                }
+
+                if (!m_sActions.m_pASpriteRun->IsAnimating())
+                {
+                    m_sActions.m_pASpriteRun->Animate();
+                    m_sActions.m_pASpriteRun->SetLooping(true);
+                }
+
+                m_bMovingX = true;
+                m_iFacingDirection = 1;
+                m_bFlipHorizontally = false;
+            }
+        }
     }
     else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD) {
-        velocity.x = -1.0f;  // Set a fixed speed to move left
+        if (!m_sActions.m_pASpriteAttack->IsAnimating())
+        {
+            velocity.x = -1.0f;  // Set a fixed speed to move left
+
+            if (!m_bMovingX)
+            {
+                if (m_sActions.m_pASpriteIdle->IsAnimating())
+                {
+                    m_sActions.m_pASpriteIdle->Inanimate();
+                    m_sActions.m_pASpriteIdle->SetLooping(false);
+                }
+
+                if (!m_sActions.m_pASpriteRun->IsAnimating())
+                {
+                    m_sActions.m_pASpriteRun->Animate();
+                    m_sActions.m_pASpriteRun->SetLooping(true);
+                }
+
+                m_bMovingX = true;
+                m_iFacingDirection = -1;
+                m_bFlipHorizontally = true;
+            }
+        }
     }
     else {
         velocity.x = 0.0f;  // No horizontal movement
+
+        if (m_bMovingX)
+        {
+            if (m_sActions.m_pASpriteRun->IsAnimating())
+            {
+                m_sActions.m_pASpriteRun->Inanimate();
+                m_sActions.m_pASpriteRun->SetLooping(false);
+            }
+
+            if (!m_sActions.m_pASpriteIdle->IsAnimating())
+            {
+                m_sActions.m_pASpriteIdle->Animate();
+                m_sActions.m_pASpriteIdle->SetLooping(true);
+            }
+
+            m_bMovingX = false;
+        }
+    }
+
+    // Attack logic
+    if (inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT) == BS_PRESSED)
+    {
+        // To be implemented
     }
 
     // Jumping logic
@@ -341,6 +350,23 @@ void Character::HandleInput(float deltaTime, InputSystem& inputSystem)
             // First jump
             velocity.y = -5.0f;  // Apply upward force
             m_bJumping = true;        // Character is now jumping
+
+            if (m_sActions.m_pASpriteIdle->IsAnimating())
+            {
+                m_sActions.m_pASpriteIdle->Inanimate();
+                m_sActions.m_pASpriteIdle->SetLooping(false);
+            }
+
+            if (m_sActions.m_pASpriteRun->IsAnimating())
+            {
+                m_sActions.m_pASpriteRun->Inanimate();
+                m_sActions.m_pASpriteRun->SetLooping(false);
+            }
+
+            if (!m_sActions.m_pASpriteJump->IsAnimating())
+            {
+                m_sActions.m_pASpriteJump->Animate();
+            }
         }
         else if (m_bJumping && !m_bDoubleJump) {
             // Double jump
@@ -348,7 +374,6 @@ void Character::HandleInput(float deltaTime, InputSystem& inputSystem)
             m_bDoubleJump = true;     // Double jump has been used
         }
     }
-
 
     // If the player is jumping, update the jump timer
     if (m_bJumping) {
@@ -370,16 +395,19 @@ void Character::HandleInput(float deltaTime, InputSystem& inputSystem)
 
 
     // Apply the calculated position to the sprite
-    m_pSprSpriteBody->SetX(static_cast<int>(spriteX));
-    m_pSprSpriteBody->SetY(static_cast<int>(spriteY));
-
+    m_sActions.m_pASpriteIdle->SetX(static_cast<int>(spriteX));
+    m_sActions.m_pASpriteIdle->SetY(static_cast<int>(spriteY));
+    m_sActions.m_pASpriteRun->SetX(static_cast<int>(spriteX));
+    m_sActions.m_pASpriteRun->SetY(static_cast<int>(spriteY));
+    m_sActions.m_pASpriteJump->SetX(static_cast<int>(spriteX));
+    m_sActions.m_pASpriteJump->SetY(static_cast<int>(spriteY) - offset);
 }
 
 
 bool
-Character::SetBodySprites(Renderer& renderer)
-{   // Change made by Karl - Start
-    m_pSprSpriteHead = renderer.CreateSprite("Sprites\\characterbase\\head.png");
+Warrior::SetBodySprites(Renderer& renderer)
+{
+    /*m_pSprSpriteHead = renderer.CreateSprite("Sprites\\characterbase\\head.png");
 
     if (!(m_pSprSpriteHead))
     {
@@ -412,7 +440,7 @@ Character::SetBodySprites(Renderer& renderer)
     }
 
     m_pSprSpriteShadow = renderer.CreateSprite("Sprites\\characterbase\\floorshadow.png");
-    // Change made by Karl - End
+
     if (!(m_pSprSpriteShadow))
     {
         LogManager::GetInstance().Log("Character Shadow failed to initialise!");
@@ -423,60 +451,176 @@ Character::SetBodySprites(Renderer& renderer)
     m_pSprSpriteHead->SetAngle(180.0f);
     m_pSprSpriteLegLeft->SetAngle(180.0f);
     m_pSprSpriteLegRight->SetAngle(180.0f);
-    m_pSprSpriteShadow->SetAngle(180.0f);
+    m_pSprSpriteShadow->SetAngle(180.0f);*/
+
+    m_sActions.m_pASpriteIdle = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8waridle.png");
+
+    if (!m_sActions.m_pASpriteIdle)
+    {
+        LogManager::GetInstance().Log("Player idle failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_sActions.m_pASpriteIdle->SetupFrames(212, 124);
+        m_sActions.m_pASpriteIdle->SetFrameDuration(0.15f);
+        m_sActions.m_pASpriteIdle->Animate();
+        m_sActions.m_pASpriteIdle->SetLooping(true);
+    }
+
+    m_sActions.m_pASpriteRun = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8warrun.png");
+
+    if (!m_sActions.m_pASpriteRun)
+    {
+        LogManager::GetInstance().Log("Player run failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_sActions.m_pASpriteRun->SetupFrames(212, 124);
+        m_sActions.m_pASpriteRun->SetFrameDuration(0.15f);
+    }
+
+    m_sActions.m_pASpriteJump = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8warjump.png");
+
+    if (!m_sActions.m_pASpriteJump)
+    {
+        LogManager::GetInstance().Log("Player jump failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_sActions.m_pASpriteJump->SetupFrames(288, 128);
+        m_sActions.m_pASpriteJump->SetFrameDuration(0.15f);
+        m_sActions.m_pASpriteJump->SetScale(2.525f);
+    }
+
+    m_sActions.m_pASpriteAttack = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8warattack.png");
+
+    if (!m_sActions.m_pASpriteAttack)
+    {
+        LogManager::GetInstance().Log("Player jump failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_sActions.m_pASpriteAttack->SetupFrames(288, 128);
+        m_sActions.m_pASpriteAttack->SetFrameDuration(0.15f);
+        m_sActions.m_pASpriteAttack->SetScale(2.525f);
+    }
 
     return true;
 }
 
 b2Vec2
-Character::GetPosition()
+Warrior::GetPosition()
 {
     return m_pBody->GetPosition();
 }
 
 Vector2&
-Character::GetVelocityBody()
+Warrior::GetVelocityBody()
 {
     return m_velocityBody;
 }
-
+// Changes made by Karl - Start
 int
-Character::GetWeapontype()
+Warrior::GetCharactertype()
 {
-    return m_iWeaponType;
+    return m_iCharacterType;
 }
 
+void
+Warrior::SetCharacterType(Renderer& renderer, int type)
+{
+    m_iCharacterType = type;
+
+    DefineCharacter(renderer);
+}
+
+void
+Warrior::DefineCharacter(Renderer& renderer)
+{
+    if (!SetBodySprites(renderer))
+    {
+        LogManager::GetInstance().Log("Player animations failed to initialise!");
+    }
+
+    // Initialize healthbar
+    m_pHealthbar = new Healthbar(renderer);
+
+    // Box2D Body Initialization (Changes made by Rauen)
+
+    // Create the Box2D body definition
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(m_vPosition.x / SCALE, m_vPosition.y / SCALE);  // Convert from pixels to meters
+
+    // Create the Box2D body in the world
+    m_pBody = m_pWorld->CreateBody(&bodyDef);
+
+    // Define the character's shape as a box (in meters)
+    b2PolygonShape characterBox;
+    float boxWidth = (56.0f / 2.0f) / SCALE;   // Convert pixel width to meters (half-width for Box2D)
+    float boxHeight = (120.0f / 2.0f) / SCALE; // Convert pixel height to meters (half-height for Box2D)
+    characterBox.SetAsBox(boxWidth, boxHeight);
+
+    // Create a fixture for the body (set density, friction, etc.)
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &characterBox;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
+
+    // Attach the fixture to the body
+    m_pBody->CreateFixture(&fixtureDef);
+
+    // Set user data for collision detection
+    m_pBody->SetUserData((void*)PLAYER);
+}
+
+bool
+Warrior::IsDefined()
+{
+    return m_bDefined;
+}
+
+void
+Warrior::SetDefined(bool define)
+{
+    m_bDefined = define;
+}
+// Changes made by Karl - End
 Vector2&
-Character::GetProjectilePos()
+Warrior::GetProjectilePos()
 {
     return m_pEntArrow->GetPosition();
 }
 
 float
-Character::GetProjWidth()
+Warrior::GetProjWidth()
 {
     return m_pEntArrow->GetWidth();
 }
 
 float
-Character::GetProjHeight()
+Warrior::GetProjHeight()
 {
     return m_pEntArrow->GetHeight();
 }
 
 bool
-Character::IsProjAlive()
+Warrior::IsProjAlive()
 {
     return m_pEntArrow->IsAlive();
 }
 
 void
-Character::SetProjAlive(bool alive)
+Warrior::SetProjAlive(bool alive)
 {
     m_pEntArrow->SetAlive(alive);
 }
 
-void Character::Draw(Renderer& renderer, Camera& camera)
+void Warrior::Draw(Renderer& renderer, Camera& camera)
 {}
 
 //void

@@ -2,6 +2,7 @@
 
 // Local Include
 #include "game.h"
+#include "character.h" // Changes made by Karl
 #include "renderer.h"
 #include "logmanager.h"
 
@@ -98,6 +99,7 @@ void CharacterTwo::Update(float deltaTime, InputSystem& inputSystem)
 
     if (m_isReleased)
     {
+        //Game::GetInstance().GetCharacter()->SetCharacterType(1); // Changes made by Karl
         SceneManager::GetInstance().ChangeScene(4);
     }
     else if (m_isHovered)

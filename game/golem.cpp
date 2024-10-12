@@ -8,6 +8,7 @@
 #include "animatedsprite.h"
 #include "../imgui/imgui.h"
 #include "character.h"
+#include "player.h" // Changes made by Karl
 #include "projectile.h"
 #include "collision.h"
 #include "MyContactListener.h"
@@ -729,7 +730,7 @@ void Golem::CheckPlayerDist()
     m_fDistToPlayer = playerPosition.x - golemPosition.x;
 }
 
-void Golem::SetPlayer(Character* player)
+void Golem::SetPlayer(/*Character* player*/ Player* player) // Changes made by Karl
 {
     m_pEntCharacter = player;
 }

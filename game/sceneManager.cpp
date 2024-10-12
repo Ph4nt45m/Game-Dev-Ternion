@@ -13,6 +13,7 @@
 #include "AUTSplashScene.h"
 #include "TernionMenu.h"
 #include "CharacterSelect.h" // Changes made by Karl
+#include "foresttest.h" // Changes made by Karl
 
 // includes
 #include <cassert>
@@ -138,11 +139,13 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 		break;
 	case 3://Foreset Scene(Dev Test Level)
 		m_pRenderer->SetClearColour(255, 255, 255);
-		newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
+		//newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
+		newScene = new ForestTest(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
 		break;
 	case 4://Foreset Scene(first level)
 		m_pRenderer->SetClearColour(255, 255, 255);
-		newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
+		//newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
+		newScene = new ForestTest(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
 		break;
 	default:
 		// Handle invalid scene ID

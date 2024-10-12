@@ -19,6 +19,7 @@ class Renderer;
 class Sprite;
 class AnimatedSprite;
 class Character;
+class Player; // Changes made by Karl
 class scene;
 class Game
 {
@@ -36,7 +37,9 @@ public:
 	b2Vec2 GetGravity();
 	void SetGravity(float x, float y);
 
-	Character* GetCharacter() const;
+	void CreateCharacter(int type); // Changes made by Karl
+	//Character* GetCharacter() const; // Changes made by Karl
+	Player* GetCharacter() const;
 	b2World* GetWorld() const;
 
 protected:
@@ -82,7 +85,8 @@ protected:
 
 	Vector2 m_pCursor;
 	Scene* m_pScForestScene;
-	Character* m_pEntCharacter;
+	/*Character* m_pEntCharacter;*/ // Changes made by Karl
+	Player* m_pEntCharacter;
 
 #ifdef USE_LAG
 	float m_fLag;

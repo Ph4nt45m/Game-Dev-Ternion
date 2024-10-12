@@ -2,6 +2,8 @@
 
 // Local Include
 #include "game.h"
+#include "character.h" // Changes made by Karl
+#include "player.h"
 #include "renderer.h"
 #include "logmanager.h"
 
@@ -98,6 +100,7 @@ void CharacterOne::Update(float deltaTime, InputSystem& inputSystem)
 
     if (m_isReleased)
     {
+        Game::GetInstance().CreateCharacter(0); // changes made by Karl
         SceneManager::GetInstance().ChangeScene(4);
     }
     else if (m_isHovered)
