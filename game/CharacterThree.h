@@ -18,9 +18,11 @@ public:
     void Update(float deltaTime, InputSystem& inputSystem) override;
     void Draw(Renderer& renderer) override;
 private:
-    Sprite* m_buttonFrame; // Changes made by Karl
+    Sprite* m_buttonFrameNormal; // Changes made by Karl
+    Sprite* m_buttonFrameHovered; // Changes made by Karl
     AnimatedSprite* m_buttonSpriteNormal;   // Sprite for normal state
     AnimatedSprite* m_buttonSpriteHovered;  // Sprite for hovered state
+    float m_fBlueTint; // Changes made by Karl
 };
 
 #endif // !__CHARACTERTHREE_H_

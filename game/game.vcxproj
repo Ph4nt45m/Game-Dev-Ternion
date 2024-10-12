@@ -182,6 +182,7 @@
     <ClCompile Include="scenebouncingballs.cpp" />
     <ClCompile Include="scenecheckerboards.cpp" />
     <ClCompile Include="sceneManager.cpp" />
+    <ClCompile Include="SettingsButton.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="sprite.cpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="scenebouncingballs.h" />
     <ClInclude Include="scenecheckerboards.h" />
     <ClInclude Include="sceneManager.h" />
+    <ClInclude Include="SettingsButton.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="sprite.h" />
