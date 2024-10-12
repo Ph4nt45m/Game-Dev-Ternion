@@ -138,13 +138,13 @@ void Warrior::Process(float deltaTime, InputSystem& inputSystem)
     m_sActions.m_pASpriteRun->SetY((int)m_vPosition.y);
     m_sActions.m_pASpriteJump->SetX((int)m_vPosition.x);
     m_sActions.m_pASpriteJump->SetY((int)m_vPosition.y - offset);
-    m_sActions.m_pASpriteAttack->SetX((int)m_vPosition.x);
-    m_sActions.m_pASpriteAttack->SetY((int)m_vPosition.y);
+    /*m_sActions.m_pASpriteAttack->SetX((int)m_vPosition.x);
+    m_sActions.m_pASpriteAttack->SetY((int)m_vPosition.y);*/
 
     m_sActions.m_pASpriteIdle->Process(deltaTime);
     m_sActions.m_pASpriteRun->Process(deltaTime);
     m_sActions.m_pASpriteJump->Process(deltaTime);
-    m_sActions.m_pASpriteAttack->Process(deltaTime);
+    //m_sActions.m_pASpriteAttack->Process(deltaTime);
 
     // Scale the sprite based on camera distance or other factors (you can adjust the scaling factor)
     //m_pSprSpriteBody->SetScale(m_fScale);
@@ -168,7 +168,7 @@ void Warrior::DrawWithCam(Renderer& renderer, Camera& camera)
     m_sActions.m_pASpriteIdle->SetX(adjustedX);
     m_sActions.m_pASpriteRun->SetX(adjustedX);
     m_sActions.m_pASpriteJump->SetX(adjustedX);
-    m_sActions.m_pASpriteAttack->SetX(adjustedX);
+    //m_sActions.m_pASpriteAttack->SetX(adjustedX);
 
     // Draw character sprite with adjusted position
     if (m_bMovingX || m_bJumping || m_bDoubleJump)
@@ -268,53 +268,95 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
 
     // Move right when pressing D
     if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD) {
-        if (!m_sActions.m_pASpriteAttack->IsAnimating())
+        //if (!m_sActions.m_pASpriteAttack->IsAnimating())
+        //{
+        //    velocity.x = 1.0f;  // Set a fixed speed to move right
+
+        //    if (!m_bMovingX)
+        //    {
+        //        if (m_sActions.m_pASpriteIdle->IsAnimating())
+        //        {
+        //            m_sActions.m_pASpriteIdle->Inanimate();
+        //            m_sActions.m_pASpriteIdle->SetLooping(false);
+        //        }
+
+        //        if (!m_sActions.m_pASpriteRun->IsAnimating())
+        //        {
+        //            m_sActions.m_pASpriteRun->Animate();
+        //            m_sActions.m_pASpriteRun->SetLooping(true);
+        //        }
+
+        //        m_bMovingX = true;
+        //        m_iFacingDirection = 1;
+        //        m_bFlipHorizontally = false;
+        //    }
+        //}
+
+        velocity.x = 1.0f;  // Set a fixed speed to move right
+
+        if (!m_bMovingX)
         {
-            velocity.x = 1.0f;  // Set a fixed speed to move right
-
-            if (!m_bMovingX)
+            if (m_sActions.m_pASpriteIdle->IsAnimating())
             {
-                if (m_sActions.m_pASpriteIdle->IsAnimating())
-                {
-                    m_sActions.m_pASpriteIdle->Inanimate();
-                    m_sActions.m_pASpriteIdle->SetLooping(false);
-                }
-
-                if (!m_sActions.m_pASpriteRun->IsAnimating())
-                {
-                    m_sActions.m_pASpriteRun->Animate();
-                    m_sActions.m_pASpriteRun->SetLooping(true);
-                }
-
-                m_bMovingX = true;
-                m_iFacingDirection = 1;
-                m_bFlipHorizontally = false;
+                m_sActions.m_pASpriteIdle->Inanimate();
+                m_sActions.m_pASpriteIdle->SetLooping(false);
             }
+
+            if (!m_sActions.m_pASpriteRun->IsAnimating())
+            {
+                m_sActions.m_pASpriteRun->Animate();
+                m_sActions.m_pASpriteRun->SetLooping(true);
+            }
+
+            m_bMovingX = true;
+            m_iFacingDirection = 1;
+            m_bFlipHorizontally = false;
         }
     }
     else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD) {
-        if (!m_sActions.m_pASpriteAttack->IsAnimating())
+        //if (!m_sActions.m_pASpriteAttack->IsAnimating())
+        //{
+        //    velocity.x = -1.0f;  // Set a fixed speed to move left
+
+        //    if (!m_bMovingX)
+        //    {
+        //        if (m_sActions.m_pASpriteIdle->IsAnimating())
+        //        {
+        //            m_sActions.m_pASpriteIdle->Inanimate();
+        //            m_sActions.m_pASpriteIdle->SetLooping(false);
+        //        }
+
+        //        if (!m_sActions.m_pASpriteRun->IsAnimating())
+        //        {
+        //            m_sActions.m_pASpriteRun->Animate();
+        //            m_sActions.m_pASpriteRun->SetLooping(true);
+        //        }
+
+        //        m_bMovingX = true;
+        //        m_iFacingDirection = -1;
+        //        m_bFlipHorizontally = true;
+        //    }
+        //}
+
+        velocity.x = -1.0f;  // Set a fixed speed to move left
+
+        if (!m_bMovingX)
         {
-            velocity.x = -1.0f;  // Set a fixed speed to move left
-
-            if (!m_bMovingX)
+            if (m_sActions.m_pASpriteIdle->IsAnimating())
             {
-                if (m_sActions.m_pASpriteIdle->IsAnimating())
-                {
-                    m_sActions.m_pASpriteIdle->Inanimate();
-                    m_sActions.m_pASpriteIdle->SetLooping(false);
-                }
-
-                if (!m_sActions.m_pASpriteRun->IsAnimating())
-                {
-                    m_sActions.m_pASpriteRun->Animate();
-                    m_sActions.m_pASpriteRun->SetLooping(true);
-                }
-
-                m_bMovingX = true;
-                m_iFacingDirection = -1;
-                m_bFlipHorizontally = true;
+                m_sActions.m_pASpriteIdle->Inanimate();
+                m_sActions.m_pASpriteIdle->SetLooping(false);
             }
+
+            if (!m_sActions.m_pASpriteRun->IsAnimating())
+            {
+                m_sActions.m_pASpriteRun->Animate();
+                m_sActions.m_pASpriteRun->SetLooping(true);
+            }
+
+            m_bMovingX = true;
+            m_iFacingDirection = -1;
+            m_bFlipHorizontally = true;
         }
     }
     else {
@@ -339,10 +381,10 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
     }
 
     // Attack logic
-    if (inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT) == BS_PRESSED)
-    {
-        // To be implemented
-    }
+    //if (inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT) == BS_PRESSED)
+    //{
+    //    // To be implemented
+    //}
 
     // Jumping logic
     if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED) {
@@ -495,7 +537,7 @@ Warrior::SetBodySprites(Renderer& renderer)
         m_sActions.m_pASpriteJump->SetScale(2.525f);
     }
 
-    m_sActions.m_pASpriteAttack = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8warattack.png");
+    /*m_sActions.m_pASpriteAttack = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8warattack.png");
 
     if (!m_sActions.m_pASpriteAttack)
     {
@@ -507,7 +549,7 @@ Warrior::SetBodySprites(Renderer& renderer)
         m_sActions.m_pASpriteAttack->SetupFrames(288, 128);
         m_sActions.m_pASpriteAttack->SetFrameDuration(0.15f);
         m_sActions.m_pASpriteAttack->SetScale(2.525f);
-    }
+    }*/
 
     return true;
 }
