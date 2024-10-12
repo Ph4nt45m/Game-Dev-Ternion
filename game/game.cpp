@@ -57,6 +57,7 @@ Game::Game()
 	, m_pInputSystem(0)
 	, m_iMouseState(0)
 	, m_bLooping(true)
+	, soundManager(0)
 {
 
 }
@@ -77,6 +78,11 @@ Game::~Game()
 
 	delete m_pEntCharacter;
 	m_pEntCharacter = 0;
+
+	if (soundManager) {
+		delete soundManager;
+		soundManager = nullptr;
+	}
 }
 
 void Game::Quit()
@@ -93,8 +99,8 @@ bool Game::Initialise()
 	int bbHeight = 800; // 800 originally
 
 	//World init
-	b2Vec2 gravity{ 0.0f, 0.0f };
-	world = new b2World{ gravity };
+	SetGravity(0.0f, 0.0f);
+	world = new b2World{ m_gravity };
 	world->SetContactListener(&m_contactListener);
 
 	//Renderder
@@ -136,7 +142,7 @@ bool Game::Initialise()
 		return false;
 	}
 	// Optionally, load the first scene if not using transitions right away
-	sceneManager.ChangeScene(0); // Load initial scene (e.g., splash screen, menu)
+	sceneManager.ChangeScene(1); // Load initial scene (e.g., splash screen, menu)
 	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
 
@@ -158,6 +164,24 @@ bool Game::Initialise()
 	for (b2Body* body = world->GetBodyList(); body != nullptr; body = body->GetNext()) {
 		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
 	}
+
+	//Kyle code
+	// Initialize the SoundManager
+	soundManager = new SoundManager();
+
+	// Initialize SDL_mixer
+	if (!soundManager->init()) {
+		return false;
+	}
+	//// Load sounds and music
+	soundManager->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
+	soundManager->loadMusic("background", "..\\Sprites\\sounds\\JoshWoodward-Circles-NoVox.mp3");
+	//// Load and play the new music
+	soundManager->loadMusic("newBackground", "..\\Sprites\\sounds\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
+
+	// Play the background music (loop infinitely)
+	soundManager->playMusic("background", -1);	//Kyle end
+	//Kyle code end
 
 	return true;
 }
@@ -207,7 +231,6 @@ Game::Process(float deltaTime)
 	ProcessFrameCounting(deltaTime);
 
 	// TODO: Add game objects to process here!
-
 
 	// Box2D time step
 	const float32 timeStep = 1.0f / 60.0f;  // 60Hz update rate
@@ -358,4 +381,15 @@ Character* Game::GetCharacter() const
 b2World* Game::GetWorld() const
 {
 	return world;
+}
+
+b2Vec2 Game::GetGravity()
+{
+	return m_gravity;
+}
+
+void Game::SetGravity(float x, float y)
+{
+	m_gravity.x = x;
+	m_gravity.y = y;
 }

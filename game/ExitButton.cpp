@@ -35,7 +35,6 @@ bool ExitButton::Initialise(Renderer& renderer)
     m_buttonSpriteNormal = renderer.CreateSprite("..\\Sprites\\Menus\\exitNormal.png");
     m_buttonSpriteHovered = renderer.CreateSprite("..\\Sprites\\Menus\\exitHovered.png");
     m_buttonSpritePressed = renderer.CreateSprite("..\\Sprites\\Menus\\exitPressed.png");
-
     // Get the screen dimensions
     int windowWidth = renderer.GetWidth();
     int windowHeight = renderer.GetHeight();
@@ -67,6 +66,7 @@ bool ExitButton::Initialise(Renderer& renderer)
     m_buttonSpriteHovered->SetY(m_y);
     m_buttonSpritePressed->SetX(m_x);
     m_buttonSpritePressed->SetY(m_y);
+    
 
     // Ensure all sprites are loaded
     return (m_buttonSpriteNormal && m_buttonSpriteHovered && m_buttonSpritePressed);
@@ -83,6 +83,7 @@ void ExitButton::Update(float deltaTime, InputSystem& inputSystem)
 
 void ExitButton::Draw(Renderer& renderer)
 {
+    
     if (m_isHeld)
     {
         m_buttonSpritePressed->Draw(renderer, true, false);

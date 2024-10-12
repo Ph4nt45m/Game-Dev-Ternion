@@ -31,7 +31,7 @@ public:
 	virtual void Draw(Renderer& renderer);
 	virtual void DebugDraw();
 
-	bool SetEnemies(Character& character, Renderer& renderer);
+	bool SetEnemies(Renderer& renderer);
 
 protected:
 	
@@ -50,6 +50,9 @@ protected:
 	Character* m_pCharacter;
 	Camera camera;
 	Terrain* ground;
+	Terrain* leftWall;
+	Terrain* rightWall;
+	Terrain* platform;
 private:
 	std::vector<Terrain*> m_terrainSegments;
 };

@@ -6,6 +6,7 @@
 #include "vector2.h"
 #include "inputsystem.h"
 #include "MyContactListener.h"
+#include "SoundManager.h"
 
 // Library includes:
 #include <vector>
@@ -32,6 +33,9 @@ public:
 	bool DoGameLoop();
 	void Quit();
 
+	b2Vec2 GetGravity();
+	void SetGravity(float x, float y);
+
 	Character* GetCharacter() const;
 	b2World* GetWorld() const;
 
@@ -57,6 +61,7 @@ public:
 	//Box2D
 	
 	b2World* world;
+	b2Vec2 m_gravity;
 
 	//Box2D stuff
 
@@ -92,6 +97,8 @@ private:
 	Sprite* m_sprCursorBodySprite;
 	Sprite* m_sprCursorBorderSprite;
 	int m_iMouseState;
+
+	SoundManager* soundManager;
 
 	MyContactListener m_contactListener;
 };

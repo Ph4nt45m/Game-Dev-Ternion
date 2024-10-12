@@ -6,6 +6,7 @@
 #include "vector2.h"
 #include "inputsystem.h"
 #include "healthbar.h"
+#include "Camera.h"
 
 //Box2D
 #include <Box2D.h>
@@ -17,6 +18,7 @@ class Sprite;
 class AnimatedSprite;
 class Projectile;
 class Game;
+
 // Class declaration:
 class Character : public Entity
 {
@@ -27,17 +29,13 @@ public:
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;
-    void DrawWithCam(Renderer& renderer, Vector2* offset);
-    void Draw(Renderer& renderer) override;
+    void DrawWithCam(Renderer& renderer, Camera& camera);
+    void Draw(Renderer& renderer, Camera& camera) override;
     bool SetBodySprites(Renderer& renderer) override;
-    void SetNumSegments(int amount) override;
-    void GetInputs(InputSystem& inputSystem) override;
+    void GetInputs(InputSystem& inputSystem);
     void HandleInput(float deltaTime, InputSystem& inputSystem);
-    void SetTerrainMoving(bool moving) override;
-    bool IsTerrainMoving() override;
 
     b2Vec2 GetPosition();
-    Vector2& GetFeetPos();
     Vector2& GetVelocityBody();
     int GetWeapontype();
     Vector2& GetProjectilePos();
@@ -45,18 +43,10 @@ public:
     float GetProjHeight();
     bool IsProjAlive();
     void SetProjAlive(bool alive);
-    void SetCentered(bool centered);
-    bool IsCentered();
-    int GetBodyWidth();
-    int GetBodyHeight();
-    void ShiftX(float amount);
-    void ShiftY(float amount);
 
     //void DebugDraw() override;
 
 protected:
-    void ComputeBounds(float width, float height);
-    void HandleLegs(float deltaTime);
 
 private:
     Character(const Character& character);
@@ -89,6 +79,7 @@ private:
     float m_fLegBodyOffset;
     float m_fStepTimer;
     float m_fStepDuration;
+    float m_jumpTimer;
 };
 
 #endif // !CHARACTER_H

@@ -72,7 +72,7 @@ Projectile::Process(float deltaTime, InputSystem& inputSystem)
 }
 
 void
-Projectile::Draw(Renderer& renderer)
+Projectile::Draw(Renderer& renderer, Camera& camera)
 {
 	if (m_bAlive)
 	{
@@ -91,36 +91,6 @@ Projectile::SetBodySprites(Renderer& renderer)
 	}*/
 
 	return true;
-}
-
-void
-Projectile::SetNumSegments(int amount)
-{
-
-}
-
-void
-Projectile::GetInputs(InputSystem& inputSystem)
-{
-
-}
-
-void
-Projectile::HandleInput(float deltaTime)
-{
-
-}
-
-void
-Projectile::SetTerrainMoving(bool moving)
-{
-
-}
-
-bool
-Projectile::IsTerrainMoving()
-{
-	return sm_bTerrainMoving;
 }
 
 Vector2&

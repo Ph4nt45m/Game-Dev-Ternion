@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "vector2.h"
 #include "inputsystem.h"
+#include "Camera.h"
 
 // Forward declarations:
 class Renderer;
@@ -52,12 +53,8 @@ public:
 	virtual ~Entity();
 	virtual bool Initialise(Renderer& renderer) = 0;
 	virtual void Process(float deltaTime, InputSystem& inputSystem) = 0;
-	virtual void Draw(Renderer& renderer) = 0;
+	virtual void Draw(Renderer& renderer, Camera& camera) = 0;
 	virtual bool SetBodySprites(Renderer& renderer) = 0;
-	virtual void SetNumSegments(int amount) = 0;
-	virtual void GetInputs(InputSystem& inputSystem) = 0;
-	virtual void SetTerrainMoving(bool moving) = 0;
-	virtual bool IsTerrainMoving() = 0;
 
 	static void SetWindowBoundaries(Renderer& renderer)
 	{
