@@ -47,6 +47,8 @@ public:
     void Action();
     void ProcessAction();
     void SetPlayer(Character* player);
+    void CreateSlashBody(float x, float y);
+
 
     //void DebugDraw() override;
 
