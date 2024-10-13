@@ -28,18 +28,16 @@ void MyContactListener::BeginContact(b2Contact* contact)
     else if ((int)userDataA == TERRAIN && (int)userDataB == PLAYER) {
         // Reverse case: terrain collided with player
         //printf("Player collided with terrain (reverse case)!\n");
-    }
-
-    // Golem's slash attack collision with player
-    if ((int)userDataA == PLAYER && (int)userDataB == GOLEM_SLASH) {
-        //printf("Player hit by golem's slash!\n");
-    }
-    else if ((int)userDataA == GOLEM_SLASH && (int)userDataB == PLAYER) {
-        //("Player hit by golem's slash (reverse case)!\n");
+        
     }
     if ((int)userDataA == PLAYER && (int)userDataB == GOLEM) {
+        //if we want contact damage
+        printf("Touch\n");
     }
     else if ((int)userDataA == GOLEM && (int)userDataB == PLAYER) {
+        //if we want contact damage
+        printf("Touch\n");
+
     }
     // Check for terrain collisions
     if ((int)userDataA == GOLEM && (int)userDataB == TERRAIN) {
@@ -48,7 +46,13 @@ void MyContactListener::BeginContact(b2Contact* contact)
     else if ((int)userDataA == TERRAIN && (int)userDataB == GOLEM) {
         // Reverse case: terrain collided with player
     }
-
+    // Golem's slash attack collision with player
+    if ((int)userDataA == PLAYER && (int)userDataB == GOLEM_SLASH) {
+        printf("Player hit by golem's slash!\n");
+    }
+    else if ((int)userDataA == GOLEM_SLASH && (int)userDataB == PLAYER) {
+        ("Player hit by golem's slash (reverse case)!\n");
+    }
     // Handle other collisions, like GOLEM_SLAM, PROJECTILE, etc.
 }
 

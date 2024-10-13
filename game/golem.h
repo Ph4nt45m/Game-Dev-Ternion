@@ -15,7 +15,6 @@ class Renderer;
 class Sprite;
 class AnimatedSprite;
 class Character;
-class Player;
 class Projectile;
 
 // Golem animations:
@@ -46,9 +45,9 @@ public:
 
     void Move(int attackType);
     void Action();
-    void ProcessAction();
-    //void SetPlayer(Character* player); // Changes made by Karl
-    void SetPlayer(Player* player);
+    void SetPlayer(Character* player);
+    void CreateSlashBody();
+    void DeleteSlash();
 
     //void DebugDraw() override;
 
@@ -62,6 +61,7 @@ public:
     //box2d verables
     b2World* m_pWorld;
     b2Body* m_pBody;
+    b2Body* m_pSlashBody;
 
     //attacks
     b2Body* slashBody;
@@ -70,11 +70,11 @@ public:
 
     Camera* m_pcamera;
     bool IsCameraSet;
+    const float SCALE = 30.0f;
 
     // Member data:
 protected:
-    //Character* m_pEntCharacter; // Changes made by Karl
-    Player* m_pEntCharacter;
+    Character* m_pEntCharacter;
     Sprite* m_pSprSpriteBody;
     Projectile* m_pEntProjectile;
     Vector2 m_vStartingPos;
@@ -87,6 +87,8 @@ protected:
     float m_fSlamRangeMax;
     float m_fThrowRangeMax;
     float m_fGroundY;
+    float m_fSlashWidth;
+    float m_fSlashHeight;
     bool m_bPlayerInRange;
     bool m_bSpotted;
     bool m_bEngage;
