@@ -7,6 +7,7 @@
 #include "inputsystem.h"
 #include "MyContactListener.h"
 #include "SoundManager.h"
+#include "alphabet.h"
 
 // Library includes:
 #include <vector>
@@ -99,6 +100,7 @@ private:
 	int m_iMouseState;
 
 	SoundManager* soundManager;
+	Alphabet* alphabet;
 
 	MyContactListener m_contactListener;
 };

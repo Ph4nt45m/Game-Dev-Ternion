@@ -181,6 +181,9 @@ bool Game::Initialise()
 
 	// Play the background music (loop infinitely)
 	soundManager->playMusic("background", -1);	//Kyle end
+
+	alphabet = new Alphabet();
+	alphabet->Initialize(*m_pRenderer);
 	//Kyle code end
 
 	return true;
@@ -279,6 +282,7 @@ Game::Draw(Renderer& renderer)
 	renderer.Clear();
 
 	// TODO: Add game objects to draw here!
+	alphabet->DrawTextW(renderer, "the\n forest", 100, 200);
 
 	SceneManager::GetInstance().Draw(renderer);
 
