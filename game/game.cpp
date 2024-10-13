@@ -142,7 +142,7 @@ bool Game::Initialise()
 		return false;
 	}
 	// Optionally, load the first scene if not using transitions right away
-	sceneManager.ChangeScene(1); // Load initial scene (e.g., splash screen, menu)
+	sceneManager.ChangeScene(0); // Load initial scene (e.g., splash screen, menu)
 	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
 
@@ -181,7 +181,7 @@ bool Game::Initialise()
 
 	// Play the background music (loop infinitely)
 	soundManager->playMusic("background", -1);	//Kyle end
-
+	soundManager->setMusicVolume(128);
 	alphabet = new Alphabet();
 	alphabet->Initialize(*m_pRenderer);
 	//Kyle code end
