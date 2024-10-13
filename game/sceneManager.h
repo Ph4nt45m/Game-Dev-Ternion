@@ -47,6 +47,11 @@ public:
 
 protected:
 	static SceneManager* sm_pInstance;
+	float m_fElapsedTime; // Changes made by Karl
+	int sceneId;
+	float m_iRed;
+	float m_iGreen;
+	float m_iBlue;
 
 private:
 	std::vector<Sprite*> m_sprites; // Store allocated sprites

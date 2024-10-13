@@ -366,6 +366,7 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
                 if (!m_sActions.m_pASpriteAttack->IsAnimating())
                 {
                     m_sActions.m_pASpriteAttack->Animate();
+                    // Set sound effects here
                 }
             }
         }

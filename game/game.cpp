@@ -17,6 +17,7 @@
 #include "sceneManager.h"
 #include "Warrior.h" // Changes made by Karl
 #include "Mage.h" // Changes made by Karl
+#include "Archer.h" // Changes made by Karl
 
 // Library includes:
 #include <windows.h>
@@ -144,7 +145,7 @@ bool Game::Initialise()
 		return false;
 	}
 	// Optionally, load the first scene if not using transitions right away
-	sceneManager.ChangeScene(1); // Load initial scene (e.g., splash screen, menu)
+	sceneManager.ChangeScene(0); // Load initial scene (e.g., splash screen, menu)
 	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
 
@@ -391,6 +392,7 @@ Game::CreateCharacter(int type)
 		m_pEntCharacter = new Mage(world);
 		break;
 	case 2:
+		m_pEntCharacter = new Archer(world);
 		break;
 	}
 

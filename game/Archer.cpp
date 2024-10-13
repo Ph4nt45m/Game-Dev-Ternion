@@ -1,5 +1,5 @@
 // This include:
-#include "Mage.h"
+#include "Archer.h"
 
 // Local includes:
 #include "renderer.h"
@@ -20,7 +20,7 @@
 //Box2D world
 #define SCALE 30.0f
 
-Mage::Mage(b2World* world)
+Archer::Archer(b2World* world)
     : m_pSprSpriteHead(0)
     , m_pSprSpriteLegLeft(0)
     , m_pSprSpriteLegRight(0)
@@ -47,7 +47,7 @@ Mage::Mage(b2World* world)
 
 }
 
-Mage::~Mage()
+Archer::~Archer()
 {
     delete m_pSprSpriteHead;
     m_pSprSpriteHead = 0;
@@ -91,7 +91,7 @@ Mage::~Mage()
     m_pWorld->DestroyBody(m_pBody);
 }
 
-bool Mage::Initialise(Renderer& renderer)
+bool Archer::Initialise(Renderer& renderer)
 {
     m_iFacingDirection = 1;
     m_fScale = 1.0f; // Changes made by Karl
@@ -106,7 +106,7 @@ bool Mage::Initialise(Renderer& renderer)
     return true;
 }
 
-void Mage::Process(float deltaTime, InputSystem& inputSystem)
+void Archer::Process(float deltaTime, InputSystem& inputSystem)
 {
     // Handle user input for movement
     HandleInput(deltaTime, inputSystem);
@@ -156,7 +156,7 @@ void Mage::Process(float deltaTime, InputSystem& inputSystem)
     }
 }
 
-void Mage::DrawWithCam(Renderer& renderer, Camera& camera)
+void Archer::DrawWithCam(Renderer& renderer, Camera& camera)
 {
     // Get the camera offset
     Vector2* cameraOffset = camera.GetOffset();
@@ -214,7 +214,7 @@ void Mage::DrawWithCam(Renderer& renderer, Camera& camera)
 
 
 void
-Mage::GetInputs(InputSystem& inputSystem)
+Archer::GetInputs(InputSystem& inputSystem)
 {
     // Gets movement keys' states
     m_sMotionKeyStates.MoveForward = inputSystem.GetKeyState(SDL_SCANCODE_D);
@@ -266,7 +266,7 @@ Mage::GetInputs(InputSystem& inputSystem)
 }
 
 
-void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
+void Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
 {
     b2Vec2 velocity = m_pBody->GetLinearVelocity();
 
@@ -443,9 +443,9 @@ void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
 
 
 bool
-Mage::SetBodySprites(Renderer& renderer)
+Archer::SetBodySprites(Renderer& renderer)
 {   // Changes made by Karl
-    m_sActions.m_pASpriteIdle = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8mageidle.png");
+    m_sActions.m_pASpriteIdle = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\archer\\anim8archidle.png");
 
     if (!m_sActions.m_pASpriteIdle)
     {
@@ -460,7 +460,7 @@ Mage::SetBodySprites(Renderer& renderer)
         m_sActions.m_pASpriteIdle->SetLooping(true);
     }
 
-    m_sActions.m_pASpriteRun = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8magerun.png");
+    m_sActions.m_pASpriteRun = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\archer\\anim8archrun.png");
 
     if (!m_sActions.m_pASpriteRun)
     {
@@ -473,7 +473,7 @@ Mage::SetBodySprites(Renderer& renderer)
         m_sActions.m_pASpriteRun->SetFrameDuration(0.15f);
     }
 
-    m_sActions.m_pASpriteJump = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8magejump.png");
+    m_sActions.m_pASpriteJump = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\archer\\anim8archjump.png");
 
     if (!m_sActions.m_pASpriteJump)
     {
@@ -486,7 +486,7 @@ Mage::SetBodySprites(Renderer& renderer)
         m_sActions.m_pASpriteJump->SetFrameDuration(0.1f);
     }
     // Changes made by Karl
-    m_sActions.m_pASpriteAttack = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8mageattacktwo.png");
+    m_sActions.m_pASpriteAttack = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\archer\\anim8archattack.png");
 
     if (!m_sActions.m_pASpriteAttack)
     {
@@ -503,25 +503,25 @@ Mage::SetBodySprites(Renderer& renderer)
 }
 
 b2Vec2
-Mage::GetPosition()
+Archer::GetPosition()
 {
     return m_pBody->GetPosition();
 }
 
 Vector2&
-Mage::GetVelocityBody()
+Archer::GetVelocityBody()
 {
     return m_velocityBody;
 }
 // Changes made by Karl - Start
 int
-Mage::GetCharactertype()
+Archer::GetCharactertype()
 {
     return m_iCharacterType;
 }
 
 void
-Mage::SetCharacterType(Renderer& renderer, int type)
+Archer::SetCharacterType(Renderer& renderer, int type)
 {
     m_iCharacterType = type;
 
@@ -529,7 +529,7 @@ Mage::SetCharacterType(Renderer& renderer, int type)
 }
 
 void
-Mage::DefineCharacter(Renderer& renderer)
+Archer::DefineCharacter(Renderer& renderer)
 {
     if (!SetBodySprites(renderer))
     {
@@ -569,52 +569,52 @@ Mage::DefineCharacter(Renderer& renderer)
 }
 
 bool
-Mage::IsDefined()
+Archer::IsDefined()
 {
     return m_bDefined;
 }
 
 void
-Mage::SetDefined(bool define)
+Archer::SetDefined(bool define)
 {
     m_bDefined = define;
 }
 // Changes made by Karl - End
 Vector2&
-Mage::GetProjectilePos()
+Archer::GetProjectilePos()
 {
     return m_pEntArrow->GetPosition();
 }
 
 float
-Mage::GetProjWidth()
+Archer::GetProjWidth()
 {
     return m_pEntArrow->GetWidth();
 }
 
 float
-Mage::GetProjHeight()
+Archer::GetProjHeight()
 {
     return m_pEntArrow->GetHeight();
 }
 
 bool
-Mage::IsProjAlive()
+Archer::IsProjAlive()
 {
     return m_pEntArrow->IsAlive();
 }
 
 void
-Mage::SetProjAlive(bool alive)
+Archer::SetProjAlive(bool alive)
 {
     m_pEntArrow->SetAlive(alive);
 }
 
-void Mage::Draw(Renderer& renderer, Camera& camera)
+void Archer::Draw(Renderer& renderer, Camera& camera)
 {}
 
 //void
-//Mage::DebugDraw()
+//Archer::DebugDraw()
 //{
 //    ImGui::Text("Character Debug Info");
 //    ImGui::InputFloat2("Position", reinterpret_cast<float*>(&m_position));

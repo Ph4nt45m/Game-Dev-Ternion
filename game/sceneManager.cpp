@@ -44,6 +44,11 @@ SceneManager::SceneManager()
 	, m_pendingSceneID(-1)
 	, m_iCurrentScene(0)
 	, m_pRenderer(0)
+	, m_fElapsedTime(0.0f) // Changes made by Karl
+	, sceneId(0)
+	, m_iRed(0)
+	, m_iGreen(0)
+	, m_iBlue(0)
 {
     // Constructor code here
 }
@@ -71,15 +76,36 @@ bool SceneManager::Initialise(Renderer& renderer)
 
 void SceneManager::Process(float deltaTime, InputSystem& inputSystem)
 {
+	m_fElapsedTime += deltaTime;
+
 	if (!m_scenes.empty())
 	{
 		// Process the current scene
 		m_scenes[m_iCurrentScene]->Process(deltaTime, inputSystem);
+		// Changes made by Karl
+		if (sceneId == 0 && m_fElapsedTime > 1.0f)
+		{
+			if (m_iRed < 31 || m_iBlue < 37 || m_iGreen < 13)
+			{
+				m_iRed += 15.5f * deltaTime;
+				m_iGreen += 6.5f * deltaTime;
+				m_iBlue += 19.0f * deltaTime;
+			}
+			else
+			{
+				m_iRed = 255;
+				m_iGreen = 255;
+				m_iBlue = 255;
+			}
+
+			m_pRenderer->SetClearColour(m_iRed, m_iGreen, m_iBlue);
+		}
 	}
 	else
 	{
 		LogManager::GetInstance().Log("\nThis didn't work");
 	}
+
 	PerformSceneTransition();
 }
 
@@ -124,11 +150,12 @@ void SceneManager::ChangeScene(int newSceneID)
 Scene* SceneManager::CreateSceneByID(int sceneID)
 {
 	Scene* newScene = nullptr;
+	sceneId = sceneID; // Changes made by Karl
 
 	switch (sceneID)
 	{
 	case 0://AUT Splash Scene
-		m_pRenderer->SetClearColour(0, 0, 0);
+		m_pRenderer->SetClearColour(m_iRed, m_iGreen, m_iBlue); // Changes made by Karl
 		newScene = new SplashScene();
 		break;
 	case 1://Ternion Menu Scene
