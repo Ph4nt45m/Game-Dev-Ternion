@@ -23,6 +23,7 @@ private:
     AnimatedSprite* m_buttonSpriteNormal;   // Sprite for normal state
     AnimatedSprite* m_buttonSpriteHovered;  // Sprite for hovered state
     float m_fBlueTint; // Changes made by Karl
+    int m_iCharYOffset; // Offset to shift sprite up to center // Changes made by Karl
 };
 
 #endif // !__CHARACTERONE_H_

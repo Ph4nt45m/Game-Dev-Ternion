@@ -57,7 +57,7 @@ bool CharacterSelectScene::Initialise(Renderer& renderer)
 
     // Calculate button position as a percentage of window size
     float warriorButtonX = windowWidth * 0.2f; // 20% of the window width
-    float warriorButtonY = windowHeight * 0.5f; // 70% of the window height
+    float warriorButtonY = windowHeight * 0.5f; // 50% of the window height
     float mageButtonX = windowWidth * 0.5f;
     float mageButtonY = windowHeight * 0.5f;
     float archerButtonX = windowWidth * 0.8f;

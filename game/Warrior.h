@@ -19,15 +19,7 @@ class Sprite;
 class AnimatedSprite;
 class Projectile;
 class Game;
-
-typedef struct
-{
-    AnimatedSprite* m_pASpriteIdle;
-    AnimatedSprite* m_pASpriteRun;
-    AnimatedSprite* m_pASpriteJump;
-    AnimatedSprite* m_pASpriteAttack;
-} Actions;
-
+// Changes made by Karl
 // Class declaration:
 class Warrior : public Player
 {

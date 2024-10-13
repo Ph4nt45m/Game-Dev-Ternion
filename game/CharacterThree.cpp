@@ -99,7 +99,7 @@ void CharacterThree::Update(float deltaTime, InputSystem& inputSystem)
 
     if (m_isReleased)
     {
-        //Game::GetInstance().GetCharacter()->SetCharacterType(2); // Changes made by Karl
+        Game::GetInstance().CreateCharacter(2); // Changes made by Karl
         SceneManager::GetInstance().ChangeScene(4);
     }
     else if (m_isHovered)

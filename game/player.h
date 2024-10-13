@@ -13,6 +13,15 @@ class Vector2;
 class Sprite;
 class InputSystem;
 
+// Types of player animations
+typedef struct
+{
+	AnimatedSprite* m_pASpriteIdle;
+	AnimatedSprite* m_pASpriteRun;
+	AnimatedSprite* m_pASpriteJump;
+	AnimatedSprite* m_pASpriteAttack;
+} Actions;
+
 // Class declaration: 
 class Player : public Entity
 {

@@ -16,7 +16,8 @@ CharacterTwo::CharacterTwo(float x, float y)
     m_buttonFrameHovered(nullptr), // Changes made by Karl
     m_buttonSpriteNormal(nullptr),
     m_buttonSpriteHovered(nullptr),
-    m_fBlueTint(0.0f) // Changes made by Karl
+    m_fBlueTint(0.0f), // Changes made by Karl
+    m_iCharYOffset(0) // Changes made by Karl
 {
 }
 
@@ -44,20 +45,23 @@ bool CharacterTwo::Initialise(Renderer& renderer)
     m_buttonSpriteHovered = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8magerun.png");
 
     // Set sprite attributes
-    m_buttonSpriteNormal->SetupFrames(212, 124);
-    m_buttonSpriteHovered->SetupFrames(212, 124);
+    m_buttonSpriteNormal->SetupFrames(515, 286);
+    m_buttonSpriteHovered->SetupFrames(515, 286);
     m_buttonSpriteNormal->SetFrameDuration(0.15f);
     m_buttonSpriteHovered->SetFrameDuration(0.15f);
     m_buttonSpriteNormal->Animate();
     m_buttonSpriteNormal->SetLooping(true);
+    // Changes made by Karl
+    // Set Y offset
+    m_iCharYOffset = 100;
 
     // Get the screen dimensions
     int windowWidth = renderer.GetWidth();
     int windowHeight = renderer.GetHeight();
 
     // Calculate the scale factor based on the screen size and sprite dimensions
-    float spriteWidth = static_cast<float>(m_buttonSpriteNormal->GetWidth());
-    float spriteHeight = static_cast<float>(m_buttonSpriteNormal->GetHeight());
+    float spriteWidth = static_cast<float>(212); // Changes made by Karl
+    float spriteHeight = static_cast<float>(124);
 
     // Get scale factors based on screen size
     float scaleX = windowWidth / spriteWidth; // Proportional to screen width
@@ -82,9 +86,9 @@ bool CharacterTwo::Initialise(Renderer& renderer)
     m_buttonFrameHovered->SetX(m_x); // Changes made by Karl
     m_buttonFrameHovered->SetY(m_y);
     m_buttonSpriteNormal->SetX(m_x);
-    m_buttonSpriteNormal->SetY(m_y);
+    m_buttonSpriteNormal->SetY(m_y - m_iCharYOffset); // Changes made by Karl
     m_buttonSpriteHovered->SetX(m_x);
-    m_buttonSpriteHovered->SetY(m_y);
+    m_buttonSpriteHovered->SetY(m_y - m_iCharYOffset); // Changes made by Karl
     // Changes made by Karl
     // Set initial blue tint values
     m_fBlueTint = 1.0f;
@@ -99,7 +103,7 @@ void CharacterTwo::Update(float deltaTime, InputSystem& inputSystem)
 
     if (m_isReleased)
     {
-        //Game::GetInstance().GetCharacter()->SetCharacterType(1); // Changes made by Karl
+        Game::GetInstance().CreateCharacter(1); // Changes made by Karl
         SceneManager::GetInstance().ChangeScene(4);
     }
     else if (m_isHovered)

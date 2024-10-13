@@ -101,7 +101,7 @@ bool Warrior::Initialise(Renderer& renderer)
     // Changes made by Karl
     m_vPosition.x = 100.0f;  // Position in pixels
     m_vPosition.y = 500.0f; // Position in pixels
-    offset = 95.0f;
+    offset = 82.0f; // Y offset in pixels
 
     return true;
 }
@@ -133,18 +133,18 @@ void Warrior::Process(float deltaTime, InputSystem& inputSystem)
     
     // Set the sprite's position to match the Box2D body position
     m_sActions.m_pASpriteIdle->SetX((int)m_vPosition.x);
-    m_sActions.m_pASpriteIdle->SetY((int)m_vPosition.y);
+    m_sActions.m_pASpriteIdle->SetY((int)m_vPosition.y - offset);
     m_sActions.m_pASpriteRun->SetX((int)m_vPosition.x);
-    m_sActions.m_pASpriteRun->SetY((int)m_vPosition.y);
+    m_sActions.m_pASpriteRun->SetY((int)m_vPosition.y - offset);
     m_sActions.m_pASpriteJump->SetX((int)m_vPosition.x);
     m_sActions.m_pASpriteJump->SetY((int)m_vPosition.y - offset);
-    /*m_sActions.m_pASpriteAttack->SetX((int)m_vPosition.x);
-    m_sActions.m_pASpriteAttack->SetY((int)m_vPosition.y);*/
+    m_sActions.m_pASpriteAttack->SetX((int)m_vPosition.x); // Changes made by Karl
+    m_sActions.m_pASpriteAttack->SetY((int)m_vPosition.y - offset);
 
     m_sActions.m_pASpriteIdle->Process(deltaTime);
     m_sActions.m_pASpriteRun->Process(deltaTime);
     m_sActions.m_pASpriteJump->Process(deltaTime);
-    //m_sActions.m_pASpriteAttack->Process(deltaTime);
+    m_sActions.m_pASpriteAttack->Process(deltaTime); // Changes made by Karl
 
     // Scale the sprite based on camera distance or other factors (you can adjust the scaling factor)
     //m_pSprSpriteBody->SetScale(m_fScale);
@@ -168,16 +168,20 @@ void Warrior::DrawWithCam(Renderer& renderer, Camera& camera)
     m_sActions.m_pASpriteIdle->SetX(adjustedX);
     m_sActions.m_pASpriteRun->SetX(adjustedX);
     m_sActions.m_pASpriteJump->SetX(adjustedX);
-    //m_sActions.m_pASpriteAttack->SetX(adjustedX);
+    m_sActions.m_pASpriteAttack->SetX(adjustedX); // Changes made by Karl
 
     // Draw character sprite with adjusted position
-    if (m_bMovingX || m_bJumping || m_bDoubleJump)
+    if (m_bMovingX || m_bJumping || m_bDoubleJump || m_bSlash)
     {
         if (m_bJumping || m_bDoubleJump)
         {
             m_sActions.m_pASpriteJump->Draw(renderer, m_bFlipHorizontally, false);
         }
-        else
+        else if (m_bSlash)
+        {
+            m_sActions.m_pASpriteAttack->Draw(renderer, m_bFlipHorizontally, false);
+        }
+        else if (m_bMovingX)
         {
             m_sActions.m_pASpriteRun->Draw(renderer, m_bFlipHorizontally, false);
         }
@@ -268,96 +272,54 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
 
     // Move right when pressing D
     if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD) {
-        //if (!m_sActions.m_pASpriteAttack->IsAnimating())
-        //{
-        //    velocity.x = 1.0f;  // Set a fixed speed to move right
-
-        //    if (!m_bMovingX)
-        //    {
-        //        if (m_sActions.m_pASpriteIdle->IsAnimating())
-        //        {
-        //            m_sActions.m_pASpriteIdle->Inanimate();
-        //            m_sActions.m_pASpriteIdle->SetLooping(false);
-        //        }
-
-        //        if (!m_sActions.m_pASpriteRun->IsAnimating())
-        //        {
-        //            m_sActions.m_pASpriteRun->Animate();
-        //            m_sActions.m_pASpriteRun->SetLooping(true);
-        //        }
-
-        //        m_bMovingX = true;
-        //        m_iFacingDirection = 1;
-        //        m_bFlipHorizontally = false;
-        //    }
-        //}
-
-        velocity.x = 1.0f;  // Set a fixed speed to move right
-
-        if (!m_bMovingX)
+        if (!m_bSlash)
         {
-            if (m_sActions.m_pASpriteIdle->IsAnimating())
-            {
-                m_sActions.m_pASpriteIdle->Inanimate();
-                m_sActions.m_pASpriteIdle->SetLooping(false);
-            }
+            velocity.x = 1.0f;  // Set a fixed speed to move right
 
-            if (!m_sActions.m_pASpriteRun->IsAnimating())
+            if (!m_bMovingX)
             {
-                m_sActions.m_pASpriteRun->Animate();
-                m_sActions.m_pASpriteRun->SetLooping(true);
-            }
+                if (m_sActions.m_pASpriteIdle->IsAnimating())
+                {
+                    m_sActions.m_pASpriteIdle->Inanimate();
+                    m_sActions.m_pASpriteIdle->SetLooping(false);
+                }
 
-            m_bMovingX = true;
-            m_iFacingDirection = 1;
-            m_bFlipHorizontally = false;
-        }
+                if (!m_sActions.m_pASpriteRun->IsAnimating())
+                {
+                    m_sActions.m_pASpriteRun->Animate();
+                    m_sActions.m_pASpriteRun->SetLooping(true);
+                }
+
+                m_bMovingX = true;
+                m_iFacingDirection = 1;
+                m_bFlipHorizontally = false;
+            }
+        } // Changes made by Karl
     }
     else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD) {
-        //if (!m_sActions.m_pASpriteAttack->IsAnimating())
-        //{
-        //    velocity.x = -1.0f;  // Set a fixed speed to move left
-
-        //    if (!m_bMovingX)
-        //    {
-        //        if (m_sActions.m_pASpriteIdle->IsAnimating())
-        //        {
-        //            m_sActions.m_pASpriteIdle->Inanimate();
-        //            m_sActions.m_pASpriteIdle->SetLooping(false);
-        //        }
-
-        //        if (!m_sActions.m_pASpriteRun->IsAnimating())
-        //        {
-        //            m_sActions.m_pASpriteRun->Animate();
-        //            m_sActions.m_pASpriteRun->SetLooping(true);
-        //        }
-
-        //        m_bMovingX = true;
-        //        m_iFacingDirection = -1;
-        //        m_bFlipHorizontally = true;
-        //    }
-        //}
-
-        velocity.x = -1.0f;  // Set a fixed speed to move left
-
-        if (!m_bMovingX)
+        if (!m_bSlash)
         {
-            if (m_sActions.m_pASpriteIdle->IsAnimating())
-            {
-                m_sActions.m_pASpriteIdle->Inanimate();
-                m_sActions.m_pASpriteIdle->SetLooping(false);
-            }
+            velocity.x = -1.0f;  // Set a fixed speed to move left
 
-            if (!m_sActions.m_pASpriteRun->IsAnimating())
+            if (!m_bMovingX)
             {
-                m_sActions.m_pASpriteRun->Animate();
-                m_sActions.m_pASpriteRun->SetLooping(true);
-            }
+                if (m_sActions.m_pASpriteIdle->IsAnimating())
+                {
+                    m_sActions.m_pASpriteIdle->Inanimate();
+                    m_sActions.m_pASpriteIdle->SetLooping(false);
+                }
 
-            m_bMovingX = true;
-            m_iFacingDirection = -1;
-            m_bFlipHorizontally = true;
-        }
+                if (!m_sActions.m_pASpriteRun->IsAnimating())
+                {
+                    m_sActions.m_pASpriteRun->Animate();
+                    m_sActions.m_pASpriteRun->SetLooping(true);
+                }
+
+                m_bMovingX = true;
+                m_iFacingDirection = -1;
+                m_bFlipHorizontally = true;
+            }
+        } // Changes made by Karl
     }
     else {
         velocity.x = 0.0f;  // No horizontal movement
@@ -379,12 +341,41 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
             m_bMovingX = false;
         }
     }
-
+    // Changes made by Karl
     // Attack logic
-    //if (inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT) == BS_PRESSED)
-    //{
-    //    // To be implemented
-    //}
+    if (inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT) == BS_PRESSED)
+    {   // Allow attack only when on the ground
+        if (!m_bJumping && !m_bDoubleJump)
+        {
+            if (!m_bSlash)
+            {
+                m_bSlash = true;
+
+                // Disable all other animations
+                if (m_sActions.m_pASpriteIdle->IsAnimating())
+                {
+                    m_sActions.m_pASpriteIdle->Inanimate();
+                }
+
+                if (m_sActions.m_pASpriteRun)
+                {
+                    m_sActions.m_pASpriteRun->Inanimate();
+                }
+
+                // Enable attack animation
+                if (!m_sActions.m_pASpriteAttack->IsAnimating())
+                {
+                    m_sActions.m_pASpriteAttack->Animate();
+                }
+            }
+        }
+    }
+
+    // Check if attack animation has finished
+    if (!m_sActions.m_pASpriteAttack->IsAnimating())
+    {
+        m_bSlash = false;
+    }
 
     // Jumping logic
     if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED) {
@@ -414,16 +405,20 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
             // Double jump
             velocity.y = -5.0f;  // Apply upward force
             m_bDoubleJump = true;     // Double jump has been used
+            m_sActions.m_pASpriteJump->Restart();
+            m_sActions.m_pASpriteJump->Animate();
         }
     }
 
     // If the player is jumping, update the jump timer
-    if (m_bJumping) {
+    if (m_bJumping || m_bDoubleJump) { // Changes made by Karl
         m_jumpTimer += deltaTime;
-        if (m_jumpTimer >= 3.0f) {
+        if (m_jumpTimer >= (m_bDoubleJump ? 1.2f : 0.8f)) {
             m_bJumping = false;  // Reset jump
             m_bDoubleJump = false;
             m_jumpTimer = 0.0f;  // Reset the timer
+            m_sActions.m_pASpriteIdle->Animate();
+            m_sActions.m_pASpriteIdle->SetLooping(true);
         }
     }
 
@@ -448,53 +443,7 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
 
 bool
 Warrior::SetBodySprites(Renderer& renderer)
-{
-    /*m_pSprSpriteHead = renderer.CreateSprite("Sprites\\characterbase\\head.png");
-
-    if (!(m_pSprSpriteHead))
-    {
-        LogManager::GetInstance().Log("Character Head failed to initialise!");
-        return false;
-    }
-
-    m_pSprSpriteBody = renderer.CreateSprite("Sprites\\characterbase\\body.png");
-
-    if (!(m_pSprSpriteBody))
-    {
-        LogManager::GetInstance().Log("Character Body failed to initialise!");
-        return false;
-    }
-
-    m_pSprSpriteLegLeft = renderer.CreateSprite("Sprites\\characterbase\\leg.png");
-
-    if (!(m_pSprSpriteLegLeft))
-    {
-        LogManager::GetInstance().Log("Character Left Leg failed to initialise!");
-        return false;
-    }
-
-    m_pSprSpriteLegRight = renderer.CreateSprite("Sprites\\characterbase\\leg.png");
-
-    if (!(m_pSprSpriteLegRight))
-    {
-        LogManager::GetInstance().Log("Character Right Leg failed to initialise!");
-        return false;
-    }
-
-    m_pSprSpriteShadow = renderer.CreateSprite("Sprites\\characterbase\\floorshadow.png");
-
-    if (!(m_pSprSpriteShadow))
-    {
-        LogManager::GetInstance().Log("Character Shadow failed to initialise!");
-        return false;
-    }
-
-    m_pSprSpriteBody->SetAngle(180.0f);
-    m_pSprSpriteHead->SetAngle(180.0f);
-    m_pSprSpriteLegLeft->SetAngle(180.0f);
-    m_pSprSpriteLegRight->SetAngle(180.0f);
-    m_pSprSpriteShadow->SetAngle(180.0f);*/
-
+{   // Changes made by Karl
     m_sActions.m_pASpriteIdle = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8waridle.png");
 
     if (!m_sActions.m_pASpriteIdle)
@@ -504,7 +453,7 @@ Warrior::SetBodySprites(Renderer& renderer)
     }
     else
     {
-        m_sActions.m_pASpriteIdle->SetupFrames(212, 124);
+        m_sActions.m_pASpriteIdle->SetupFrames(515, 286);
         m_sActions.m_pASpriteIdle->SetFrameDuration(0.15f);
         m_sActions.m_pASpriteIdle->Animate();
         m_sActions.m_pASpriteIdle->SetLooping(true);
@@ -519,7 +468,7 @@ Warrior::SetBodySprites(Renderer& renderer)
     }
     else
     {
-        m_sActions.m_pASpriteRun->SetupFrames(212, 124);
+        m_sActions.m_pASpriteRun->SetupFrames(515, 286);
         m_sActions.m_pASpriteRun->SetFrameDuration(0.15f);
     }
 
@@ -532,12 +481,11 @@ Warrior::SetBodySprites(Renderer& renderer)
     }
     else
     {
-        m_sActions.m_pASpriteJump->SetupFrames(288, 128);
-        m_sActions.m_pASpriteJump->SetFrameDuration(0.15f);
-        m_sActions.m_pASpriteJump->SetScale(2.525f);
+        m_sActions.m_pASpriteJump->SetupFrames(515, 286);
+        m_sActions.m_pASpriteJump->SetFrameDuration(0.04f);
     }
-
-    /*m_sActions.m_pASpriteAttack = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8warattack.png");
+    // Changes made by Karl
+    m_sActions.m_pASpriteAttack = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8warattack.png");
 
     if (!m_sActions.m_pASpriteAttack)
     {
@@ -546,10 +494,9 @@ Warrior::SetBodySprites(Renderer& renderer)
     }
     else
     {
-        m_sActions.m_pASpriteAttack->SetupFrames(288, 128);
+        m_sActions.m_pASpriteAttack->SetupFrames(515, 286);
         m_sActions.m_pASpriteAttack->SetFrameDuration(0.15f);
-        m_sActions.m_pASpriteAttack->SetScale(2.525f);
-    }*/
+    }
 
     return true;
 }
@@ -666,7 +613,7 @@ void Warrior::Draw(Renderer& renderer, Camera& camera)
 {}
 
 //void
-//Character::DebugDraw()
+//Warriorr::DebugDraw()
 //{
 //    ImGui::Text("Character Debug Info");
 //    ImGui::InputFloat2("Position", reinterpret_cast<float*>(&m_position));

@@ -16,6 +16,7 @@
 #include "vector2.h"
 #include "sceneManager.h"
 #include "Warrior.h" // Changes made by Karl
+#include "Mage.h" // Changes made by Karl
 
 // Library includes:
 #include <windows.h>
@@ -387,6 +388,7 @@ Game::CreateCharacter(int type)
 		m_pEntCharacter = new Warrior(world);
 		break;
 	case 1:
+		m_pEntCharacter = new Mage(world);
 		break;
 	case 2:
 		break;
