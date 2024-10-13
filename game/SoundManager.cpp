@@ -63,6 +63,24 @@ void SoundManager::playSound(const std::string& id, int loops) {
     }
 }
 
+void SoundManager::stopSound(const std::string& id) {
+    auto it = soundEffects.find(id);
+    if (it != soundEffects.end()) {
+        // Halt the sound effect on all channels where it is playing
+        for (int i = 0; i < Mix_AllocateChannels(-1); ++i) {
+            if (Mix_GetChunk(i) == it->second) {
+                Mix_HaltChannel(i); // Stop sound on this channel
+            }
+        }
+    }
+    else {
+        std::cerr << "Sound ID not found: " << id << std::endl;
+    }
+}
+void SoundManager::stopAllSounds() {
+    Mix_HaltChannel(-1); // Stop all sound effects
+}
+
 void SoundManager::playMusic(const std::string& id, int loops) {
     auto it = musicTracks.find(id);
     if (it != musicTracks.end()) {
@@ -75,4 +93,36 @@ void SoundManager::playMusic(const std::string& id, int loops) {
 
 void SoundManager::stopMusic() {
     Mix_HaltMusic(); // Stops the currently playing music
+}
+
+void SoundManager::removeMusic(const std::string& id) {
+    auto it = musicTracks.find(id);
+    if (it != musicTracks.end()) {
+        // Free the music track memory and remove it from the map
+        Mix_FreeMusic(it->second);
+        musicTracks.erase(it);
+        std::cout << "Music track with ID: " << id << " has been removed." << std::endl;
+    }
+    else {
+        std::cerr << "Music ID not found: " << id << std::endl;
+    }
+}
+
+void SoundManager::setSoundVolume(const std::string& id, int volume) {
+    auto it = soundEffects.find(id);
+    if (it != soundEffects.end()) {
+        // Adjust volume on all channels that play this sound
+        for (int i = 0; i < Mix_AllocateChannels(-1); ++i) {
+            if (Mix_GetChunk(i) == it->second) {
+                Mix_Volume(i, volume);  // Set volume for the sound effect's channel
+            }
+        }
+    }
+    else {
+        std::cerr << "Sound ID not found: " << id << std::endl;
+    }
+}
+
+void SoundManager::setMusicVolume(int volume) {
+    Mix_VolumeMusic(volume);  // Set volume for the music
 }
