@@ -45,10 +45,9 @@ public:
 
     void Move(int attackType);
     void Action();
-    void ProcessAction();
     void SetPlayer(Character* player);
-    void CreateSlashBody(float x, float y);
-
+    void CreateSlashBody();
+    void DeleteSlash();
 
     //void DebugDraw() override;
 
@@ -62,6 +61,7 @@ public:
     //box2d verables
     b2World* m_pWorld;
     b2Body* m_pBody;
+    b2Body* m_pSlashBody;
 
     //attacks
     b2Body* slashBody;
@@ -87,6 +87,8 @@ protected:
     float m_fSlamRangeMax;
     float m_fThrowRangeMax;
     float m_fGroundY;
+    float m_fSlashWidth;
+    float m_fSlashHeight;
     bool m_bPlayerInRange;
     bool m_bSpotted;
     bool m_bEngage;
