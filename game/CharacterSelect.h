@@ -36,6 +36,7 @@ protected:
     Button* characterOne;
     Button* characterTwo;
     Button* characterThree;
+    Button* MainMenu;
 
     float m_fElapsedTime;     // To track how long the splash screen has been displayed
 

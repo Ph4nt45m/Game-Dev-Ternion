@@ -179,6 +179,7 @@
     <ClCompile Include="Mage.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix4.cpp" />
+    <ClCompile Include="MenuButton.cpp" />
     <ClCompile Include="MyContactListener.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="projectile.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="logmanager.h" />
     <ClInclude Include="Mage.h" />
     <ClInclude Include="matrix4.h" />
+    <ClInclude Include="MenuButton.h" />
     <ClInclude Include="MyContactListener.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />

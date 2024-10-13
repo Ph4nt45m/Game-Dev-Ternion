@@ -16,6 +16,7 @@
 #include "CharacterOne.h"
 #include "CharacterTwo.h"
 #include "CharacterThree.h"
+#include "MenuButton.h"
 
 // Library includes:
 #include <cassert>
@@ -28,6 +29,7 @@ CharacterSelectScene::CharacterSelectScene()
     , characterOne(nullptr)
     , characterTwo(nullptr)
     , characterThree(nullptr)
+    , MainMenu(nullptr)
     , m_fElapsedTime(0.0f)
 {
 }//destruct
@@ -43,6 +45,9 @@ CharacterSelectScene::~CharacterSelectScene()
 
     delete characterThree;
     characterThree = nullptr;
+
+    delete MainMenu;
+    MainMenu = nullptr;
 
     delete m_ChrSelectScene;
     m_ChrSelectScene = nullptr;
@@ -62,6 +67,8 @@ bool CharacterSelectScene::Initialise(Renderer& renderer)
     float mageButtonY = windowHeight * 0.5f;
     float archerButtonX = windowWidth * 0.8f;
     float archerButtonY = windowHeight * 0.5f;
+    float menuButtonX = windowWidth * 0.5f;
+    float menuButtonY = windowHeight * 0.9f;
 
     // Initialize the CharacterOne Button with relative position and size
     characterOne = new CharacterOne(warriorButtonX, warriorButtonY);
@@ -72,6 +79,9 @@ bool CharacterSelectScene::Initialise(Renderer& renderer)
 
     characterThree = new CharacterThree(archerButtonX, archerButtonY);
     characterThree->Initialise(renderer);
+
+    MainMenu = new MenuButton(menuButtonX, menuButtonY);
+    MainMenu->Initialise(renderer);
 
     return (m_ChrSelectScene != nullptr);
 }
@@ -94,6 +104,12 @@ void CharacterSelectScene::Process(float deltaTime, InputSystem& inputSystem)
     {
         characterThree->Update(deltaTime, inputSystem);
     }
+
+    if (MainMenu)
+    {
+        MainMenu->Update(deltaTime, inputSystem);
+    }
+
 }
 
 void CharacterSelectScene::Draw(Renderer& renderer)
@@ -116,6 +132,11 @@ void CharacterSelectScene::Draw(Renderer& renderer)
     if (characterThree)
     {
         characterThree->Draw(renderer);
+    }
+
+    if (MainMenu)
+    {
+        MainMenu->Draw(renderer);
     }
 }
 
