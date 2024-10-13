@@ -48,7 +48,7 @@ ForestTest::Initialise(Renderer& renderer)
 	Game::GetInstance().SetGravity(0.0f, 1.0f);
 	m_pWorld->SetGravity(Game::GetInstance().GetGravity());
 
-	const float SCALE = 30.0f;
+	//const float SCALE = 30.0f;
 	float terrainWidth = 300.0f / SCALE;  // Convert pixel width to meters
 	float terrainHeight = 200.0f / SCALE;  // Convert pixel height to meters
 	float wallWidth = 10.0f / SCALE;  // Thin wall, converted to meters

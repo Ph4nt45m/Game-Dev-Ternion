@@ -42,7 +42,9 @@ Mage::Mage(b2World* world)
     , m_pBody(nullptr)
     , m_jumpTimer(0.0f)
     , m_sActions{ 0, 0, 0, 0 }
-    , offset(0.0f)
+    , m_fOffset(0.0f)
+    , m_fAttackWidth(0.0f)
+    , m_fAttackHeight(0.0f)
 {
 
 }
@@ -101,7 +103,7 @@ bool Mage::Initialise(Renderer& renderer)
     // Changes made by Karl
     m_vPosition.x = 100.0f;  // Position in pixels
     m_vPosition.y = 500.0f; // Position in pixels
-    offset = 82.0f; // Y offset in pixels
+    m_fOffset = 82.0f; // Y offset in pixels
 
     return true;
 }
@@ -133,13 +135,13 @@ void Mage::Process(float deltaTime, InputSystem& inputSystem)
 
     // Set the sprite's position to match the Box2D body position
     m_sActions.m_pASpriteIdle->SetX((int)m_vPosition.x);
-    m_sActions.m_pASpriteIdle->SetY((int)m_vPosition.y - offset);
+    m_sActions.m_pASpriteIdle->SetY((int)m_vPosition.y - m_fOffset);
     m_sActions.m_pASpriteRun->SetX((int)m_vPosition.x);
-    m_sActions.m_pASpriteRun->SetY((int)m_vPosition.y - offset);
+    m_sActions.m_pASpriteRun->SetY((int)m_vPosition.y - m_fOffset);
     m_sActions.m_pASpriteJump->SetX((int)m_vPosition.x);
-    m_sActions.m_pASpriteJump->SetY((int)m_vPosition.y - offset);
+    m_sActions.m_pASpriteJump->SetY((int)m_vPosition.y - m_fOffset);
     m_sActions.m_pASpriteAttack->SetX((int)m_vPosition.x); // Changes made by Karl
-    m_sActions.m_pASpriteAttack->SetY((int)m_vPosition.y - offset);
+    m_sActions.m_pASpriteAttack->SetY((int)m_vPosition.y - m_fOffset);
 
     m_sActions.m_pASpriteIdle->Process(deltaTime);
     m_sActions.m_pASpriteRun->Process(deltaTime);
@@ -438,7 +440,7 @@ void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
     m_sActions.m_pASpriteRun->SetX(static_cast<int>(spriteX));
     m_sActions.m_pASpriteRun->SetY(static_cast<int>(spriteY));
     m_sActions.m_pASpriteJump->SetX(static_cast<int>(spriteX));
-    m_sActions.m_pASpriteJump->SetY(static_cast<int>(spriteY) - offset);
+    m_sActions.m_pASpriteJump->SetY(static_cast<int>(spriteY) - m_fOffset);
 }
 
 
@@ -490,13 +492,15 @@ Mage::SetBodySprites(Renderer& renderer)
 
     if (!m_sActions.m_pASpriteAttack)
     {
-        LogManager::GetInstance().Log("Player jump failed to initialise!");
+        LogManager::GetInstance().Log("Player attack failed to initialise!");
         return false;
     }
     else
     {
         m_sActions.m_pASpriteAttack->SetupFrames(515, 286);
-        m_sActions.m_pASpriteAttack->SetFrameDuration(0.15f);
+        m_sActions.m_pASpriteAttack->SetFrameDuration(0.07f);
+        m_fAttackWidth = 515 / SCALE;
+        m_fAttackHeight = 286 / SCALE;
     }
 
     return true;

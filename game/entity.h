@@ -26,6 +26,9 @@ class InputSystem;
 #define MOTION_DECENT -1            // Decent motion
 #define MOTION_ATTACK 1				// Attack motion
 
+// Scaling factor
+#define SCALE 30.0f
+
 // Represents motion of the entity
 typedef struct {
 	int Surge;		// Move forward or back		[<0 = Backward,	0 = Stop, >0 = Forward]

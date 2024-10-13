@@ -70,7 +70,6 @@ public:
 
     Camera* m_pcamera;
     bool IsCameraSet;
-    const float SCALE = 30.0f;
 
     // Member data:
 protected:

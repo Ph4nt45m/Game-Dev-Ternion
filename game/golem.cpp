@@ -76,7 +76,6 @@ Golem::~Golem()
 bool
 Golem::Initialise(Renderer& renderer)
 {
-    const float SCALE = 30.0f;
     if (!SetBodySprites(renderer))
     {
         LogManager::GetInstance().Log("Golem Sprites failed to initialise!");
@@ -153,7 +152,6 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         b2Vec2 golemPosition = m_pBody->GetPosition();
 
         // Convert the Golem's Box2D position to pixels (if needed)
-        const float SCALE = 30.0f;  // Assuming this is the scale for meters-to-pixels conversion
         golemPosition.x *= SCALE;
         golemPosition.y *= SCALE;
 

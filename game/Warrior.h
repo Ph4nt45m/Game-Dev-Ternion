@@ -86,7 +86,9 @@ private:
     float m_fStepTimer;
     float m_fStepDuration;
     float m_jumpTimer;
-    float offset;
+    float m_fOffset;
+    float m_fAttackWidth;
+    float m_fAttackHeight;
 };
 
 #endif // !WARRIOR_H
