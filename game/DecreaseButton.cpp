@@ -62,6 +62,8 @@ void DecreaseButton::Update(float deltaTime, InputSystem& inputSystem)
     Button::Update(deltaTime, inputSystem);
     if (m_isReleased)
     {
+        Game::GetInstance().GetSounds()->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
+        Game::GetInstance().GetSounds()->playSound("bounce", 0, Game::GetInstance().getsoundEffectsVolume());
         soundVolume();
     }
 }

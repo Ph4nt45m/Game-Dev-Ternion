@@ -61,6 +61,8 @@ Game::Game()
 	, m_iMouseState(0)
 	, m_bLooping(true)
 	, soundManager(0)
+	, alphabet(0)
+	, soundEffectsVolume(0)
 {
 
 }
@@ -292,7 +294,6 @@ Game::Draw(Renderer& renderer)
 	renderer.Clear();
 
 	// TODO: Add game objects to draw here!
-
 	SceneManager::GetInstance().Draw(renderer);
 
 	if (m_pASprAnimatedSprite->IsAnimating())

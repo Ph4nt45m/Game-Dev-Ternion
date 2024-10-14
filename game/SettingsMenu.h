@@ -7,12 +7,13 @@
 #include "inputsystem.h"
 #include "sceneManager.h"
 #include "button.h"
-#include "game.h"
+#include "alphabet.h"
 
 //Libs
 #include <string>
 
 // Forward declarations: Always included.
+class Game;
 class Renderer;
 class InputSystem;
 class Forest;
@@ -45,6 +46,8 @@ protected:
     Button* decrease;
     Button* increaseSound;
     Button* decreaseSound;
+
+    Alphabet* alphabet;
 
     float m_fElapsedTime;     // To track how long the splash screen has been displayed
 

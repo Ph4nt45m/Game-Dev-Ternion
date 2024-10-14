@@ -8,6 +8,7 @@
 #include "../imgui/imgui.h"
 #include "logmanager.h"
 #include "scene.h"
+#include "game.h"
 
 // Buttons
 #include "MenuButton.h"
@@ -28,6 +29,9 @@ SettingScene::SettingScene()
     , MainMenu(nullptr)
     , increase(nullptr)
     , decrease(nullptr)
+    , decreaseSound(nullptr)
+    , increaseSound(nullptr)
+    , alphabet(nullptr)
     , m_fElapsedTime(0.0f)
 {
 }//destruct
@@ -35,6 +39,21 @@ SettingScene::~SettingScene()
 {
     delete MainMenu;
     MainMenu = nullptr;
+
+    delete increase;
+    increase = nullptr;
+
+    delete decrease;
+    decrease = nullptr;
+
+    delete decreaseSound;
+    decreaseSound = nullptr;
+
+    delete increaseSound;
+    increaseSound = nullptr;
+
+    delete alphabet;
+    alphabet = nullptr;
 
     delete m_BackGroundScene;
     m_BackGroundScene = nullptr;
@@ -75,6 +94,9 @@ bool SettingScene::Initialise(Renderer& renderer)
     decreaseSound = new DecreaseSoundButton(DecreaseSoundX, DecreaseSoundY);
     decreaseSound->Initialise(renderer);
 
+    alphabet = new Alphabet();
+    alphabet->Initialize(renderer);
+
     return (m_BackGroundScene != nullptr);
 }
 
@@ -103,7 +125,9 @@ void SettingScene::Process(float deltaTime, InputSystem& inputSystem)
     {
         MainMenu->Update(deltaTime, inputSystem);
     }
+    std::string sentence = std::to_string(Game::GetInstance().GetSounds()->getMusicVolume());
 
+    alphabet->Process(sentence, 1.0f, 1.0f, 1.0f);
 }
 
 void SettingScene::Draw(Renderer& renderer)
@@ -132,6 +156,11 @@ void SettingScene::Draw(Renderer& renderer)
     {
         decreaseSound->Draw(renderer);
     }
+    std::string MusicSentence = std::to_string(Game::GetInstance().GetSounds()->getMusicVolume());
+    std::string SoundSentence = std::to_string(Game::GetInstance().GetSounds()->getSoundVolume("bounce"));
+
+    alphabet->DrawTextW(renderer, MusicSentence, 0.5f, 0.3f, 5.0f);
+    alphabet->DrawTextW(renderer, SoundSentence, 0.5f, 0.45f, 5.0f);
 }
 
 void SettingScene::DebugDraw()

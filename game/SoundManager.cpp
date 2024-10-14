@@ -58,7 +58,10 @@ bool SoundManager::loadMusic(const std::string& id, const std::string& filePath)
 void SoundManager::playSound(const std::string& id, int loops, int volume) {
     auto it = soundEffects.find(id);
     if (it != soundEffects.end()) {
-        // Play the sound
+        // Stop any currently playing sound effect
+        Mix_HaltChannel(-1);  // Stop all currently playing sounds
+
+        // Play the new sound
         int channel = Mix_PlayChannel(-1, it->second, loops);
 
         // Check if the sound was successfully played

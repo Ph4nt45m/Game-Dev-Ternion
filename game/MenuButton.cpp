@@ -88,7 +88,7 @@ void MenuButton::Update(float deltaTime, InputSystem& inputSystem)
     {
         SceneManager::GetInstance().ChangeScene(1);
     }
-    else if (m_isHovered) // Changes made by Karl
+    if (m_isHovered) // Changes made by Karl
     {
         if (m_fBlueTint > 0.0f)
         {
