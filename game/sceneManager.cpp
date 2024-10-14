@@ -50,6 +50,7 @@ SceneManager::SceneManager()
 	, m_iRed(0)
 	, m_iGreen(0)
 	, m_iBlue(0)
+	, pause(false)
 {
     // Constructor code here
 }
@@ -79,10 +80,20 @@ void SceneManager::Process(float deltaTime, InputSystem& inputSystem)
 {
 	m_fElapsedTime += deltaTime;
 
+	ButtonState PauseState = inputSystem.GetKeyState(SDL_SCANCODE_ESCAPE);
+
+	if (PauseState == BS_PRESSED && (sceneId == 3 || sceneId == 4))
+	{
+		pause = !pause;  // Toggle the value of pause
+	}
+
 	if (!m_scenes.empty())
 	{
 		// Process the current scene
-		m_scenes[m_iCurrentScene]->Process(deltaTime, inputSystem);
+		if (!pause)
+		{
+			m_scenes[m_iCurrentScene]->Process(deltaTime, inputSystem);
+		}
 		// Changes made by Karl
 		if (sceneId == 0 && m_fElapsedTime > 1.0f)
 		{

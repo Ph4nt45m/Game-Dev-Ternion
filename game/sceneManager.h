@@ -55,6 +55,7 @@ protected:
 
 private:
 	std::vector<Sprite*> m_sprites; // Store allocated sprites
+	bool pause;
 };
 
 #endif // !__SCENEMANAGER_H_
