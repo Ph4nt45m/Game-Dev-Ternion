@@ -758,7 +758,7 @@ void Golem::CreateSlamBody()
         b2BodyDef SlambodyDef;
         SlambodyDef.type = b2_staticBody;
 
-        SlambodyDef.position.Set((m_pBody->GetPosition().x), m_pBody->GetPosition().y);
+        SlambodyDef.position.Set(m_pBody->GetPosition().x, m_pBody->GetPosition().y);
 
 
         // Create the body in the world
@@ -775,6 +775,7 @@ void Golem::CreateSlamBody()
         SlamfixtureDef.density = 0.0f;
         SlamfixtureDef.friction = 0.0f;
         SlamfixtureDef.isSensor = true;
+
         // Attach the fixture to the body
         m_pSlashBody->CreateFixture(&SlamfixtureDef);
         m_pSlashBody->SetActive(true);
