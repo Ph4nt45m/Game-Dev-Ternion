@@ -751,6 +751,7 @@ void Golem::DeleteSlash()
         m_pSlashBody->SetActive(false);            
     }
 }
+//hello rauen
 
 void Golem::CreateSlamBody()
 {
