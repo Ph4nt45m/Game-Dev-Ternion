@@ -23,7 +23,8 @@
 //int ForestTest::sm_iSegmentWidth = 0;
 
 ForestTest::ForestTest(b2World* world, Player* character)
-	: m_pGolem(0)
+	: m_pBackground(nullptr)
+	, m_pGolem(0)
 	, m_pWorld(world)
 	, camera()
 	, m_pCharacter(character)
@@ -37,6 +38,8 @@ ForestTest::ForestTest(b2World* world, Player* character)
 
 ForestTest::~ForestTest()
 {
+	delete m_pBackground;
+	m_pBackground = nullptr;
 }
 
 bool
@@ -44,9 +47,14 @@ ForestTest::Initialise(Renderer& renderer)
 {
 
 	//Made by Rauen
-		  // Define some terrain segments at different positions and sizes
+	// Define some terrain segments at different positions and sizes
 	Game::GetInstance().SetGravity(0.0f, 1.0f);
 	m_pWorld->SetGravity(Game::GetInstance().GetGravity());
+
+	// Set background sprite
+	m_pBackground = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\forestday.png");
+	m_pBackground->SetX(renderer.GetWidth() / 2.0f);
+	m_pBackground->SetY(renderer.GetHeight() / 2.0f);
 
 	//const float SCALE = 30.0f;
 	float terrainWidth = 300.0f / SCALE;  // Convert pixel width to meters
@@ -105,12 +113,7 @@ ForestTest::Process(float deltaTime, InputSystem& inputSystem)
 void
 ForestTest::Draw(Renderer& renderer)
 {
-
-	// Update camera based on player position
-	//if (m_pCharacter->IsDefined()) // Changes made by Karl
-	//{
-	//	m_pCharacter->DrawWithCam(renderer, camera);
-	//}
+	m_pBackground->Draw(renderer, false, true);
 	m_pCharacter->DrawWithCam(renderer, camera);
 	//printf("Char: %f\n", m_pCharacter->GetPosition().x);
 

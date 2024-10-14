@@ -18,6 +18,7 @@ class InputSystem;
 class Forest;
 class Player;
 class Golem;
+class Sprite;
 
 // Class declarations:
 class ForestTest : public Scene
@@ -46,6 +47,7 @@ public:
 	b2World* m_pWorld;
 
 protected:
+	Sprite* m_pBackground;
 	Golem* m_pGolem;
 	Player* m_pCharacter;
 	Camera camera;

@@ -59,12 +59,18 @@ void MyContactListener::BeginContact(b2Contact* contact)
     }
     // Golem's slash attack collision with player
     if ((int)userDataA == PLAYER && (int)userDataB == GOLEM_SLASH) {
-        printf("Player hit by golem's slash!\n");
+        //printf("Player hit by golem's slash!\n");
     }
     else if ((int)userDataA == GOLEM_SLASH && (int)userDataB == PLAYER) {
-        ("Player hit by golem's slash (reverse case)!\n");
+        //("Player hit by golem's slash (reverse case)!\n");
     }
-    // Handle other collisions, like GOLEM_SLAM, PROJECTILE, etc.
+    //Slam
+    if ((int)userDataA == PLAYER && (int)userDataB == GOLEM_SLAM) {
+        printf("Player hit by golem's slam!\n");
+    }
+    else if ((int)userDataA == GOLEM_SLAM && (int)userDataB == PLAYER) {
+        ("Player hit by golem's slam (reverse case)!\n");
+    }
 }
 
 void MyContactListener::EndContact(b2Contact* contact)

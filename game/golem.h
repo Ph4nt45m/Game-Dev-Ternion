@@ -45,7 +45,7 @@ public:
     void SetCamera(Camera* camera);
 
     void Move(int attackType);
-    void Action();
+    void Action(float deltaTime);
     void SetPlayer(Player* player);
     void CreateSlashBody();
     void CreateSlamBody();
@@ -65,11 +65,14 @@ public:
     b2World* m_pWorld;
     b2Body* m_pBody;
     b2Body* m_pSlashBody;
-
+    b2Body* m_pSlamBody;
+    
     //attacks
     b2Body* slashBody;
     float slashWidth;
     float slashHeight;
+    float m_fSlamWidth;
+    float m_fSlamHeight;
 
     Camera* m_pcamera;
     bool IsCameraSet;
@@ -97,6 +100,8 @@ protected:
     bool m_bIsAnimating;
     bool m_bSlam;
     bool m_bWalk;
+    float m_fSlamTime;
+    float growSize;
 
 private:
     
