@@ -6,6 +6,8 @@
 #include <string>
 #include <map>
 
+class Game;
+
 class SoundManager {
 public:
     // Constructor and Destructor
@@ -27,7 +29,7 @@ public:
     void setMusicVolume(int volume);
 
     // Playing sounds and music
-    void playSound(const std::string& id, int loops = 0); // Loops 0 means play once
+    void playSound(const std::string& id, int loops, int volume);
     void stopSound(const std::string& id);
     void stopAllSounds();
 
@@ -35,6 +37,7 @@ public:
     void removeMusic(const std::string& id);
     void stopMusic();
     int getMusicVolume();
+    int getSoundVolume(const std::string& id);
 
 private:
     std::map<std::string, Mix_Chunk*> soundEffects; // For sound effects

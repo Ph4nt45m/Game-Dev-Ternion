@@ -81,7 +81,7 @@ Game::~Game()
 
 	delete m_pEntCharacter;
 	m_pEntCharacter = 0;
-
+	
 	if (soundManager) {
 		delete soundManager;
 		soundManager = nullptr;
@@ -185,7 +185,7 @@ bool Game::Initialise()
 	// Play the background music (loop infinitely)
 //	soundManager->playMusic("background", -1);	//Kyle end
 	soundManager->setMusicVolume(80);
-	//Kyle code end
+	setsoundEffectsVolume(80);	//Kyle code end
 
 	return true;
 }
@@ -237,9 +237,8 @@ Game::Process(float deltaTime)
 	// TODO: Add game objects to process here!
 	if (m_elapsedTime > 3.0f)
 	{
-		soundManager->setSoundVolume("bounce", getsoundEffectsVolume());
-		soundManager->playSound("bounce");
-		printf("We played a sound effect");
+		soundManager->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
+		soundManager->playSound("bounce", 0, getsoundEffectsVolume());
 		m_elapsedTime = 0;
 	}
 	// Box2D time step

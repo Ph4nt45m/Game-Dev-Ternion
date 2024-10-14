@@ -42,6 +42,7 @@ public:
 	//Character* GetCharacter() const; // Changes made by Karl
 	Player* GetCharacter() const;
 	b2World* GetWorld() const;
+
 	SoundManager* GetSounds();
 	void setsoundEffectsVolume(int SoundVol);
 	int getsoundEffectsVolume();

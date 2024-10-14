@@ -72,8 +72,8 @@ void DecreaseSoundButton::Draw(Renderer& renderer)
 
 void DecreaseSoundButton::soundVolume()
 {
-    // Increase volume by 12
-    int SoundVolume = Game::GetInstance().getsoundEffectsVolume() - 13;
+    // Decrease volume by 12
+    int SoundVolume = Game::GetInstance().GetSounds()->getSoundVolume("bounce") - 13;
 
     // Ensure it stays within the range [0, 100]
     SoundVolume = std::min(128, std::max(0, SoundVolume));

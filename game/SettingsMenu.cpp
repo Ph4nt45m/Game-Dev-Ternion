@@ -56,9 +56,9 @@ bool SettingScene::Initialise(Renderer& renderer)
     float MusicBarX = windowWidth * 0.5f;
     float MusicBarY = windowWidth * 0.3f;
     float IncreaseSoundX = windowWidth * 0.7f;
-    float IncreaseSoundY = windowHeight * 0.4f;
+    float IncreaseSoundY = windowHeight * 0.45f;
     float DecreaseSoundX = windowWidth * 0.3f;
-    float DecreaseSoundY = windowHeight * 0.4f;
+    float DecreaseSoundY = windowHeight * 0.45f;
 
     MainMenu = new MenuButton(MenuButtonX, MenuButtonY);
     MainMenu->Initialise(renderer);
@@ -69,7 +69,7 @@ bool SettingScene::Initialise(Renderer& renderer)
     increase = new IncreaseButton(IncreaseX, IncreaseY);
     increase->Initialise(renderer);
 
-    increaseSound = new IncreaseSoundButton(IncreaseSoundX, IncreaseSoundX);
+    increaseSound = new IncreaseSoundButton(IncreaseSoundX, IncreaseSoundY);
     increaseSound->Initialise(renderer);
 
     decreaseSound = new DecreaseSoundButton(DecreaseSoundX, DecreaseSoundY);

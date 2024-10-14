@@ -1,4 +1,6 @@
 #include "SoundManager.h"
+#include "game.h"
+
 #include <iostream>
 
 SoundManager::SoundManager() {}
@@ -53,10 +55,20 @@ bool SoundManager::loadMusic(const std::string& id, const std::string& filePath)
     return true;
 }
 
-void SoundManager::playSound(const std::string& id, int loops) {
+void SoundManager::playSound(const std::string& id, int loops, int volume) {
     auto it = soundEffects.find(id);
     if (it != soundEffects.end()) {
-        Mix_PlayChannel(-1, it->second, loops);
+        // Play the sound
+        int channel = Mix_PlayChannel(-1, it->second, loops);
+
+        // Check if the sound was successfully played
+        if (channel == -1) {
+            std::cerr << "Failed to play sound: " << id << " SDL_mixer Error: " << Mix_GetError() << std::endl;
+        }
+        else {
+            // Set the volume for the channel
+            Mix_Volume(channel, volume); // Set the volume for the sound effect's channel
+        }
     }
     else {
         std::cerr << "Sound ID not found: " << id << std::endl;
@@ -121,6 +133,22 @@ void SoundManager::setSoundVolume(const std::string& id, int volume) {
     else {
         std::cerr << "Sound ID not found: " << id << std::endl;
     }
+}
+
+int SoundManager::getSoundVolume(const std::string& id) {
+    auto it = soundEffects.find(id);
+    if (it != soundEffects.end()) {
+        // Find the volume of the first channel that plays this sound
+        for (int i = 0; i < Mix_AllocateChannels(-1); ++i) {
+            if (Mix_GetChunk(i) == it->second) {
+                return Mix_Volume(i, -1);  // Get current volume (pass -1 to get it without changing)
+            }
+        }
+    }
+    else {
+        std::cerr << "Sound ID not found: " << id << std::endl;
+    }
+    return -1; // Return -1 if sound not found or not playing
 }
 
 void SoundManager::setMusicVolume(int volume) {
