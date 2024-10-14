@@ -431,3 +431,8 @@ void Game::SetGravity(float x, float y)
 	m_gravity.x = x;
 	m_gravity.y = y;
 }
+
+SoundManager* Game::GetSounds()
+{
+	return soundManager;
+}

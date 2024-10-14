@@ -14,6 +14,7 @@
 #include "TernionMenu.h"
 #include "CharacterSelect.h" // Changes made by Karl
 #include "foresttest.h" // Changes made by Karl
+#include "SettingsMenu.h"
 
 // includes
 #include <cassert>
@@ -109,7 +110,6 @@ void SceneManager::Process(float deltaTime, InputSystem& inputSystem)
 	PerformSceneTransition();
 }
 
-
 void SceneManager::Draw(Renderer& renderer)
 {
 	if (!m_scenes.empty())
@@ -173,6 +173,9 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 		m_pRenderer->SetClearColour(255, 255, 255);
 		//newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
 		newScene = new ForestTest(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
+		break;
+	case 5:
+		newScene = new SettingScene();
 		break;
 	default:
 		// Handle invalid scene ID

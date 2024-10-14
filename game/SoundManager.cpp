@@ -126,3 +126,7 @@ void SoundManager::setSoundVolume(const std::string& id, int volume) {
 void SoundManager::setMusicVolume(int volume) {
     Mix_VolumeMusic(volume);  // Set volume for the music
 }
+
+int SoundManager::getMusicVolume() {
+    return Mix_VolumeMusic(-1);  // Get the current music volume
+}

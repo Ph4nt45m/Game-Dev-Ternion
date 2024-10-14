@@ -34,6 +34,7 @@ public:
     void playMusic(const std::string& id, int loops = -1); // Loops -1 means infinite looping
     void removeMusic(const std::string& id);
     void stopMusic();
+    int getMusicVolume();
 
 private:
     std::map<std::string, Mix_Chunk*> soundEffects; // For sound effects

@@ -110,7 +110,10 @@ void SettingsButton::Update(float deltaTime, InputSystem& inputSystem)
             m_fBlueTint = 1.0f;
         }
     }
-
+    if (m_isReleased)
+    {
+        SceneManager::GetInstance().ChangeScene(5);
+    }
     // Set blue tint for border highlight
     m_buttonSpriteHighlight->SetBlueTint(m_fBlueTint);
 }
