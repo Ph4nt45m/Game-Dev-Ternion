@@ -6,6 +6,10 @@
 #include "sprite.h"
 #include "Camera.h"
 
+//scale
+
+#define SCALE 100.0f
+
 enum TerrainType {
     GROUND,
     PLATFORM,

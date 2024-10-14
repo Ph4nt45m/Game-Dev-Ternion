@@ -51,10 +51,10 @@ ForestTest::Initialise(Renderer& renderer)
 	//const float SCALE = 30.0f;
 	float terrainWidth = 300.0f / SCALE;  // Convert pixel width to meters
 	float terrainHeight = 200.0f / SCALE;  // Convert pixel height to meters
-	float wallWidth = 10.0f / SCALE;  // Thin wall, converted to meters
-	float wallHeight = 1000.0f / SCALE;  // Wall height in meters
-	float worldWidth = 50000.0f / SCALE;  // World width converted to meters
-	float worldHeight = 1000.0f / SCALE;  // World height converted to meters
+	float wallWidth = 100.0f / SCALE;  // Thin wall, converted to meters
+	float wallHeight = 10000.0f / SCALE;  // Wall height in meters
+	float worldWidth = 500000.0f / SCALE;  // World width converted to meters
+	float worldHeight = 10000.0f / SCALE;  // World height converted to meters
 	float windowHeight = renderer.GetHeight();
 	float windowWidth = renderer.GetWidth();
 

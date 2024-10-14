@@ -4,6 +4,7 @@
 #include "vector2.h"
 #include <Box2D.h>
 
+#define SCALE 100.0f
 
 //class Character; // Changes made be Karl
 class Player;

@@ -29,7 +29,7 @@ Healthbar::Healthbar(Renderer& renderer)
 	int bbHeight = renderer.GetHeight();
 
 	m_fHealthbarX = 300;
-	m_fHealthbarY = bbHeight - 100;
+	m_fHealthbarY = 100;
 	m_fHealthbarScale = 2.0f;
 
 	m_pHealthbarSprite->SetX(m_fHealthbarX);

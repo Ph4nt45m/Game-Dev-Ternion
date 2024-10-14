@@ -89,10 +89,9 @@ Golem::Initialise(Renderer& renderer)
     m_fScaleMin = 0.92f;
     m_fScaleMax = 1.08f;
     m_fAnimateScale = 0.435f;
-    m_fSlashRangeMax = (m_sAnimations.m_pASprGolemSlash->GetWidth())/SCALE;
     m_fSlamRangeMax = (m_sAnimations.m_pASprGolemSlam->GetWidth())/SCALE;
     m_fThrowRangeMax = m_fDistToPlayer / SCALE;
-    m_iAttackType = 1;
+    m_iAttackType = 0;
     m_bAlive = true;
 
 
@@ -126,7 +125,7 @@ Golem::Initialise(Renderer& renderer)
 
         // Define the shape of the body (box shape in this example)
         b2PolygonShape dynamicBox;
-        dynamicBox.SetAsBox((m_pSprSpriteBody->GetWidth()/6.0f)/SCALE, (m_pSprSpriteBody->GetHeight()/4.0f +30)/SCALE);
+        dynamicBox.SetAsBox((m_pSprSpriteBody->GetWidth()/7.0f)/SCALE, (m_pSprSpriteBody->GetHeight()/4.0f +30)/SCALE);
 
         // Define the fixture (physical properties)
         b2FixtureDef fixtureDef;
@@ -141,37 +140,6 @@ Golem::Initialise(Renderer& renderer)
         m_pBody->SetUserData((void*)GOLEM);
         m_pSprSpriteBody->SetX((int)m_pBody->GetPosition().x * SCALE);
         m_pSprSpriteBody->SetY((int)m_pBody->GetPosition().y * SCALE);
-
-        //slash hit box
-
-
-        //// Define the body
-        //b2BodyDef SlashbodyDef;
-        //SlashbodyDef.type = b2_kinematicBody;
-        //SlashbodyDef.position.Set(m_pBody->GetPosition().x, m_pBody->GetPosition().y);
-
-        //// Create the body in the world
-        //m_pSlashBody = m_pWorld->CreateBody(&SlashbodyDef);
-
-        //// Define the shape of the body (box shape in this example)
-        //b2PolygonShape kinmaticBox;
-        //kinmaticBox.SetAsBox((m_pSprSpriteBody->GetWidth()) / SCALE, (m_pSprSpriteBody->GetHeight() / 4.0f + 30) / SCALE);
-
-        //// Define the fixture (physical properties)
-        //b2FixtureDef SlashfixtureDef;
-        //SlashfixtureDef.shape = &kinmaticBox;
-        //SlashfixtureDef.density = 1.0f;
-        //SlashfixtureDef.friction = 0.3f;
-        //SlashfixtureDef.isSensor;
-
-        //// Attach the fixture to the body
-        //m_pSlashBody->CreateFixture(&SlashfixtureDef);
-        //m_pSlashBody->SetActive(false);
-   
-        //// Set user data to identify this body as a Golem
-        //m_pSlashBody->SetUserData((void*)GOLEM_SLASH);
-        //m_pSprSpriteBody->SetX((int)m_pSlashBody->GetPosition().x * SCALE);
-        //m_pSprSpriteBody->SetY((int)m_pSlashBody->GetPosition().y * SCALE);
 
     }
 
@@ -261,8 +229,8 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
         Vector2* cameraOffset = camera.GetOffset();
 
         // Adjust Golem position based on camera offset
-        int golemX = (int)(m_pBody->GetPosition().x * 30.0f - cameraOffset->x);
-        int golemY = (int)(m_pBody->GetPosition().y * 30.0f - cameraOffset->y);
+        int golemX = (int)(m_pBody->GetPosition().x * SCALE - cameraOffset->x);
+        int golemY = (int)(m_pBody->GetPosition().y * SCALE - cameraOffset->y);
 
         if (m_bPlayerInRange)
         {
@@ -422,8 +390,9 @@ Golem::SetBodySprites(Renderer& renderer)
     else
     {
         m_sAnimations.m_pASprGolemSlash->SetupFrames(391, 391);
-        m_fSlashWidth = 391/SCALE;
+        m_fSlashWidth = 391/SCALE/8.0f;
         m_fSlashHeight = 391/SCALE;
+        m_fSlashRangeMax = m_fSlashWidth *3;
         m_sAnimations.m_pASprGolemSlash->SetFrameDuration(0.15f);
     }
 
@@ -678,7 +647,10 @@ Golem::Action()
     }//slash
     else if (m_iAttackType == 0)
     {
-        if (m_fDistToPlayer <= m_fSlashRangeMax && m_fDistToPlayer >= 0.0f && !m_bIsAnimating)
+    /*    printf("dis %f\n", m_fDistToPlayer);
+        printf("SlashRange %f\n", m_fSlashRangeMax);*/
+
+        if (m_fDistToPlayer <= m_fSlashRangeMax && !m_bIsAnimating)
         {
             if (!m_bWalk)
             {
@@ -693,7 +665,6 @@ Golem::Action()
                 m_bSlash = true;
                 m_bIsAnimating = true;
                 CreateSlashBody();
-                printf("is active: %d\n", m_pSlashBody->IsActive());
             }
         }
         else
@@ -710,13 +681,13 @@ void Golem::CreateSlashBody()
     // Define the body
     b2BodyDef SlashbodyDef;
     SlashbodyDef.type = b2_staticBody;
-    if (m_iFacingDirection = -1)
+    if (m_iFacingDirection == -1)
     {
-        SlashbodyDef.position.Set((m_pBody->GetPosition().x - m_pSprSpriteBody->GetWidth()/6.0f)/ SCALE, m_pBody->GetPosition().y);
+        SlashbodyDef.position.Set((m_pBody->GetPosition().x-0.5f), m_pBody->GetPosition().y);
     }
-    else
+    else 
     {
-        SlashbodyDef.position.Set(m_pBody->GetPosition().x + m_pSprSpriteBody->GetWidth() / 6.0f / SCALE, m_pBody->GetPosition().y);
+        SlashbodyDef.position.Set((m_pBody->GetPosition().x + 0.5f), m_pBody->GetPosition().y);
     }
 
     // Create the body in the world
@@ -724,7 +695,8 @@ void Golem::CreateSlashBody()
 
     // Define the shape of the body (box shape in this example)
     b2PolygonShape staticBox;
-    staticBox.SetAsBox(m_fSlashWidth*6, m_fSlashHeight);
+    
+    staticBox.SetAsBox(m_fSlashWidth + 0.1f, m_fSlashHeight);
 
     // Define the fixture (physical properties)
     b2FixtureDef SlashfixtureDef;
@@ -739,10 +711,7 @@ void Golem::CreateSlashBody()
 
     // Set user data to identify this body as a Golem
     m_pSlashBody->SetUserData((void*)GOLEM_SLASH);
-    printf("Golem %f: ", m_pBody->GetPosition().x);
-    printf("GolemSize %f: ", (m_pSprSpriteBody->GetWidth() / 6.0f) / SCALE);
 
-  
 }
 
 void Golem::DeleteSlash()
@@ -750,9 +719,9 @@ void Golem::DeleteSlash()
     if (m_pSlashBody != nullptr)
     {
         m_pSlashBody->SetActive(false);            
-        printf("is Not active: %d\n", m_pSlashBody->IsActive());
     }
 }
+
 
 Vector2&
 Golem::GetPosition()
@@ -763,10 +732,10 @@ Golem::GetPosition()
 
 void Golem::CheckPlayerDist()
 {
-    // Get player position using Box2D body
+    // Get player position using Box2D body - in meters
     b2Vec2 playerPosition = m_pEntCharacter->GetPosition();  
 
-    // Get Golem's current position
+    // Get Golem's current position - in meters
     b2Vec2 golemPosition = m_pBody->GetPosition();
 
     // Calculate the differences in the x and y coordinates

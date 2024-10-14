@@ -18,7 +18,6 @@
 #include <cstdio>
 
 //Box2D world
-#define SCALE 30.0f
 
 Warrior::Warrior(b2World* world)
     : m_pSprSpriteHead(0)
@@ -276,7 +275,7 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
     if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD) {
         if (!m_bSlash)
         {
-            velocity.x = 1.0f;  // Set a fixed speed to move right
+            velocity.x = 0.5f;  // Set a fixed speed to move right
 
             if (!m_bMovingX)
             {
@@ -301,7 +300,7 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
     else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD) {
         if (!m_bSlash)
         {
-            velocity.x = -1.0f;  // Set a fixed speed to move left
+            velocity.x = -0.5f;  // Set a fixed speed to move left
 
             if (!m_bMovingX)
             {

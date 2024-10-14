@@ -11,8 +11,9 @@ enum GameObjectType {
     GOLEM_SLAM = 4,
     GOLEM_PROJECTILE = 5,
     TERRAIN = 6,
-    ENEMY_PROJECTILE = 7,
-    PLAYER_PROJECTILE = 8
+    GROUND_COLLISION = 7,
+    ENEMY_PROJECTILE = 8,
+    PLAYER_PROJECTILE = 9
 };
 
 // MyContactListener class inheriting from b2ContactListener

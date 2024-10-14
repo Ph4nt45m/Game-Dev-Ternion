@@ -18,7 +18,6 @@
 #include <cstdio>
 
 //Box2D world
-#define SCALE 30.0f
 
 Archer::Archer(b2World* world)
     : m_pSprSpriteHead(0)

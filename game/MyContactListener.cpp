@@ -19,6 +19,17 @@ void MyContactListener::BeginContact(b2Contact* contact)
     if (!userDataA || !userDataB) {
         return;  // If user data is missing, just return early
     }
+    //// Check for terrain collisions
+    //if ((int)userDataA == PLAYER && (int)userDataB == GROUND) {
+    //    // Player collided with terrain
+    //    //printf("Player collided with terrain!\n");
+    //    //static_cast<Player*>(userDataB)
+    //}
+    //else if ((int)userDataA == GROUND && (int)userDataB == PLAYER) {
+    //    // Reverse case: terrain collided with player
+    //    //printf("Player collided with terrain (reverse case)!\n");
+
+    //}
 
     // Check for terrain collisions
     if ((int)userDataA == PLAYER && (int)userDataB == TERRAIN) {

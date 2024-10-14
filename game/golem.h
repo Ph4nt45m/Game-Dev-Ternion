@@ -6,6 +6,7 @@
 #include "vector2.h"
 #include "inputsystem.h"
 #include "Camera.h"
+#include "player.h"
 
 //Box2d
 #include<Box2D.h>
@@ -45,9 +46,11 @@ public:
 
     void Move(int attackType);
     void Action();
-    void SetPlayer(Character* player);
+    void SetPlayer(Player* player);
     void CreateSlashBody();
+    void CreateSlamBody();
     void DeleteSlash();
+    void DeleteSlam();
 
     //void DebugDraw() override;
 
@@ -70,11 +73,10 @@ public:
 
     Camera* m_pcamera;
     bool IsCameraSet;
-    const float SCALE = 30.0f;
 
     // Member data:
 protected:
-    Character* m_pEntCharacter;
+    Player* m_pEntCharacter;
     Sprite* m_pSprSpriteBody;
     Projectile* m_pEntProjectile;
     Vector2 m_vStartingPos;

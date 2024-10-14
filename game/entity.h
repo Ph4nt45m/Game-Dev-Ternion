@@ -27,7 +27,7 @@ class InputSystem;
 #define MOTION_ATTACK 1				// Attack motion
 
 // Scaling factor
-#define SCALE 30.0f
+#define SCALE 100.0
 
 // Represents motion of the entity
 typedef struct {
