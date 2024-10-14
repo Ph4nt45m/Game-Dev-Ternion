@@ -165,6 +165,7 @@
     <ClCompile Include="CharacterThree.cpp" />
     <ClCompile Include="CharacterTwo.cpp" />
     <ClCompile Include="DecreaseButton.cpp" />
+    <ClCompile Include="DecreaseSoundEffectButton.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="ExitButton.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -176,6 +177,7 @@
     <ClCompile Include="golem.cpp" />
     <ClCompile Include="healthbar.cpp" />
     <ClCompile Include="IncreaseButton.cpp" />
+    <ClCompile Include="IncreaseSoundEffectButton.cpp" />
     <ClCompile Include="inputsystem.cpp" />
     <ClCompile Include="logmanager.cpp" />
     <ClCompile Include="Mage.cpp" />
@@ -227,6 +229,7 @@
     <ClInclude Include="CharacterThree.h" />
     <ClInclude Include="CharacterTwo.h" />
     <ClInclude Include="decreaseButton.h" />
+    <ClInclude Include="DecreaseSoundEffectButton.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="ExitButton.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -238,6 +241,7 @@
     <ClInclude Include="golem.h" />
     <ClInclude Include="healthbar.h" />
     <ClInclude Include="IncreaseButton.h" />
+    <ClInclude Include="IncreaseSoundEffectButton.h" />
     <ClInclude Include="inlinehelpers.h" />
     <ClInclude Include="inputsystem.h" />
     <ClInclude Include="logmanager.h" />

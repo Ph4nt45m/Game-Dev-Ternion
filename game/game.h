@@ -43,6 +43,8 @@ public:
 	Player* GetCharacter() const;
 	b2World* GetWorld() const;
 	SoundManager* GetSounds();
+	void setsoundEffectsVolume(int SoundVol);
+	int getsoundEffectsVolume();
 
 protected:
 	void Process(float deltaTime);
@@ -69,7 +71,7 @@ public:
 	b2Vec2 m_gravity;
 
 	//Box2D stuff
-
+	
 protected:
 	static Game* sm_pInstance;
 	Renderer* m_pRenderer;
@@ -103,6 +105,9 @@ private:
 	Sprite* m_sprCursorBodySprite;
 	Sprite* m_sprCursorBorderSprite;
 	int m_iMouseState;
+	int soundEffectsVolume;
+
+	float m_elapsedTime;
 
 	SoundManager* soundManager;
 	Alphabet* alphabet;

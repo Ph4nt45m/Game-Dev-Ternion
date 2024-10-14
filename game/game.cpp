@@ -183,7 +183,7 @@ bool Game::Initialise()
 	soundManager->loadMusic("newBackground", "..\\Sprites\\sounds\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
 
 	// Play the background music (loop infinitely)
-	soundManager->playMusic("background", -1);	//Kyle end
+//	soundManager->playMusic("background", -1);	//Kyle end
 	soundManager->setMusicVolume(80);
 	//Kyle code end
 
@@ -233,9 +233,15 @@ void
 Game::Process(float deltaTime)
 {
 	ProcessFrameCounting(deltaTime);
-
+	m_elapsedTime += deltaTime;
 	// TODO: Add game objects to process here!
-
+	if (m_elapsedTime > 3.0f)
+	{
+		soundManager->setSoundVolume("bounce", getsoundEffectsVolume());
+		soundManager->playSound("bounce");
+		printf("We played a sound effect");
+		m_elapsedTime = 0;
+	}
 	// Box2D time step
 	const float32 timeStep = 1.0f / 60.0f;  // 60Hz update rate
 	const int32 velocityIterations = 6;     // Box2D velocity solver iterations
@@ -337,7 +343,7 @@ Game::DebugDraw()
 
 	//ImGui::SliderInt("Active scene", &m_iCurrentScene, 0, (m_scenes.size() > 0) ? m_scenes.size() - 1 : 0, "%d");
 	//m_scenes[m_iCurrentScene]->DebugDraw(); // Call DebugDraw of the scene, for example bouncing balls
-
+	
 	//ImGui::End();
 
 	ImGui::Begin("Debug Window - Cursor", &open, ImGuiWindowFlags_MenuBar);
@@ -436,4 +442,13 @@ void Game::SetGravity(float x, float y)
 SoundManager* Game::GetSounds()
 {
 	return soundManager;
+}
+
+void Game::setsoundEffectsVolume(int SoundVol)
+{
+	soundEffectsVolume = SoundVol;
+}
+int Game::getsoundEffectsVolume()
+{
+	return soundEffectsVolume;
 }

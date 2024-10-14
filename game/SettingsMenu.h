@@ -43,6 +43,8 @@ protected:
     Button* MainMenu;
     Button* increase;
     Button* decrease;
+    Button* increaseSound;
+    Button* decreaseSound;
 
     float m_fElapsedTime;     // To track how long the splash screen has been displayed
 

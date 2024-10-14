@@ -13,7 +13,9 @@
 #include "MenuButton.h"
 #include "IncreaseButton.h"
 #include "DecreaseButton.h"
-#include "IncreaseButton.h"
+#include "IncreaseSoundEffectButton.h"
+#include "DecreaseSoundEffectButton.h"
+
 
 // Library includes:
 #include <cassert>
@@ -53,6 +55,10 @@ bool SettingScene::Initialise(Renderer& renderer)
     float DecreaseY = windowHeight * 0.3f;
     float MusicBarX = windowWidth * 0.5f;
     float MusicBarY = windowWidth * 0.3f;
+    float IncreaseSoundX = windowWidth * 0.7f;
+    float IncreaseSoundY = windowHeight * 0.4f;
+    float DecreaseSoundX = windowWidth * 0.3f;
+    float DecreaseSoundY = windowHeight * 0.4f;
 
     MainMenu = new MenuButton(MenuButtonX, MenuButtonY);
     MainMenu->Initialise(renderer);
@@ -63,6 +69,12 @@ bool SettingScene::Initialise(Renderer& renderer)
     increase = new IncreaseButton(IncreaseX, IncreaseY);
     increase->Initialise(renderer);
 
+    increaseSound = new IncreaseSoundButton(IncreaseSoundX, IncreaseSoundX);
+    increaseSound->Initialise(renderer);
+
+    decreaseSound = new DecreaseSoundButton(DecreaseSoundX, DecreaseSoundY);
+    decreaseSound->Initialise(renderer);
+
     return (m_BackGroundScene != nullptr);
 }
 
@@ -71,6 +83,22 @@ void SettingScene::Process(float deltaTime, InputSystem& inputSystem)
     m_fElapsedTime += deltaTime;
 
     //Call button updates
+    if (increase)
+    {
+        increase->Update(deltaTime, inputSystem);
+    }
+    if (decrease)
+    {
+        decrease->Update(deltaTime, inputSystem);
+    }
+    if (increaseSound)
+    {
+        increaseSound->Update(deltaTime, inputSystem);
+    }
+    if (decreaseSound)
+    {
+        decreaseSound->Update(deltaTime, inputSystem);
+    }
     if (MainMenu)
     {
         MainMenu->Update(deltaTime, inputSystem);
@@ -95,6 +123,14 @@ void SettingScene::Draw(Renderer& renderer)
     if (decrease)
     {
         decrease->Draw(renderer);
+    }
+    if (increaseSound)
+    {
+        increaseSound->Draw(renderer);
+    }
+    if (decreaseSound)
+    {
+        decreaseSound->Draw(renderer);
     }
 }
 
