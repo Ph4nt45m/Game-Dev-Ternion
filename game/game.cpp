@@ -183,7 +183,8 @@ bool Game::Initialise()
 	soundManager->loadMusic("newBackground", "..\\Sprites\\sounds\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
 
 	// Play the background music (loop infinitely)
-	//soundManager->playMusic("background", -1);	//Kyle end
+	soundManager->playMusic("background", -1);	//Kyle end
+	soundManager->setMusicVolume(80);
 	//Kyle code end
 
 	return true;

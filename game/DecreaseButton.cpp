@@ -74,10 +74,10 @@ void DecreaseButton::Draw(Renderer& renderer)
 void DecreaseButton::soundVolume()
 {
     // Increase volume by 12
-    int MusicVolume = Game::GetInstance().GetSounds()->getMusicVolume() - 12;
+    int MusicVolume = Game::GetInstance().GetSounds()->getMusicVolume() - 13;
 
     // Ensure it stays within the range [0, 100]
-    MusicVolume = std::min(100, std::max(0, MusicVolume));
+    MusicVolume = std::min(128, std::max(0, MusicVolume));
 
     Game::GetInstance().GetSounds()->setMusicVolume(MusicVolume);
 }
