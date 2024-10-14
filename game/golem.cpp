@@ -751,7 +751,6 @@ void Golem::DeleteSlash()
         m_pSlashBody->SetActive(false);            
     }
 }
-//hello rauen
 
 void Golem::CreateSlamBody()
 {
@@ -778,11 +777,11 @@ void Golem::CreateSlamBody()
         SlamfixtureDef.isSensor = true;
 
         // Attach the fixture to the body
-        m_pSlashBody->CreateFixture(&SlamfixtureDef);
-        m_pSlashBody->SetActive(true);
+        m_pSlamBody->CreateFixture(&SlamfixtureDef);
+        m_pSlamBody->SetActive(true);
 
         // Set user data to identify this body as a Golem
-        m_pSlashBody->SetUserData((void*)GOLEM_SLAM);
+        m_pSlamBody->SetUserData((void*)GOLEM_SLAM);
 }
 
 

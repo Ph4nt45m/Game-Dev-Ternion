@@ -43,11 +43,11 @@ void MyContactListener::BeginContact(b2Contact* contact)
     }
     if ((int)userDataA == PLAYER && (int)userDataB == GOLEM) {
         //if we want contact damage
-        printf("Touch\n");
+        //printf("Touch\n"); // Changes made by Karl
     }
     else if ((int)userDataA == GOLEM && (int)userDataB == PLAYER) {
         //if we want contact damage
-        printf("Touch\n");
+        //printf("Touch\n"); // Changes made by Karl
 
     }
     // Check for terrain collisions
@@ -66,10 +66,17 @@ void MyContactListener::BeginContact(b2Contact* contact)
     }
     //Slam
     if ((int)userDataA == PLAYER && (int)userDataB == GOLEM_SLAM) {
-        printf("Player hit by golem's slam!\n");
+        //printf("Player hit by golem's slam!\n");
     }
     else if ((int)userDataA == GOLEM_SLAM && (int)userDataB == PLAYER) {
-        ("Player hit by golem's slam (reverse case)!\n");
+        //("Player hit by golem's slam (reverse case)!\n");
+    }
+    // Player's special attack collision with golem - // Changes made by Karl
+    if ((int)userDataA == PLAYER_SP_ATTACK && (int)userDataB == GOLEM) {
+        printf("Golem hit by player's special!\n");
+    }
+    else if ((int)userDataA == GOLEM && (int)userDataB == PLAYER_SP_ATTACK) {
+        printf("Golem hit by player's special (reverse case)!\n");
     }
 }
 

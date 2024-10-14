@@ -37,11 +37,14 @@ Warrior::Warrior(b2World* world)
     , m_fLegBodyOffset(0.0f)
     , m_fStepTimer(0.0f)
     , m_fStepDuration(0.0f)
-    , m_pWorld(world)
     , m_pBody(nullptr)
+    , m_pWorld(world)
+    , m_pSPAttackBody(nullptr)
     , m_jumpTimer(0.0f)
     , m_sActions{ 0, 0, 0, 0 }
     , m_fOffset(0.0f)
+    , m_fPlayerWidth(0.0f) // Changes made by Karl
+    , m_fPlayerHeight(0.0f)
     , m_fAttackWidth(0.0f)
     , m_fAttackHeight(0.0f)
 {
@@ -90,6 +93,7 @@ Warrior::~Warrior()
     m_sActions.m_pASpriteAttack = 0;
 
     m_pWorld->DestroyBody(m_pBody);
+    //m_pWorld->DestroyBody(m_pSPAttackBody);
 }
 
 bool Warrior::Initialise(Renderer& renderer)
@@ -102,6 +106,8 @@ bool Warrior::Initialise(Renderer& renderer)
     // Changes made by Karl
     m_vPosition.x = 100.0f;  // Position in pixels
     m_vPosition.y = 500.0f; // Position in pixels
+    m_fPlayerWidth = 56.0f; // Changes made by Karl
+    m_fPlayerHeight = 120.0f;
     m_fOffset = 82.0f; // Y offset in pixels
 
     return true;
@@ -272,7 +278,8 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
     b2Vec2 velocity = m_pBody->GetLinearVelocity();
 
     // Move right when pressing D
-    if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD) {
+    if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD)
+    {
         if (!m_bSlash)
         {
             velocity.x = 0.5f;  // Set a fixed speed to move right
@@ -297,7 +304,8 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
             }
         } // Changes made by Karl
     }
-    else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD) {
+    else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD)
+    {
         if (!m_bSlash)
         {
             velocity.x = -0.5f;  // Set a fixed speed to move left
@@ -322,7 +330,8 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
             }
         } // Changes made by Karl
     }
-    else {
+    else
+    {
         velocity.x = 0.0f;  // No horizontal movement
 
         if (m_bMovingX)
@@ -346,29 +355,27 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
     // Attack logic
     if (inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT) == BS_PRESSED)
     {   // Allow attack only when on the ground
-        if (!m_bJumping && !m_bDoubleJump)
-        {
-            if (!m_bSlash)
+        if (!m_bJumping && !m_bDoubleJump && !m_bSlash)
+        {   // Changes made by Karl
+            m_bSlash = true;
+
+            // Disable all other animations
+            if (m_sActions.m_pASpriteIdle->IsAnimating())
             {
-                m_bSlash = true;
+                m_sActions.m_pASpriteIdle->Inanimate();
+            }
 
-                // Disable all other animations
-                if (m_sActions.m_pASpriteIdle->IsAnimating())
-                {
-                    m_sActions.m_pASpriteIdle->Inanimate();
-                }
+            if (m_sActions.m_pASpriteRun)
+            {
+                m_sActions.m_pASpriteRun->Inanimate();
+                velocity.x = 0.0f; // Changes made by Karl
+            }
 
-                if (m_sActions.m_pASpriteRun)
-                {
-                    m_sActions.m_pASpriteRun->Inanimate();
-                }
-
-                // Enable attack animation
-                if (!m_sActions.m_pASpriteAttack->IsAnimating())
-                {
-                    m_sActions.m_pASpriteAttack->Animate();
-                    // Set sound effects here
-                }
+            // Enable attack animation
+            if (!m_sActions.m_pASpriteAttack->IsAnimating())
+            {
+                m_sActions.m_pASpriteAttack->Animate();
+                // Set sound effects here
             }
         }
     }
@@ -380,8 +387,10 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
     }
 
     // Jumping logic
-    if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED) {
-        if (!m_bJumping) {
+    if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED)
+    {
+        if (!m_bJumping && !m_bSlash)
+        {
             // First jump
             velocity.y = -3.0f;  // Apply upward force
             m_bJumping = true;        // Character is now jumping
@@ -555,8 +564,8 @@ Warrior::DefineCharacter(Renderer& renderer)
 
     // Define the character's shape as a box (in meters)
     b2PolygonShape characterBox;
-    float boxWidth = (56.0f / 2.0f) / SCALE;   // Convert pixel width to meters (half-width for Box2D)
-    float boxHeight = (120.0f / 2.0f) / SCALE; // Convert pixel height to meters (half-height for Box2D)
+    float boxWidth = (m_fPlayerWidth / 2.0f) / SCALE;   // Convert pixel width to meters (half-width for Box2D)
+    float boxHeight = (m_fPlayerHeight / 2.0f) / SCALE; // Convert pixel height to meters (half-height for Box2D)
     characterBox.SetAsBox(boxWidth, boxHeight);
 
     // Create a fixture for the body (set density, friction, etc.)
@@ -582,6 +591,51 @@ void
 Warrior::SetDefined(bool define)
 {
     m_bDefined = define;
+} // Changes made by Karl - End
+// Changes made by Karl - Start
+void
+Warrior::CreateSPAttack()
+{
+    //// Define the body
+    //b2BodyDef SpecialBodyDef;
+    //SpecialBodyDef.type = b2_staticBody;
+    //if (m_iFacingDirection == -1)
+    //{
+    //    SpecialBodyDef.position.Set((m_pBody->GetPosition().x - 0.5f), m_pBody->GetPosition().y);
+    //}
+    //else
+    //{
+    //    SpecialBodyDef.position.Set((m_pBody->GetPosition().x + 0.5f), m_pBody->GetPosition().y);
+    //}
+
+    //// Create the body in the world
+    //m_pSPAttackBody = m_pWorld->CreateBody(&SpecialBodyDef);
+
+    //// Define the shape of the body (box shape in this example)
+    //b2PolygonShape staticBox;
+    //float specialWidth = 
+
+    //staticBox.SetAsBox(m_fSlashWidth + 0.1f, m_fSlashHeight);
+
+    //// Define the fixture (physical properties)
+    //b2FixtureDef SlashfixtureDef;
+    //SlashfixtureDef.shape = &staticBox;
+    //SlashfixtureDef.density = 0.0f;
+    //SlashfixtureDef.friction = 0.0f;
+    //SlashfixtureDef.isSensor = true;
+
+    //// Attach the fixture to the body
+    //m_pSlashBody->CreateFixture(&SlashfixtureDef);
+    //m_pSlashBody->SetActive(true);
+
+    //// Set user data to identify this body as a Golem
+    //m_pSlashBody->SetUserData((void*)GOLEM_SLASH);
+}
+
+void
+Warrior::DeleteSPAttack()
+{
+
 }
 // Changes made by Karl - End
 Vector2&
