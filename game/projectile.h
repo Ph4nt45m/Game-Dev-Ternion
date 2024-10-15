@@ -5,9 +5,6 @@
 #include "entity.h"
 #include "vector2.h"
 #include "inputsystem.h"
-#include "MyContactListener.h"
-#include "sprite.h"
-#include <Box2D.h>
 
 // Forward declarations:
 class Renderer;
@@ -19,7 +16,7 @@ class Projectile : public Entity
 {
 	// Member methods:
 public:
-	Projectile(b2World* world, bool isEnemyPro);
+	Projectile();
 	~Projectile();
 
     bool Initialise(Renderer& renderer) override;
@@ -27,10 +24,8 @@ public:
     void Draw(Renderer& renderer, Camera& camera) override;
     bool SetBodySprites(Renderer& renderer) override;
 
-    void SetProjectileSprite(Renderer& renderer, bool isEnemyProj);
-
-
     Vector2& GetPosition();
+    bool SetProjectileSprite(Renderer& renderer, const char* filePath);
     float GetWidth();
     float GetHeight();
     Sprite* GetSprite();
@@ -62,11 +57,6 @@ public:
     bool targetSet = false;
 
 protected:
-
-    b2World* m_pWorld;
-    b2Body* m_pProBody;
-    Sprite* m_pSprite;
-    bool isEnemy;
 
 
 private:
