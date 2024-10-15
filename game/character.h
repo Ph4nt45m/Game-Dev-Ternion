@@ -6,11 +6,6 @@
 #include "player.h" // Changes made by Karl
 #include "vector2.h"
 #include "inputsystem.h"
-#include "healthbar.h"
-#include "Camera.h"
-
-//Box2D
-#include <Box2D.h>
 
 // Forward declarations:
 class Renderer;
@@ -18,25 +13,27 @@ class InputSystem;
 class Sprite;
 class AnimatedSprite;
 class Projectile;
-class Game;
 
 // Class declaration:
 class Character : public Player // Changes made by Karl
 {
     // Member methods:
 public:
-    Character(b2World* world);
+    Character();
     ~Character();
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;
-    void DrawWithCam(Renderer& renderer, Camera& camera);
-    void Draw(Renderer& renderer, Camera& camera) override;
+    void Draw(Renderer& renderer) override;
     bool SetBodySprites(Renderer& renderer) override;
-    void GetInputs(InputSystem& inputSystem);
-    void HandleInput(float deltaTime, InputSystem& inputSystem);
+    void SetNumSegments(int amount) override;
+    void GetInputs(InputSystem& inputSystem) override;
+    void HandleInput(float deltaTime) override;
+    void SetTerrainMoving(bool moving) override;
+    bool IsTerrainMoving() override;
 
-    b2Vec2 GetPosition();
+    Vector2& GetPosition();
+    Vector2& GetFeetPos();
     Vector2& GetVelocityBody();
     int GetWeapontype();
     Vector2& GetProjectilePos();
@@ -44,10 +41,17 @@ public:
     float GetProjHeight();
     bool IsProjAlive();
     void SetProjAlive(bool alive);
+    void SetCentered(bool centered);
+    bool IsCentered();
+    int GetBodyWidth();
+    void ShiftX(float amount);
+    void ShiftY(float amount);
 
     //void DebugDraw() override;
 
 protected:
+    void ComputeBounds(float width, float height);
+    void HandleLegs(float deltaTime);
 
 private:
     Character(const Character& character);
@@ -64,15 +68,9 @@ protected:
     Sprite* m_pSprWeapon;
     Projectile* m_pEntArrow;
     AnimatedSprite* m_pASprWeapAttack;
-    Healthbar* m_pHealthbar;
     int m_iWeaponType;
     float m_fAngleOfAttack;
     bool m_bDoubleJump;
-
-    //Box2D verables
-    b2Body* m_pBody;
-    b2World* m_pWorld;
-
 
 private:
     float m_fHeadBodyOffset;
@@ -80,7 +78,7 @@ private:
     float m_fLegBodyOffset;
     float m_fStepTimer;
     float m_fStepDuration;
-    float m_jumpTimer;
 };
 
 #endif // !CHARACTER_H
+

@@ -13,15 +13,6 @@ class Vector2;
 class Sprite;
 class InputSystem;
 
-// Types of player animations
-typedef struct
-{
-	AnimatedSprite* m_pASpriteIdle;
-	AnimatedSprite* m_pASpriteRun;
-	AnimatedSprite* m_pASpriteJump;
-	AnimatedSprite* m_pASpriteAttack;
-} Actions;
-
 // Class declaration: 
 class Player : public Entity
 {
@@ -29,11 +20,6 @@ class Player : public Entity
 public:
 	Player();
 	virtual ~Player();
-
-	virtual b2Vec2 GetPosition() = 0; // Changes made by Karl
-	virtual void DrawWithCam(Renderer& renderer, Camera& camera) = 0;
-	virtual int GetCharactertype() = 0;
-	virtual void SetCharacterType(Renderer& renderer, int type) = 0;
 
 	//virtual void DebugDraw() = 0;
 
@@ -54,4 +40,5 @@ private:
 
 };
 
-#endif // !PLAYER_H
+#endif // !ENEMY_H
+
