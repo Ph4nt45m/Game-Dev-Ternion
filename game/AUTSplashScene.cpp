@@ -9,16 +9,6 @@
 #include "logmanager.h"
 #include "scene.h"
 
-#include "game.h"
-#include "logmanager.h"
-#include "renderer.h"
-#include "inputsystem.h"
-#include "sprite.h"
-#include "forest.h"
-#include "character.h"
-#include "golem.h"
-
-
 // Library includes:
 #include <cassert>
 #include <cstdlib>

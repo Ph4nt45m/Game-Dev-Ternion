@@ -51,6 +51,7 @@ SceneManager::SceneManager()
 	, m_iGreen(0)
 	, m_iBlue(0)
 	, pause(false)
+	, pauseScene(nullptr)
 {
     // Constructor code here
 }
@@ -59,6 +60,8 @@ SceneManager::~SceneManager()
 {
     // Destructor code here
     // Clean up all allocated sprites
+	delete pauseScene;
+
     for (Sprite* sprite : m_sprites)
     {
         delete sprite;
@@ -72,14 +75,8 @@ bool SceneManager::Initialise(Renderer& renderer)
     // For example:
 	m_pRenderer = &renderer;
     // Add more scene or resource initialization here
-	LoadImage(renderer, pauseScreen, "..\\Sprites\\Menus\\pauseMenu\\pauseMenu.png");
-	LoadImage(renderer, transparante, "..\\Sprites\\Menus\\background.png");
-
-	transparante->SetAlpha(0.4f);
-	transparante->SetBlueTint(0.4f);
-	transparante->SetRedTint(0.4f);
-	transparante->SetGreenTint(0.4f);
-
+	pauseScene = new PauseScene();
+	pauseScene->Initialise(renderer);
     return true; // Return false if initialization fails
 }
 
@@ -100,6 +97,10 @@ void SceneManager::Process(float deltaTime, InputSystem& inputSystem)
 		if (!pause)
 		{
 			m_scenes[m_iCurrentScene]->Process(deltaTime, inputSystem);
+		}
+		if (pause)
+		{
+			pauseScene->Process(deltaTime, inputSystem);
 		}
 		// Changes made by Karl
 		if (sceneId == 0 && m_fElapsedTime > 1.0f)
@@ -135,14 +136,9 @@ void SceneManager::Draw(Renderer& renderer)
 		// Draw the current scene
 		m_scenes[m_iCurrentScene]->Draw(renderer);
 	}
-	else
-	{
-		LogManager::GetInstance().Log("\ncouldn't be drawn");
-	}
 	if (pause)
 	{
-		transparante->Draw(renderer, false, false);
-		pauseScreen->Draw(renderer, true, false);
+		pauseScene->Draw(renderer);
 	}
 }
 void SceneManager::LoadImage(Renderer& renderer, Sprite*& backgroundImage, std::string filePath)
@@ -239,3 +235,11 @@ void SceneManager::PerformSceneTransition()
 	}
 }
 
+bool SceneManager::getpauseBool()
+{
+	return pause;
+}
+void SceneManager::setpauseBool(bool setPause)
+{
+	pause = setPause;
+}

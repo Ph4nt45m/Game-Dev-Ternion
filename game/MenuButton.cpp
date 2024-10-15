@@ -86,6 +86,10 @@ void MenuButton::Update(float deltaTime, InputSystem& inputSystem)
     Button::Update(deltaTime, inputSystem);
     if (m_isReleased)
     {
+        if (SceneManager::GetInstance().getpauseBool())
+        {
+            SceneManager::GetInstance().setpauseBool(!SceneManager::GetInstance().getpauseBool());
+        }
         SceneManager::GetInstance().ChangeScene(1);
     }
     if (m_isHovered) // Changes made by Karl

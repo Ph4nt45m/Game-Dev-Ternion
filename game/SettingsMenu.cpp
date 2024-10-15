@@ -64,9 +64,9 @@ bool SettingScene::Initialise(Renderer& renderer)
     SceneManager::GetInstance().LoadImage(renderer, m_BackGroundScene, "..\\Sprites\\Menus\\Settings\\Settings.png"); // Changes made by Karl
     SceneManager::GetInstance().LoadImage(renderer, m_Background, "..\\Sprites\\Menus\\BackGround.png"); // Changes made by Karl
 
-    m_Background->SetBlueTint(1.0f);
-    m_Background->SetRedTint(1.0f);
-    m_Background->SetGreenTint(1.0f);
+    m_Background->SetBlueTint(0.0f);
+    m_Background->SetRedTint(0.0f);
+    m_Background->SetGreenTint(0.0f);
 
 
     int windowWidth = renderer.GetWidth();

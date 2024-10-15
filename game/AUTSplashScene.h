@@ -3,18 +3,16 @@
 #define SPLASHSCENE_H 
 
 // Local includes: 
-#include "scene.h"
-#include "inputsystem.h"
 #include "sceneManager.h"
-#include "game.h"
+
+//Libs
 #include <string>
 
 // Forward declarations: Always included.
+class Scene;
 class Renderer;
 class InputSystem;
-class Forest;
-class Character;
-class Golem;
+class Game;
 
 class SplashScene : public Scene
 {

@@ -13,12 +13,13 @@
 class Renderer;
 class InputSystem;
 class Game;
-class SplashScene : public Scene
+class Button;
+class PauseScene : public Scene
 {
     // Member methods:
 public:
-    SplashScene();
-    virtual ~SplashScene();
+    PauseScene();
+    virtual ~PauseScene();
 
     virtual bool Initialise(Renderer& renderer) override;
     virtual void Process(float deltaTime, InputSystem& inputSystem) override;
@@ -27,12 +28,17 @@ public:
     virtual void DebugDraw() override;
 
 private:
-    SplashScene(const SplashScene& other) = delete;
-    SplashScene& operator=(const SplashScene& other) = delete;
+    PauseScene(const PauseScene& other) = delete;
+    PauseScene& operator=(const PauseScene& other) = delete;
 
     // Member data:
 protected:
-    Sprite* m_splashScene;  // Pointer to the splash image sprite
+    Sprite* pauseScreen;  // Pointer to the splash image sprite
+    Sprite* transparante;
+
+    Button* m_pExitButton;
+    Button* MainMenu;
+
     float m_fElapsedTime;     // To track how long the splash screen has been displayed
 
 private:
