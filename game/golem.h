@@ -43,6 +43,7 @@ public:
     Vector2& GetPosition();
     void CheckPlayerDist();
     void SetCamera(Camera* camera);
+    void ProcessAction();
 
     void Move(int attackType);
     void Action(float deltaTime);

@@ -54,7 +54,6 @@ Golem::Golem(b2World* world)
     , m_fSlamTime(0.0f)
     , growSize(0.0)
 {
-
 }
 
 Golem::~Golem()
@@ -99,7 +98,7 @@ Golem::Initialise(Renderer& renderer)
     m_fAnimateScale = 0.435f;
     m_fSlamRangeMax = (m_sAnimations.m_pASprGolemSlam->GetWidth());
     m_fThrowRangeMax = m_fDistToPlayer;
-    m_iAttackType = 0;
+    m_iAttackType = 1;
     m_bAlive = true;
 
 
@@ -200,14 +199,6 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
                 Action(deltaTime);
                 
             }
-            if (!m_bJumping && m_bSlam)
-            {
-                if (m_pSlamBody != nullptr)
-                {
-                    DeleteSlam();
-                }
-                CreateSlamBody();
-            }
             if (m_bWalk)
             {
                 Move(m_iAttackType);
@@ -229,6 +220,8 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
             m_fExecutionTime = 0.0f;
         }
 
+        ProcessAction();
+
         m_sAnimations.m_pASprGolemWalk->Process(deltaTime);
         m_sAnimations.m_pASprGolemJump->Process(deltaTime);
         m_sAnimations.m_pASprGolemSlam->Process(deltaTime);
@@ -236,6 +229,8 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         m_sAnimations.m_pASprGolemThrow->Process(deltaTime);
         m_pEntProjectile->Process(deltaTime, inputSystem);
     }
+
+    
 }
 
 void Golem::Draw(Renderer& renderer, Camera& camera)
@@ -318,6 +313,7 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
                     }
                     else
                     {
+                   
                         m_bSlam = false;
                         m_bIsAnimating = false;
 
@@ -447,7 +443,7 @@ Golem::SetBodySprites(Renderer& renderer)
         m_sAnimations.m_pASprGolemSlam->SetupFrames(708, 71);
         m_fSlamWidth = 708.0f/SCALE;
         m_fSlamHeight = 71.0f / SCALE;
-        m_fSlamRangeMax = m_fSlamWidth * 10;
+        m_fSlamRangeMax = m_fSlamWidth/2;
         m_sAnimations.m_pASprGolemSlam->SetFrameDuration(0.15f);
     }
 
@@ -663,7 +659,6 @@ Golem::Action(float deltaTime)
                 m_sAnimations.m_pASprGolemWalk->SetLooping(false);
                 m_sAnimations.m_pASprGolemWalk->Inanimate();
             }
-
             if (!m_sAnimations.m_pASprGolemJump->IsAnimating() && !m_bSlam)
             {
                 m_sAnimations.m_pASprGolemJump->Animate();
@@ -675,6 +670,7 @@ Golem::Action(float deltaTime)
         else
         {
             m_bWalk = true;
+           
         }
     }//slash
     else if (m_iAttackType == 0)
@@ -694,7 +690,6 @@ Golem::Action(float deltaTime)
                 m_iAttackType = 0;
                 m_bSlash = true;
                 m_bIsAnimating = true;
-                CreateSlashBody();
             }
         }
         else
@@ -706,8 +701,51 @@ Golem::Action(float deltaTime)
     }
 }
 
+void Golem::ProcessAction()
+{
+    //slash
+    if (m_bSlash)
+    {
+        if (m_pSlashBody != nullptr)
+        {
+            DeleteSlash();
+        }
+        CreateSlashBody();
+
+    }
+    else {
+
+        if (m_pSlashBody != nullptr)
+        {
+            DeleteSlash();
+        }
+    
+    }
+
+    //slam
+    if (!m_bJumping && m_bSlam)
+    {
+        if (m_pSlashBody != nullptr)
+        {
+            DeleteSlam();
+        }
+        CreateSlamBody();
+
+    }
+    else if (!m_bJumping && !m_bSlam)
+    {
+        if (m_pSlamBody != nullptr)
+        {
+            DeleteSlam();
+        }
+
+    }
+}
+
 void Golem::CreateSlashBody()
 {
+    if (m_pSlashBody != nullptr) return;
+
     // Define the body
     b2BodyDef SlashbodyDef;
     SlashbodyDef.type = b2_staticBody;
@@ -748,13 +786,14 @@ void Golem::DeleteSlash()
 {
     if (m_pSlashBody != nullptr)
     {
-        m_pSlashBody->SetActive(false);            
+        m_pWorld->DestroyBody(m_pSlashBody);
+        m_pSlashBody = nullptr;
     }
 }
-//hello rauen
 
 void Golem::CreateSlamBody()
 {
+    if (m_pSlamBody != nullptr) return;
         // Define the body
         b2BodyDef SlambodyDef;
         SlambodyDef.type = b2_staticBody;
@@ -774,15 +813,15 @@ void Golem::CreateSlamBody()
         b2FixtureDef SlamfixtureDef;
         SlamfixtureDef.shape = &staticBox;
         SlamfixtureDef.density = 0.0f;
-        SlamfixtureDef.friction = 0.0f;
         SlamfixtureDef.isSensor = true;
 
         // Attach the fixture to the body
-        m_pSlashBody->CreateFixture(&SlamfixtureDef);
-        m_pSlashBody->SetActive(true);
+        m_pSlamBody->CreateFixture(&SlamfixtureDef);
+        m_pSlamBody->SetActive(true);
 
         // Set user data to identify this body as a Golem
-        m_pSlashBody->SetUserData((void*)GOLEM_SLAM);
+        m_pSlamBody->SetUserData((void*)GOLEM_SLAM);
+
 }
 
 
