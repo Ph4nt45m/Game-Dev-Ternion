@@ -6,6 +6,11 @@
 #include "enemy.h" // Changes made by Karl
 #include "vector2.h"
 #include "inputsystem.h"
+#include "Camera.h"
+#include "player.h"
+
+//Box2d
+#include<Box2D.h>
 
 // Forward declarations:
 class Renderer;
@@ -28,69 +33,80 @@ class Golem : public Enemy // Changes made by Karl
 {
     // Member methods:
 public:
-    Golem();
+    Golem(b2World* world);
     ~Golem();
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;
-    void Draw(Renderer& renderer) override;
+    void Draw(Renderer& renderer, Camera& camera) override;
     bool SetBodySprites(Renderer& renderer) override;
-    void SetNumSegments(int amount) override;
-    void GetInputs(InputSystem& inputSystem) override;
-    void HandleInput(float deltaTime) override;
-    void SetTerrainMoving(bool moving) override;
-    bool IsTerrainMoving() override;
 
     Vector2& GetPosition();
-    void SetCharacter(Character& character);
     void CheckPlayerDist();
-    bool IsAnimating();
-    int GetBodyWidth();
-    void ShiftX(float amount);
-    void SetNumWalkableSegs(int amount);
+    void SetCamera(Camera* camera);
+    void ProcessAction();
 
     void Move(int attackType);
-    void Action();
-    void ProcessAction();
+    void Action(float deltaTime);
+    void SetPlayer(Player* player);
+    void CreateSlashBody();
+    void CreateSlamBody();
+    void DeleteSlash();
+    void DeleteSlam();
 
     //void DebugDraw() override;
 
 protected:
-    void ComputeBounds(float width, float height);
 
 private:
     Golem(const Golem& golem);
     Golem& operator=(const Golem& golem);
 
+public: 
+    //box2d verables
+    b2World* m_pWorld;
+    b2Body* m_pBody;
+    b2Body* m_pSlashBody;
+    b2Body* m_pSlamBody;
+    
+    //attacks
+    b2Body* slashBody;
+    float slashWidth;
+    float slashHeight;
+    float m_fSlamWidth;
+    float m_fSlamHeight;
+
+    Camera* m_pcamera;
+    bool IsCameraSet;
+
     // Member data:
 protected:
-    Character* m_pEntCharacter;
+    Player* m_pEntCharacter;
     Sprite* m_pSprSpriteBody;
     Projectile* m_pEntProjectile;
     Vector2 m_vStartingPos;
     Animations m_sAnimations;
-    int m_iNumSegments;
-    int m_iNumWalkableSegs;
     float m_fAnimateScale;
     float m_fExecutionTime;
     int m_iAttackType;
     float m_fDistToPlayer;
-    float m_fHitBoxRange;
     float m_fSlashRangeMax;
     float m_fSlamRangeMax;
     float m_fThrowRangeMax;
     float m_fGroundY;
+    float m_fSlashWidth;
+    float m_fSlashHeight;
     bool m_bPlayerInRange;
     bool m_bSpotted;
     bool m_bEngage;
     bool m_bIsAnimating;
     bool m_bSlam;
     bool m_bWalk;
+    float m_fSlamTime;
+    float growSize;
 
 private:
     
 };
 
 #endif // !GOLEM_H
-
-

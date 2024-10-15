@@ -205,3 +205,16 @@ Sprite::SetCursorBody(Vector2* cursor, Sprite* cursorSprite)
 	SetBlueTint(0.0f);
 	SetAngle(-90.0f);
 }
+
+// Change made by: Ethan
+void
+Sprite::SetWidth(int width)
+{
+	m_width = width;
+}
+
+void
+Sprite::SetHeight(int height)
+{
+	m_height = height;
+}

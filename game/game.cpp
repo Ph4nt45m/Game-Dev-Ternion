@@ -1,5 +1,6 @@
 // This include: 
 #include "game.h"
+#include "MyContactListener.h"
 
 // Local includes:
 #include "renderer.h" 
@@ -10,16 +11,19 @@
 #include "../imgui/imgui_impl_opengl3.h"
 #include "inputsystem.h"
 #include "SDL_scancode.h"
-#include "forestscene.h"
 #include "character.h"
 #include "animatedsprite.h"
-#include "forestscene.h"
 #include "vector2.h"
-#include "spider.h"
+#include "sceneManager.h"
+#include "Warrior.h" // Changes made by Karl
+#include "Mage.h" // Changes made by Karl
+#include "Archer.h" // Changes made by Karl
 
 // Library includes:
 #include <windows.h>
+#include <Box2D.h>
 #include <iostream>
+#include <stdio.h>
 
 // Static Members:
 Game* Game::sm_pInstance = 0;
@@ -48,14 +52,15 @@ Game::Game()
 	, m_iFPS(0)
 	, m_pCursor()
 	, m_pScForestScene(0)
-	, m_pEntCharacter(0) // Changes made by Karl
+	, m_pEntCharacter(0)
+	, m_pASprAnimatedSprite(0)
 	, m_sprCursorBodySprite(0)
 	, m_sprCursorBorderSprite(0)
 	, m_bShowDebugWindow(0)
 	, m_pInputSystem(0)
 	, m_iMouseState(0)
 	, m_bLooping(true)
-	, spider(0)
+	, soundManager(0)
 {
 
 }
@@ -64,7 +69,10 @@ Game::~Game()
 {
 	delete m_pRenderer; 
 	m_pRenderer = 0;
-	// Changes made by Karl
+
+	delete m_pASprAnimatedSprite;
+	m_pASprAnimatedSprite = 0;
+
 	delete m_sprCursorBorderSprite;
 	m_sprCursorBorderSprite = 0;
 
@@ -74,8 +82,10 @@ Game::~Game()
 	delete m_pEntCharacter;
 	m_pEntCharacter = 0;
 
-	delete spider;
-	spider = 0;
+	if (soundManager) {
+		delete soundManager;
+		soundManager = nullptr;
+	}
 }
 
 void Game::Quit()
@@ -88,11 +98,16 @@ bool Game::Initialise()
 	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
 	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-	int bbWidth = 1536; // 1550 originally
-	int bbHeight = 846; // 800 originally
+	int bbWidth = 1550; // 1550 originally
+	int bbHeight = 800; // 800 originally
 
+	//World init
+	SetGravity(0.0f, 0.0f);
+	world = new b2World{ m_gravity };
+	world->SetContactListener(&m_contactListener);
+
+	//Renderder
 	m_pRenderer = new Renderer();
-
 	if (!m_pRenderer->Initialise(true, bbWidth, bbHeight)) // true = windowed, false = fullscreen
 	{
 		LogManager::GetInstance().Log("Renderer failed to initialise!"); 
@@ -105,50 +120,68 @@ bool Game::Initialise()
 	m_iLastTime = SDL_GetPerformanceCounter();
 	m_pRenderer->SetClearColour(255, 255, 255);
 
+	//Input System
 	m_pInputSystem = new InputSystem();
-	
 	if (!m_pInputSystem->Initialise())
 	{
 		LogManager::GetInstance().Log("InputSystem failed to initialise!");
 		return false;
 	}
 
-	m_pEntCharacter = new Character();
-
+	//Character made
+	/*m_pEntCharacter = new Character(world); // Changes made by Karl
 	if (!m_pEntCharacter->Initialise(*m_pRenderer))
 	{
 		LogManager::GetInstance().Log("Character failed to initialise!");
 		return false;
-	}
+	}*/
 
-	m_pScForestScene = new ForestScene();
-
-	if (!m_pScForestScene->Initialise(*m_pRenderer))
+	//Scene
+	// Initialize SceneManager and the first scene
+	SceneManager& sceneManager = SceneManager::GetInstance();
+	if (!sceneManager.Initialise(*m_pRenderer))
 	{
-		LogManager::GetInstance().Log("ForestScene failed to initialise!");
+		LogManager::GetInstance().Log("SceneManager failed to initialise!");
+		return false;
+	}
+	// Optionally, load the first scene if not using transitions right away
+	sceneManager.ChangeScene(2); // Load initial scene (e.g., splash screen, menu)
+	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
+
+
+	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("Sprites\\explosion.png");
+	if (!m_pASprAnimatedSprite)
+	{
+		LogManager::GetInstance().Log("AnimatedSprite failed to initialise!");
 		return false;
 	}
 	else
 	{
-		m_scenes.push_back(m_pScForestScene);
-		m_iCurrentScene = 0;
-		m_pScForestScene->SetCharacter(*m_pEntCharacter, *m_pRenderer);
+		m_pASprAnimatedSprite->SetupFrames(64, 64);
+		m_pASprAnimatedSprite->SetFrameDuration(0.08f);
 	}
-	// Changes made by Karl
+
 	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 
-	/*spider = new Spider();
 
-	if (!spider->Initialise(*m_pRenderer))
-	{
-		LogManager::GetInstance().Log("Mushroom failed to initialise!");
+	//Kyle code
+	// Initialize the SoundManager
+	soundManager = new SoundManager();
+
+	// Initialize SDL_mixer
+	if (!soundManager->init()) {
 		return false;
 	}
-	else
-	{
-		spider->SetCharacter(*m_pEntCharacter);
-	}*/
+	//// Load sounds and music
+	soundManager->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
+	soundManager->loadMusic("background", "..\\Sprites\\sounds\\JoshWoodward-Circles-NoVox.mp3");
+	//// Load and play the new music
+	soundManager->loadMusic("newBackground", "..\\Sprites\\sounds\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
+
+	// Play the background music (loop infinitely)
+	//soundManager->playMusic("background", -1);	//Kyle end
+	//Kyle code end
 
 	return true;
 }
@@ -199,13 +232,28 @@ Game::Process(float deltaTime)
 
 	// TODO: Add game objects to process here!
 
-	if (m_pScForestScene)
-	{
-		m_scenes[m_iCurrentScene]->Process(deltaTime, *m_pInputSystem);
-	}
+	// Box2D time step
+	const float32 timeStep = 1.0f / 60.0f;  // 60Hz update rate
+	const int32 velocityIterations = 6;     // Box2D velocity solver iterations
+	const int32 positionIterations = 2;     // Box2D position solver iterations
 
-	m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
-	// Changes made by Karl
+	// Step the Box2D world to simulate physics
+	
+	// Step the world
+	world->Step(timeStep, velocityIterations, positionIterations);
+
+	//Checks which scene, if scene is legal and runs process for scene.
+	SceneManager::GetInstance().Process(deltaTime, *m_pInputSystem);
+
+	//I think this runs player character
+	/*if (m_pEntCharacter->IsDefined()) // Changes made by Karl
+	{
+		m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
+	}*/
+	
+	m_pASprAnimatedSprite->Process(deltaTime);
+
+	//Cursor that follows mouse and explodes when presses
 	if (m_sprCursorBorderSprite)
 	{
 		m_pCursor.SetPosition(m_pInputSystem->GetMousePosition());
@@ -219,11 +267,12 @@ Game::Process(float deltaTime)
 
 		if (m_iMouseState == BS_PRESSED)
 		{
-			// Changes made by Karl
+			m_pASprAnimatedSprite->SetX((int)m_pCursor.GetX());
+			m_pASprAnimatedSprite->SetY((int)m_pCursor.GetY());
+			m_pASprAnimatedSprite->Animate();
 		}
 	}
 
-	//spider->Process(deltaTime, *m_pInputSystem);
 }
 
 void
@@ -235,10 +284,13 @@ Game::Draw(Renderer& renderer)
 
 	// TODO: Add game objects to draw here!
 
-	m_scenes[m_iCurrentScene]->Draw(renderer);
-	
-	m_pEntCharacter->Draw(renderer);
-	// Changes made by Karl
+	SceneManager::GetInstance().Draw(renderer);
+
+	if (m_pASprAnimatedSprite->IsAnimating())
+	{
+		m_pASprAnimatedSprite->Draw(renderer, false, false);
+	}
+
 	if (m_sprCursorBorderSprite)
 	{
 		m_sprCursorBorderSprite->Draw(renderer, false, false);
@@ -248,8 +300,6 @@ Game::Draw(Renderer& renderer)
 	{
 		m_sprCursorBodySprite->Draw(renderer, false, false);
 	}
-
-	//spider->Draw(renderer);
 
 	DebugDraw();
 
@@ -285,7 +335,7 @@ Game::DebugDraw()
 	//m_scenes[m_iCurrentScene]->DebugDraw(); // Call DebugDraw of the scene, for example bouncing balls
 
 	//ImGui::End();
-	 // Changes made by Karl
+
 	ImGui::Begin("Debug Window - Cursor", &open, ImGuiWindowFlags_MenuBar);
 	//ImGui::Text("COMP710 GP Framework (%s)", "2022, S2");
 
@@ -325,4 +375,56 @@ Game::ToggleDebugWindow()
 	m_bShowDebugWindow = !m_bShowDebugWindow;
 
 	m_pInputSystem->ShowMouseCursor(m_bShowDebugWindow);
+}
+// Changes made by Karl
+void
+Game::CreateCharacter(int type)
+{
+	switch (type)
+	{
+	case 0:
+		m_pEntCharacter = new Warrior(world);
+		break;
+	case 1:
+		m_pEntCharacter = new Mage(world);
+		break;
+	case 2:
+		m_pEntCharacter = new Archer(world);
+		break;
+	}
+
+	if (!m_pEntCharacter->Initialise(*m_pRenderer))
+	{
+		LogManager::GetInstance().Log("Character failed to initialise!");
+	}
+	else
+	{
+		m_pEntCharacter->SetCharacterType(*m_pRenderer, type);
+	}
+}
+// Changes made by Karl
+//Character* Game::GetCharacter() const
+//{
+//	return m_pEntCharacter;
+//}
+
+Player* Game::GetCharacter() const
+{
+	return m_pEntCharacter;
+}
+
+b2World* Game::GetWorld() const
+{
+	return world;
+}
+
+b2Vec2 Game::GetGravity()
+{
+	return m_gravity;
+}
+
+void Game::SetGravity(float x, float y)
+{
+	m_gravity.x = x;
+	m_gravity.y = y;
 }
