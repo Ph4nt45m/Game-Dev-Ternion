@@ -77,6 +77,7 @@ protected:
     //Box2D verables
     b2Body* m_pBody;
     b2World* m_pWorld;
+    b2Body* m_pSPAttackBody; // Changes made by Karl
 
     Actions m_sActions;
 private:
@@ -87,6 +88,8 @@ private:
     float m_fStepDuration;
     float m_jumpTimer;
     float m_fOffset;
+    float m_fPlayerWidth; // Changes made by Karl
+    float m_fPlayerHeight;
     float m_fAttackWidth;
     float m_fAttackHeight;
 };

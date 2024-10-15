@@ -39,9 +39,12 @@ Mage::Mage(b2World* world)
     , m_fStepDuration(0.0f)
     , m_pWorld(world)
     , m_pBody(nullptr)
+    , m_pSPAttackBody(nullptr) // Changes made by Karl
     , m_jumpTimer(0.0f)
     , m_sActions{ 0, 0, 0, 0 }
     , m_fOffset(0.0f)
+    , m_fPlayerWidth(0.0f) // Changes made by Karl
+    , m_fPlayerHeight(0.0f)
     , m_fAttackWidth(0.0f)
     , m_fAttackHeight(0.0f)
 {
@@ -88,8 +91,15 @@ Mage::~Mage()
 
     delete m_sActions.m_pASpriteAttack;
     m_sActions.m_pASpriteAttack = 0;
-
+    // Changes made by Karl
     m_pWorld->DestroyBody(m_pBody);
+    m_pBody = nullptr;
+
+    if (m_pSPAttackBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pSPAttackBody);
+        m_pSPAttackBody = nullptr;
+    }
 }
 
 bool Mage::Initialise(Renderer& renderer)
@@ -102,6 +112,8 @@ bool Mage::Initialise(Renderer& renderer)
     // Changes made by Karl
     m_vPosition.x = 100.0f;  // Position in pixels
     m_vPosition.y = 500.0f; // Position in pixels
+    m_fPlayerWidth = 56.0f; // Changes made by Karl
+    m_fPlayerHeight = 120.0f;
     m_fOffset = 82.0f; // Y offset in pixels
 
     return true;

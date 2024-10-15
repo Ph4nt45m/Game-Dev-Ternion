@@ -43,6 +43,7 @@ public:
     Vector2& GetPosition();
     void CheckPlayerDist();
     void SetCamera(Camera* camera);
+    void ProcessAction();
 
     void Move(int attackType);
     void Action(float deltaTime);
@@ -60,13 +61,13 @@ private:
     Golem(const Golem& golem);
     Golem& operator=(const Golem& golem);
 
-public: 
+public:
     //box2d verables
     b2World* m_pWorld;
     b2Body* m_pBody;
     b2Body* m_pSlashBody;
     b2Body* m_pSlamBody;
-    
+
     //attacks
     b2Body* slashBody;
     float slashWidth;
@@ -104,7 +105,7 @@ protected:
     float growSize;
 
 private:
-    
+
 };
 
 #endif // !GOLEM_H

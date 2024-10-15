@@ -32,9 +32,9 @@ public:
     void Process(float deltaTime, InputSystem& inputSystem) override;
     void DrawWithCam(Renderer& renderer, Camera& camera) override;
     void Draw(Renderer& renderer, Camera& camera) override;
-    bool SetBodySprites(Renderer& renderer) override;
-    void GetInputs(InputSystem& inputSystem);
+    bool SetBodySprites(Renderer& renderer) override; // Changes made by Karl
     void HandleInput(float deltaTime, InputSystem& inputSystem);
+    void ProcessActions(float deltaTime);
 
     b2Vec2 GetPosition() override;
     Vector2& GetVelocityBody();
@@ -43,7 +43,8 @@ public:
     void DefineCharacter(Renderer& renderer);
     bool IsDefined();
     void SetDefined(bool define);
-    void CreateSPAttack(); // Changes made by Karl
+    Healthbar* GetHPBar(); // Changes made by Karl
+    void CreateSPAttack();
     void DeleteSPAttack();
     Vector2& GetProjectilePos();
     float GetProjWidth();
@@ -86,6 +87,7 @@ private:
     float m_fHeadBodyOffset;
     float m_fLengthFootToBody;
     float m_fLegBodyOffset;
+    float m_fElapsedTime;
     float m_fStepTimer;
     float m_fStepDuration;
     float m_jumpTimer;

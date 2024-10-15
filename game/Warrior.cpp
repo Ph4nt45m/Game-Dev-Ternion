@@ -35,11 +35,12 @@ Warrior::Warrior(b2World* world)
     , m_fHeadBodyOffset(0.0f)
     , m_fLengthFootToBody(0.0f)
     , m_fLegBodyOffset(0.0f)
+    , m_fElapsedTime(0.0f)
     , m_fStepTimer(0.0f)
     , m_fStepDuration(0.0f)
     , m_pBody(nullptr)
     , m_pWorld(world)
-    , m_pSPAttackBody(nullptr)
+    , m_pSPAttackBody(nullptr) // Changes made by Karl
     , m_jumpTimer(0.0f)
     , m_sActions{ 0, 0, 0, 0 }
     , m_fOffset(0.0f)
@@ -91,9 +92,15 @@ Warrior::~Warrior()
 
     delete m_sActions.m_pASpriteAttack;
     m_sActions.m_pASpriteAttack = 0;
-
+    // Changes made by Karl
     m_pWorld->DestroyBody(m_pBody);
-    //m_pWorld->DestroyBody(m_pSPAttackBody);
+    m_pBody = nullptr;
+
+    if (m_pSPAttackBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pSPAttackBody);
+        m_pSPAttackBody = nullptr;
+    }
 }
 
 bool Warrior::Initialise(Renderer& renderer)
@@ -117,6 +124,7 @@ void Warrior::Process(float deltaTime, InputSystem& inputSystem)
 {
     // Handle user input for movement
     HandleInput(deltaTime, inputSystem);
+    ProcessActions(deltaTime); // Changes made by Karl
 
     // Get the current Box2D body position (in meters) and convert it back to pixels for rendering
     b2Vec2 bodyPosition = m_pBody->GetPosition();
@@ -218,62 +226,9 @@ void Warrior::DrawWithCam(Renderer& renderer, Camera& camera)
         m_pHealthbar->Draw(renderer);
     }
 }
-
-
+// Changes made by Karl
 void
-Warrior::GetInputs(InputSystem& inputSystem)
-{
-    // Gets movement keys' states
-    m_sMotionKeyStates.MoveForward = inputSystem.GetKeyState(SDL_SCANCODE_D);
-    m_sMotionKeyStates.MoveBackward = inputSystem.GetKeyState(SDL_SCANCODE_A);
-    m_sMotionKeyStates.MoveUp = inputSystem.GetKeyState(SDL_SCANCODE_W); // For future updates
-    m_sMotionKeyStates.MoveDown = inputSystem.GetKeyState(SDL_SCANCODE_S); // For future updates
-    m_sMotionKeyStates.Jump = inputSystem.GetKeyState(SDL_SCANCODE_SPACE);
-    m_sMotionKeyStates.LeftClickAttack = inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT);
-
-    if (m_sMotionKeyStates.Jump == BS_PRESSED)
-    {
-        m_sKeyboardMotions.Heave = MOTION_JUMP;
-    }
-
-    if (m_sMotionKeyStates.LeftClickAttack == BS_PRESSED)
-    {
-        m_sKeyboardMotions.Attack = MOTION_ATTACK;
-    }
-    else
-    {
-        m_sKeyboardMotions.Attack = MOTION_NONE;
-    }
-
-    if (m_sMotionKeyStates.MoveForward == BS_PRESSED || m_sMotionKeyStates.MoveForward == BS_HELD)
-    {
-        m_sKeyboardMotions.Surge = MOTION_FORWARD;
-    }
-    else if (m_sMotionKeyStates.MoveBackward == BS_PRESSED || m_sMotionKeyStates.MoveBackward == BS_HELD)
-    {
-        m_sKeyboardMotions.Surge = MOTION_BACKWARD;
-    }
-    else
-    {
-        m_sKeyboardMotions.Surge = MOTION_NONE;
-    }
-
-    if (m_sMotionKeyStates.MoveUp == BS_PRESSED || m_sMotionKeyStates.MoveUp == BS_HELD)
-    {
-        m_sKeyboardMotions.Sway = MOTION_UP;
-    }
-    else if (m_sMotionKeyStates.MoveDown == BS_PRESSED || m_sMotionKeyStates.MoveDown == BS_HELD)
-    {
-        m_sKeyboardMotions.Sway = MOTION_DOWN;
-    }
-    else
-    {
-        m_sKeyboardMotions.Sway = MOTION_NONE;
-    }
-}
-
-
-void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
+Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
 {
     b2Vec2 velocity = m_pBody->GetLinearVelocity();
 
@@ -380,7 +335,6 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
         }
     }
 
-    // Check if attack animation has finished
     if (!m_sActions.m_pASpriteAttack->IsAnimating())
     {
         m_bSlash = false;
@@ -451,7 +405,34 @@ void Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
     m_sActions.m_pASpriteJump->SetX(static_cast<int>(spriteX));
     m_sActions.m_pASpriteJump->SetY(static_cast<int>(spriteY) - m_fOffset);
 }
+// Changes made by Karl
+void
+Warrior::ProcessActions(float deltaTime)
+{
+    // Check if attack 
+    if (m_bSlash)
+    {
+        m_fElapsedTime += deltaTime;
 
+        if (m_fElapsedTime >= 0.7f)
+        {
+            if (m_pSPAttackBody == nullptr)
+            {
+                CreateSPAttack();
+            }
+        }
+    }
+
+    // Check if attack animation has finished
+    if (!m_bSlash)
+    {
+        if (m_pSPAttackBody != nullptr)
+        {
+            DeleteSPAttack();
+            m_fElapsedTime = 0.0f;
+        }
+    }
+}
 
 bool
 Warrior::SetBodySprites(Renderer& renderer)
@@ -563,7 +544,7 @@ Warrior::DefineCharacter(Renderer& renderer)
     m_pBody = m_pWorld->CreateBody(&bodyDef);
 
     // Define the character's shape as a box (in meters)
-    b2PolygonShape characterBox;
+    b2PolygonShape characterBox; // Changes made by Karl
     float boxWidth = (m_fPlayerWidth / 2.0f) / SCALE;   // Convert pixel width to meters (half-width for Box2D)
     float boxHeight = (m_fPlayerHeight / 2.0f) / SCALE; // Convert pixel height to meters (half-height for Box2D)
     characterBox.SetAsBox(boxWidth, boxHeight);
@@ -593,49 +574,60 @@ Warrior::SetDefined(bool define)
     m_bDefined = define;
 } // Changes made by Karl - End
 // Changes made by Karl - Start
+Healthbar*
+Warrior::GetHPBar()
+{
+    return m_pHealthbar;
+}
+
 void
 Warrior::CreateSPAttack()
 {
-    //// Define the body
-    //b2BodyDef SpecialBodyDef;
-    //SpecialBodyDef.type = b2_staticBody;
-    //if (m_iFacingDirection == -1)
-    //{
-    //    SpecialBodyDef.position.Set((m_pBody->GetPosition().x - 0.5f), m_pBody->GetPosition().y);
-    //}
-    //else
-    //{
-    //    SpecialBodyDef.position.Set((m_pBody->GetPosition().x + 0.5f), m_pBody->GetPosition().y);
-    //}
+    // Define the body
+    b2BodyDef SpecialBodyDef;
+    SpecialBodyDef.type = b2_staticBody;
+    if (m_iFacingDirection == -1)
+    {
+        SpecialBodyDef.position.Set((m_pBody->GetPosition().x - 0.5f), m_pBody->GetPosition().y);
+    }
+    else
+    {
+        SpecialBodyDef.position.Set((m_pBody->GetPosition().x + 0.5f), m_pBody->GetPosition().y);
+    }
 
-    //// Create the body in the world
-    //m_pSPAttackBody = m_pWorld->CreateBody(&SpecialBodyDef);
+    // Create the body in the world
+    m_pSPAttackBody = m_pWorld->CreateBody(&SpecialBodyDef);
 
-    //// Define the shape of the body (box shape in this example)
-    //b2PolygonShape staticBox;
-    //float specialWidth = 
+    // Define the shape of the body (box shape in this example)
+    b2PolygonShape staticBox;
+    float specialWidth = ((m_fPlayerWidth * 2.8f)) / SCALE;
+    float specialHeight = ((m_fPlayerHeight * 1.5f)) / SCALE;
 
-    //staticBox.SetAsBox(m_fSlashWidth + 0.1f, m_fSlashHeight);
+    staticBox.SetAsBox(specialWidth, specialHeight);
 
-    //// Define the fixture (physical properties)
-    //b2FixtureDef SlashfixtureDef;
-    //SlashfixtureDef.shape = &staticBox;
-    //SlashfixtureDef.density = 0.0f;
-    //SlashfixtureDef.friction = 0.0f;
-    //SlashfixtureDef.isSensor = true;
+    // Define the fixture (physical properties)
+    b2FixtureDef SlashfixtureDef;
+    SlashfixtureDef.shape = &staticBox;
+    SlashfixtureDef.density = 0.0f;
+    SlashfixtureDef.friction = 0.0f;
+    SlashfixtureDef.isSensor = true;
 
-    //// Attach the fixture to the body
-    //m_pSlashBody->CreateFixture(&SlashfixtureDef);
-    //m_pSlashBody->SetActive(true);
+    // Attach the fixture to the body
+    m_pSPAttackBody->CreateFixture(&SlashfixtureDef);
+    m_pSPAttackBody->SetActive(true);
 
-    //// Set user data to identify this body as a Golem
-    //m_pSlashBody->SetUserData((void*)GOLEM_SLASH);
+    // Set user data to identify this body as a Golem
+    m_pSPAttackBody->SetUserData((void*)PLAYER_SP_ATTACK);
 }
 
 void
 Warrior::DeleteSPAttack()
 {
-
+    if (m_pSPAttackBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pSPAttackBody);
+        m_pSPAttackBody = nullptr;
+    }
 }
 // Changes made by Karl - End
 Vector2&
