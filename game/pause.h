@@ -38,6 +38,8 @@ protected:
 
     Button* m_pExitButton;
     Button* MainMenu;
+    Button* resumeButton;
+    Button* restartButton;
 
     float m_fElapsedTime;     // To track how long the splash screen has been displayed
 
