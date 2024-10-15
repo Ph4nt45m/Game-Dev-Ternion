@@ -123,6 +123,7 @@ void Mage::Process(float deltaTime, InputSystem& inputSystem)
 {
     // Handle user input for movement
     HandleInput(deltaTime, inputSystem);
+    ProcessActions(deltaTime); // Changes made by Karl
 
     // Get the current Box2D body position (in meters) and convert it back to pixels for rendering
     b2Vec2 bodyPosition = m_pBody->GetPosition();
@@ -225,7 +226,6 @@ void Mage::DrawWithCam(Renderer& renderer, Camera& camera)
     }
 }
 
-
 void
 Mage::GetInputs(InputSystem& inputSystem)
 {
@@ -284,10 +284,11 @@ void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
     b2Vec2 velocity = m_pBody->GetLinearVelocity();
 
     // Move right when pressing D
-    if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD) {
+    if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD)
+    {
         if (!m_bSlash)
         {
-            velocity.x = 1.0f;  // Set a fixed speed to move right
+            velocity.x = 0.5f;  // Set a fixed speed to move right
 
             if (!m_bMovingX)
             {
@@ -309,10 +310,11 @@ void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
             }
         } // Changes made by Karl
     }
-    else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD) {
+    else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD)
+    {
         if (!m_bSlash)
         {
-            velocity.x = -1.0f;  // Set a fixed speed to move left
+            velocity.x = -0.5f;  // Set a fixed speed to move left
 
             if (!m_bMovingX)
             {
@@ -334,7 +336,8 @@ void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
             }
         } // Changes made by Karl
     }
-    else {
+    else
+    {
         velocity.x = 0.0f;  // No horizontal movement
 
         if (m_bMovingX)
@@ -358,44 +361,43 @@ void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
     // Attack logic
     if (inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT) == BS_PRESSED)
     {   // Allow attack only when on the ground
-        if (!m_bJumping && !m_bDoubleJump)
-        {
-            if (!m_bSlash)
+        if (!m_bJumping && !m_bDoubleJump && !m_bSlash)
+        {   // Changes made by Karl
+            m_bSlash = true;
+
+            // Disable all other animations
+            if (m_sActions.m_pASpriteIdle->IsAnimating())
             {
-                m_bSlash = true;
+                m_sActions.m_pASpriteIdle->Inanimate();
+            }
 
-                // Disable all other animations
-                if (m_sActions.m_pASpriteIdle->IsAnimating())
-                {
-                    m_sActions.m_pASpriteIdle->Inanimate();
-                }
+            if (m_sActions.m_pASpriteRun)
+            {
+                m_sActions.m_pASpriteRun->Inanimate();
+                velocity.x = 0.0f; // Changes made by Karl
+            }
 
-                if (m_sActions.m_pASpriteRun)
-                {
-                    m_sActions.m_pASpriteRun->Inanimate();
-                }
-
-                // Enable attack animation
-                if (!m_sActions.m_pASpriteAttack->IsAnimating())
-                {
-                    m_sActions.m_pASpriteAttack->Animate();
-                    // Set sound effects here
-                }
+            // Enable attack animation
+            if (!m_sActions.m_pASpriteAttack->IsAnimating())
+            {
+                m_sActions.m_pASpriteAttack->Animate();
+                // Set sound effects here
             }
         }
     }
 
-    // Check if attack animation has finished
     if (!m_sActions.m_pASpriteAttack->IsAnimating())
     {
         m_bSlash = false;
     }
 
     // Jumping logic
-    if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED) {
-        if (!m_bJumping) {
+    if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED)
+    {
+        if (!m_bJumping && !m_bSlash)
+        {
             // First jump
-            velocity.y = -5.0f;  // Apply upward force
+            velocity.y = -3.0f;  // Apply upward force
             m_bJumping = true;        // Character is now jumping
 
             if (m_sActions.m_pASpriteIdle->IsAnimating())
@@ -417,7 +419,7 @@ void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
         }
         else if (m_bJumping && !m_bDoubleJump) {
             // Double jump
-            velocity.y = -5.0f;  // Apply upward force
+            velocity.y = -3.0f;  // Apply upward force
             m_bDoubleJump = true;     // Double jump has been used
             m_sActions.m_pASpriteJump->Restart();
             m_sActions.m_pASpriteJump->Animate();
@@ -431,8 +433,21 @@ void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
             m_bJumping = false;  // Reset jump
             m_bDoubleJump = false;
             m_jumpTimer = 0.0f;  // Reset the timer
-            m_sActions.m_pASpriteIdle->Animate();
-            m_sActions.m_pASpriteIdle->SetLooping(true);
+            // Changes made by Karl - Disable jump animation, enable animation based on current input
+            if (m_sActions.m_pASpriteJump->IsAnimating())
+            {
+                m_sActions.m_pASpriteJump->Inanimate();
+            }
+
+            if (!m_bMovingX)
+            {
+                m_sActions.m_pASpriteIdle->Animate();
+                m_sActions.m_pASpriteIdle->SetLooping(true);
+            }
+            else if (!m_sActions.m_pASpriteRun->IsAnimating())
+            {
+                m_sActions.m_pASpriteRun->Animate();
+            }
         }
     }
 
@@ -453,7 +468,12 @@ void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
     m_sActions.m_pASpriteJump->SetX(static_cast<int>(spriteX));
     m_sActions.m_pASpriteJump->SetY(static_cast<int>(spriteY) - m_fOffset);
 }
-
+// Changes made by Karl
+void
+Mage::ProcessActions(float deltaTime)
+{
+    // Still needs projectile logic
+}
 
 bool
 Mage::SetBodySprites(Renderer& renderer)
@@ -483,7 +503,7 @@ Mage::SetBodySprites(Renderer& renderer)
     else
     {
         m_sActions.m_pASpriteRun->SetupFrames(515, 286);
-        m_sActions.m_pASpriteRun->SetFrameDuration(0.15f);
+        m_sActions.m_pASpriteRun->SetFrameDuration(0.08f);
     }
 
     m_sActions.m_pASpriteJump = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8magejump.png");
@@ -593,6 +613,56 @@ void
 Mage::SetDefined(bool define)
 {
     m_bDefined = define;
+} // Changes made by Karl - End
+// Changes made by Karl - Start
+void
+Mage::CreateSPAttack()
+{
+    // Define the body
+    b2BodyDef SpecialBodyDef;
+    SpecialBodyDef.type = b2_staticBody;
+    if (m_iFacingDirection == -1)
+    {
+        SpecialBodyDef.position.Set((m_pBody->GetPosition().x - 0.5f), m_pBody->GetPosition().y);
+    }
+    else
+    {
+        SpecialBodyDef.position.Set((m_pBody->GetPosition().x + 0.5f), m_pBody->GetPosition().y);
+    }
+
+    // Create the body in the world
+    m_pSPAttackBody = m_pWorld->CreateBody(&SpecialBodyDef);
+
+    // Define the shape of the body (box shape in this example)
+    b2PolygonShape staticBox;
+    float specialWidth = ((m_fPlayerWidth * 2.8f)) / SCALE;
+    float specialHeight = ((m_fPlayerHeight * 1.5f)) / SCALE;
+
+    staticBox.SetAsBox(specialWidth, specialHeight);
+
+    // Define the fixture (physical properties)
+    b2FixtureDef SlashfixtureDef;
+    SlashfixtureDef.shape = &staticBox;
+    SlashfixtureDef.density = 0.0f;
+    SlashfixtureDef.friction = 0.0f;
+    SlashfixtureDef.isSensor = true;
+
+    // Attach the fixture to the body
+    m_pSPAttackBody->CreateFixture(&SlashfixtureDef);
+    m_pSPAttackBody->SetActive(true);
+
+    // Set user data to identify this body as a Golem
+    m_pSPAttackBody->SetUserData((void*)PLAYER_SP_ATTACK);
+}
+
+void
+Mage::DeleteSPAttack()
+{
+    if (m_pSPAttackBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pSPAttackBody);
+        m_pSPAttackBody = nullptr;
+    }
 }
 // Changes made by Karl - End
 Vector2&

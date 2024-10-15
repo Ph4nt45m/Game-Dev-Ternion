@@ -2,6 +2,7 @@
 #include "golem.h"
 
 // Local includes:
+#include "game.h"
 #include "renderer.h"
 #include "logmanager.h"
 #include "sprite.h"
@@ -96,9 +97,9 @@ Golem::Initialise(Renderer& renderer)
     m_fScaleMin = 0.92f;
     m_fScaleMax = 1.08f;
     m_fAnimateScale = 0.435f;
-    m_fSlamRangeMax = (m_sAnimations.m_pASprGolemSlam->GetWidth());
+    m_fSlamRangeMax = ((m_sAnimations.m_pASprGolemSlam->GetWidth() / 2.0f) / SCALE);
     m_fThrowRangeMax = m_fDistToPlayer;
-    m_iAttackType = 1;
+    m_iAttackType = 0;
     m_bAlive = true;
 
 
@@ -139,6 +140,8 @@ Golem::Initialise(Renderer& renderer)
         fixtureDef.shape = &dynamicBox;
         fixtureDef.density = 1.0f;
         fixtureDef.friction = 0.3f;
+        fixtureDef.filter.categoryBits = GOLEM;
+        fixtureDef.filter.maskBits = PLAYER;
 
         // Attach the fixture to the body
         m_pBody->CreateFixture(&fixtureDef);
@@ -191,12 +194,13 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         if (m_bPlayerInRange)
         {
             CheckPlayerDist();
+            ProcessAction();
 
             m_fExecutionTime += deltaTime;
             //potentiol
             if (!m_bWalk && (((int)m_fExecutionTime % 5) == 0))
             {
-                Action(deltaTime);
+                //Action(deltaTime);
 
             }
             if (m_bWalk)
@@ -219,8 +223,6 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         {
             m_fExecutionTime = 0.0f;
         }
-
-        ProcessAction();
 
         m_sAnimations.m_pASprGolemWalk->Process(deltaTime);
         m_sAnimations.m_pASprGolemJump->Process(deltaTime);
@@ -265,15 +267,17 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
                     m_bSlash = false;
                     m_bIsAnimating = false;
 
-                    if (m_fDistToPlayer < m_fSlamRangeMax)
+                    /*if (m_fDistToPlayer < m_fSlamRangeMax)
                     {
                         m_iAttackType = 1;
                         growSize = 0.0f;
-                    }
+                    }*/
                     /*else if (m_fDistToPlayer >= m_fSlamRangeMax)
                     {
                         m_iAttackType = 2;
                     }*/
+
+                    m_iAttackType = 1;
                 }
             }
             else if (m_bSlam)
@@ -317,14 +321,16 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
                         m_bSlam = false;
                         m_bIsAnimating = false;
 
-                        if (m_fDistToPlayer < m_fSlamRangeMax)
+                        /*if (m_fDistToPlayer < m_fSlamRangeMax)
                         {
                             m_iAttackType = 0;
                         }
                         else if (m_fDistToPlayer >= m_fSlamRangeMax)
                         {
                             m_iAttackType = 2;
-                        }
+                        }*/
+
+                        m_iAttackType = 0;
                     }
                 }
             }
@@ -412,9 +418,12 @@ Golem::SetBodySprites(Renderer& renderer)
     else
     {
         m_sAnimations.m_pASprGolemSlash->SetupFrames(391, 391);
-        m_fSlashWidth = 391 / SCALE / 8.0f;
+        /*m_fSlashWidth = 391 / SCALE / 8.0f;
         m_fSlashHeight = 391 / SCALE;
-        m_fSlashRangeMax = m_fSlashWidth * 3.0f;
+        m_fSlashRangeMax = m_fSlashWidth * 3.0f;*/
+        m_fSlashWidth = ((350 / 2.0f) / SCALE);
+        m_fSlashHeight = ((350 / 2.0f) / SCALE);
+        m_fSlashRangeMax = m_fSlashWidth;
         m_sAnimations.m_pASprGolemSlash->SetFrameDuration(0.15f);
     }
 
@@ -441,7 +450,7 @@ Golem::SetBodySprites(Renderer& renderer)
     else
     {
         m_sAnimations.m_pASprGolemSlam->SetupFrames(708, 71);
-        m_fSlamWidth = 708.0f / SCALE;
+        m_fSlamWidth = (708.0f / 2.0f) / SCALE;
         m_fSlamHeight = 71.0f / SCALE;
         m_fSlamRangeMax = m_fSlamWidth / 2;
         m_sAnimations.m_pASprGolemSlam->SetFrameDuration(0.15f);
@@ -675,7 +684,6 @@ Golem::Action(float deltaTime)
     }//slash
     else if (m_iAttackType == 0)
     {
-
         if (m_fDistToPlayer <= m_fSlashRangeMax && !m_bIsAnimating)
         {
             if (!m_bWalk)
@@ -695,8 +703,6 @@ Golem::Action(float deltaTime)
         else
         {
             m_bWalk = true;
-            DeleteSlash();
-
         }
     }
 }
@@ -706,31 +712,26 @@ void Golem::ProcessAction()
     //slash
     if (m_bSlash)
     {
-        if (m_pSlashBody != nullptr)
+        if (m_pSlashBody == nullptr)
         {
-            DeleteSlash();
+            CreateSlashBody();
         }
-        CreateSlashBody();
-
     }
-    else {
-
+    else
+    {
         if (m_pSlashBody != nullptr)
         {
             DeleteSlash();
         }
-
     }
 
     //slam
     if (!m_bJumping && m_bSlam)
     {
-        if (m_pSlashBody != nullptr)
+        if (m_pSlamBody == nullptr)
         {
-            DeleteSlam();
+            CreateSlamBody();
         }
-        CreateSlamBody();
-
     }
     else if (!m_bJumping && !m_bSlam)
     {
@@ -738,14 +739,11 @@ void Golem::ProcessAction()
         {
             DeleteSlam();
         }
-
     }
 }
 
 void Golem::CreateSlashBody()
 {
-    if (m_pSlashBody != nullptr) return;
-
     // Define the body
     b2BodyDef SlashbodyDef;
     SlashbodyDef.type = b2_staticBody;
@@ -763,7 +761,7 @@ void Golem::CreateSlashBody()
 
     // Define the shape of the body (box shape in this example)
     b2PolygonShape staticBox;
-
+    
     staticBox.SetAsBox(m_fSlashWidth + 0.1f, m_fSlashHeight);
 
     // Define the fixture (physical properties)
@@ -772,10 +770,11 @@ void Golem::CreateSlashBody()
     SlashfixtureDef.density = 0.0f;
     SlashfixtureDef.friction = 0.0f;
     SlashfixtureDef.isSensor = true;
+    SlashfixtureDef.filter.categoryBits = GOLEM_SLASH;
+    SlashfixtureDef.filter.maskBits = PLAYER;
 
     // Attach the fixture to the body
     m_pSlashBody->CreateFixture(&SlashfixtureDef);
-    m_pSlashBody->SetActive(true);
 
     // Set user data to identify this body as a Golem
     m_pSlashBody->SetUserData((void*)GOLEM_SLASH);
@@ -793,7 +792,6 @@ void Golem::DeleteSlash()
 
 void Golem::CreateSlamBody()
 {
-    if (m_pSlamBody != nullptr) return;
     // Define the body
     b2BodyDef SlambodyDef;
     SlambodyDef.type = b2_staticBody;
@@ -814,10 +812,11 @@ void Golem::CreateSlamBody()
     SlamfixtureDef.shape = &staticBox;
     SlamfixtureDef.density = 0.0f;
     SlamfixtureDef.isSensor = true;
+    SlamfixtureDef.filter.categoryBits = GOLEM_SLAM;
+    SlamfixtureDef.filter.maskBits = PLAYER;
 
     // Attach the fixture to the body
     m_pSlamBody->CreateFixture(&SlamfixtureDef);
-    m_pSlamBody->SetActive(true);
 
     // Set user data to identify this body as a Golem
     m_pSlamBody->SetUserData((void*)GOLEM_SLAM);
@@ -849,7 +848,7 @@ void Golem::CheckPlayerDist()
 
     // Get Golem's current position - in meters
     b2Vec2 golemPosition = m_pBody->GetPosition();
-
+    
     // Calculate the differences in the x and y coordinates
     m_fDistToPlayer = abs(playerPosition.x - golemPosition.x);
 }

@@ -163,6 +163,7 @@
     <ClCompile Include="CharacterSelect.cpp" />
     <ClCompile Include="CharacterThree.cpp" />
     <ClCompile Include="CharacterTwo.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="ExitButton.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -178,6 +179,7 @@
     <ClCompile Include="Mage.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix4.cpp" />
+    <ClCompile Include="mushroom.cpp" />
     <ClCompile Include="MyContactListener.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="projectile.cpp" />
@@ -188,7 +190,9 @@
     <ClCompile Include="sceneManager.cpp" />
     <ClCompile Include="SettingsButton.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="skeleton.cpp" />
     <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="spider.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="StartButton.cpp" />
     <ClCompile Include="TernionMenu.cpp" />
@@ -220,6 +224,7 @@
     <ClInclude Include="CharacterSelect.h" />
     <ClInclude Include="CharacterThree.h" />
     <ClInclude Include="CharacterTwo.h" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="ExitButton.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -235,6 +240,7 @@
     <ClInclude Include="logmanager.h" />
     <ClInclude Include="Mage.h" />
     <ClInclude Include="matrix4.h" />
+    <ClInclude Include="mushroom.h" />
     <ClInclude Include="MyContactListener.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />
@@ -245,7 +251,9 @@
     <ClInclude Include="sceneManager.h" />
     <ClInclude Include="SettingsButton.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="skeleton.h" />
     <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="spider.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="StartButton.h" />
     <ClInclude Include="TernionMenu.h" />

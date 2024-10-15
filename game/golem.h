@@ -7,6 +7,7 @@
 #include "inputsystem.h"
 #include "Camera.h"
 #include "player.h"
+#include "enemy.h"
 
 //Box2d
 #include<Box2D.h>
@@ -28,7 +29,7 @@ typedef struct {
 } Animations;
 
 // Class declaration:
-class Golem : public Entity
+class Golem : public Enemy
 {
     // Member methods:
 public:

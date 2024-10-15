@@ -348,7 +348,7 @@ Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
             // First jump
             velocity.y = -3.0f;  // Apply upward force
             m_bJumping = true;        // Character is now jumping
-
+            
             if (m_sActions.m_pASpriteIdle->IsAnimating())
             {
                 m_sActions.m_pASpriteIdle->Inanimate();
@@ -382,9 +382,21 @@ Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
             m_bJumping = false;  // Reset jump
             m_bDoubleJump = false;
             m_jumpTimer = 0.0f;  // Reset the timer
-            m_sActions.m_pASpriteIdle->Animate();
-            m_sActions.m_pASpriteIdle->SetLooping(true);
-            //printf("%f\n", m_pBody->GetPosition().y);
+            // Changes made by Karl - Disable jump animation, enable animation based on current input
+            if (m_sActions.m_pASpriteJump->IsAnimating())
+            {
+                m_sActions.m_pASpriteJump->Inanimate();
+            }
+
+            if (!m_bMovingX)
+            {
+                m_sActions.m_pASpriteIdle->Animate();
+                m_sActions.m_pASpriteIdle->SetLooping(true);
+            }
+            else if (!m_sActions.m_pASpriteRun->IsAnimating())
+            {
+                m_sActions.m_pASpriteRun->Animate();
+            }
         }
     }
 
@@ -462,7 +474,7 @@ Warrior::SetBodySprites(Renderer& renderer)
     else
     {
         m_sActions.m_pASpriteRun->SetupFrames(515, 286);
-        m_sActions.m_pASpriteRun->SetFrameDuration(0.15f);
+        m_sActions.m_pASpriteRun->SetFrameDuration(0.1f);
     }
 
     m_sActions.m_pASpriteJump = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8warjump.png");
@@ -475,7 +487,7 @@ Warrior::SetBodySprites(Renderer& renderer)
     else
     {
         m_sActions.m_pASpriteJump->SetupFrames(515, 286);
-        m_sActions.m_pASpriteJump->SetFrameDuration(0.04f);
+        m_sActions.m_pASpriteJump->SetFrameDuration(0.03f);
     }
     // Changes made by Karl
     m_sActions.m_pASpriteAttack = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8warattack.png");
@@ -554,6 +566,8 @@ Warrior::DefineCharacter(Renderer& renderer)
     fixtureDef.shape = &characterBox;
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.0f;
+    fixtureDef.filter.categoryBits = PLAYER;
+    fixtureDef.filter.maskBits = GOLEM | GOLEM_SLASH | GOLEM_SLAM;
 
     // Attach the fixture to the body
     m_pBody->CreateFixture(&fixtureDef);
@@ -574,12 +588,6 @@ Warrior::SetDefined(bool define)
     m_bDefined = define;
 } // Changes made by Karl - End
 // Changes made by Karl - Start
-Healthbar*
-Warrior::GetHPBar()
-{
-    return m_pHealthbar;
-}
-
 void
 Warrior::CreateSPAttack()
 {
