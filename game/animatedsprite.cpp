@@ -198,7 +198,7 @@ AnimatedSprite::SetLooping(bool loop)
 
 void AnimatedSprite::Restart()
 {
-	m_iCurrentFrame = 0;
+	m_iCurrentFrame = 1;
 	m_fTimeElapsed = 0.0f;
 }
 

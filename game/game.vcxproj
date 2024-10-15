@@ -87,13 +87,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Studio5Resources\SDL2-2.0.22\include;$(SolutionDir)\Studio5Resources\glew-2.1.0\include;$(SolutionDir)\Studio5Resources\SDL2_image-2.6.1\include;$(SolutionDir)\Studio5Resources\SDL2_mixer-2.6.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Studio5Resources\SDL2-2.0.22\include;$(SolutionDir)\Studio5Resources\glew-2.1.0\include;$(SolutionDir)\Studio5Resources\SDL2_image-2.6.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\Studio5Resources\SDL2-2.0.22\lib\x86\;$(SolutionDir)\Studio5Resources\SDL2_image-2.6.1\lib\x86\;$(SolutionDir)\Studio5Resources\glew-2.1.0\lib\x86\;$(SolutionDir)\Studio5Resources\SDL2_mixer-2.6.3\lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Studio5Resources\SDL2-2.0.22\lib\x86\;$(SolutionDir)\Studio5Resources\SDL2_image-2.6.1\lib\x86\;$(SolutionDir)\Studio5Resources\glew-2.1.0\lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -152,52 +152,33 @@
     <ClCompile Include="..\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
     <ClCompile Include="animatedsprite.cpp" />
-    <ClCompile Include="Archer.cpp" />
-    <ClCompile Include="AUTSplashScene.cpp" />
-    <ClCompile Include="AUTSplashScene.h" />
     <ClCompile Include="ball.cpp" />
-    <ClCompile Include="button.cpp" />
-    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="character.cpp" />
-    <ClCompile Include="CharacterOne.cpp" />
-    <ClCompile Include="CharacterSelect.cpp" />
-    <ClCompile Include="CharacterThree.cpp" />
-    <ClCompile Include="CharacterTwo.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="entity.cpp" />
-    <ClCompile Include="ExitButton.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="forest.cpp" />
     <ClCompile Include="forestscene.cpp" />
-    <ClCompile Include="foresttest.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="golem.cpp" />
-    <ClCompile Include="healthbar.cpp" />
     <ClCompile Include="inputsystem.cpp" />
     <ClCompile Include="logmanager.cpp" />
-    <ClCompile Include="Mage.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix4.cpp" />
-    <ClCompile Include="MyContactListener.cpp" />
+    <ClCompile Include="mushroom.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="projectile.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scenebouncingballs.cpp" />
     <ClCompile Include="scenecheckerboards.cpp" />
-    <ClCompile Include="sceneManager.cpp" />
-    <ClCompile Include="SettingsButton.cpp" />
     <ClCompile Include="shader.cpp" />
-    <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="skeleton.cpp" />
+    <ClCompile Include="spider.cpp" />
     <ClCompile Include="sprite.cpp" />
-    <ClCompile Include="StartButton.cpp" />
-    <ClCompile Include="TernionMenu.cpp" />
-    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="texturemanager.cpp" />
     <ClCompile Include="vector2.cpp" />
     <ClCompile Include="vertexarray.cpp" />
-    <ClCompile Include="Warrior.cpp" />
     <ClCompile Include="xboxcontroller.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -211,65 +192,40 @@
     <ClInclude Include="..\imgui\imstb_textedit.h" />
     <ClInclude Include="..\imgui\imstb_truetype.h" />
     <ClInclude Include="animatedsprite.h" />
-    <ClInclude Include="Archer.h" />
     <ClInclude Include="ball.h" />
-    <ClInclude Include="button.h" />
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="character.h" />
-    <ClInclude Include="CharacterOne.h" />
-    <ClInclude Include="CharacterSelect.h" />
-    <ClInclude Include="CharacterThree.h" />
-    <ClInclude Include="CharacterTwo.h" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="entity.h" />
-    <ClInclude Include="ExitButton.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="forest.h" />
     <ClInclude Include="forestscene.h" />
-    <ClInclude Include="foresttest.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="golem.h" />
-    <ClInclude Include="healthbar.h" />
     <ClInclude Include="inlinehelpers.h" />
     <ClInclude Include="inputsystem.h" />
     <ClInclude Include="logmanager.h" />
-    <ClInclude Include="Mage.h" />
     <ClInclude Include="matrix4.h" />
-    <ClInclude Include="MyContactListener.h" />
+    <ClInclude Include="mushroom.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scenebouncingballs.h" />
     <ClInclude Include="scenecheckerboards.h" />
-    <ClInclude Include="sceneManager.h" />
-    <ClInclude Include="SettingsButton.h" />
     <ClInclude Include="shader.h" />
-    <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="skeleton.h" />
+    <ClInclude Include="spider.h" />
     <ClInclude Include="sprite.h" />
-    <ClInclude Include="StartButton.h" />
-    <ClInclude Include="TernionMenu.h" />
-    <ClInclude Include="Terrain.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="texturemanager.h" />
     <ClInclude Include="vector2.h" />
     <ClInclude Include="vertexarray.h" />
-    <ClInclude Include="Warrior.h" />
     <ClInclude Include="xboxcontroller.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="sprite.frag" />
     <None Include="sprite.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\Box2D.2.3.0\build\native\Box2D.targets" Condition="Exists('..\packages\Box2D.2.3.0\build\native\Box2D.targets')" />
   </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Box2D.2.3.0\build\native\Box2D.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Box2D.2.3.0\build\native\Box2D.targets'))" />
-  </Target>
 </Project>
