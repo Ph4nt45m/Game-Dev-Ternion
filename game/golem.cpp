@@ -102,7 +102,7 @@ Golem::Initialise(Renderer& renderer)
     m_bAlive = true;
 
 
-    m_pEntProjectile = new Projectile();
+   // m_pEntProjectile = new Projectile();
 
     if (!m_pEntProjectile->Initialise(renderer))
     {
@@ -227,7 +227,7 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         m_sAnimations.m_pASprGolemSlam->Process(deltaTime);
         m_sAnimations.m_pASprGolemSlash->Process(deltaTime);
         m_sAnimations.m_pASprGolemThrow->Process(deltaTime);
-        m_pEntProjectile->Process(deltaTime, inputSystem);
+       // m_pEntProjectile->Process(deltaTime, inputSystem);
     }
 
     
@@ -336,10 +336,10 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
                 }
                 else
                 {
-                    m_pEntProjectile->SetStartPos(m_vPosition.x, m_vPosition.y);
+                  /*  m_pEntProjectile->SetStartPos(m_vPosition.x, m_vPosition.y);
                     m_pEntProjectile->SetTargetPos(m_pEntCharacter->GetPosition().x, m_pEntCharacter->GetPosition().y);
                     m_pEntProjectile->SetGroundY(m_pEntCharacter->GetPosition().y);
-                    m_pEntProjectile->Shoot();
+                    m_pEntProjectile->Shoot();*/
                     m_bShoot = false;
                     m_bProjectile = false;
                     m_bIsAnimating = false;
@@ -373,7 +373,7 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
             m_iAttackType = 1;
         }
 
-        m_pEntProjectile->Draw(renderer, camera);
+       // m_pEntProjectile->Draw(renderer, camera);
     }
 }
 
