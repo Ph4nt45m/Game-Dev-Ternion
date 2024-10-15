@@ -72,6 +72,13 @@ bool SceneManager::Initialise(Renderer& renderer)
     // For example:
 	m_pRenderer = &renderer;
     // Add more scene or resource initialization here
+	LoadImage(renderer, pauseScreen, "..\\Sprites\\Menus\\pauseMenu\\pauseMenu.png");
+	LoadImage(renderer, transparante, "..\\Sprites\\Menus\\background.png");
+
+	transparante->SetAlpha(0.4f);
+	transparante->SetBlueTint(0.4f);
+	transparante->SetRedTint(0.4f);
+	transparante->SetGreenTint(0.4f);
 
     return true; // Return false if initialization fails
 }
@@ -132,7 +139,11 @@ void SceneManager::Draw(Renderer& renderer)
 	{
 		LogManager::GetInstance().Log("\ncouldn't be drawn");
 	}
-
+	if (pause)
+	{
+		transparante->Draw(renderer, false, false);
+		pauseScreen->Draw(renderer, true, false);
+	}
 }
 void SceneManager::LoadImage(Renderer& renderer, Sprite*& backgroundImage, std::string filePath)
 {

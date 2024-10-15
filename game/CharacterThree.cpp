@@ -39,8 +39,8 @@ CharacterThree::~CharacterThree()
 bool CharacterThree::Initialise(Renderer& renderer)
 {
     // Load the button sprites
-    m_buttonFrameNormal = renderer.CreateSprite("..\\Sprites\\characterselect\\archerframe.png");
-    m_buttonFrameHovered = renderer.CreateSprite("..\\Sprites\\characterselect\\framehighlight.png");
+    m_buttonFrameNormal = renderer.CreateSprite("..\\Sprites\\Menus\\characterselect\\archerframe.png");
+    m_buttonFrameHovered = renderer.CreateSprite("..\\Sprites\\Menus\\characterselect\\framehighlight.png");
     m_buttonSpriteNormal = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\archer\\anim8archidle.png");
     m_buttonSpriteHovered = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\archer\\anim8archrun.png");
 

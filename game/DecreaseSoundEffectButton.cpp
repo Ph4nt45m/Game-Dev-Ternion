@@ -24,7 +24,7 @@ DecreaseSoundButton::~DecreaseSoundButton()
 bool DecreaseSoundButton::Initialise(Renderer& renderer)
 {
     // Load the button sprites
-    m_buttonSpriteNormal = renderer.CreateSprite("..\\Sprites\\Menus\\lowerhigher.png");
+    m_buttonSpriteNormal = renderer.CreateSprite("..\\Sprites\\Menus\\Settings\\lowerhigher.png");
 
     // Get the screen dimensions
     int windowWidth = renderer.GetWidth();

@@ -204,6 +204,9 @@
     <ClCompile Include="DecreaseSoundEffectButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="pause.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="logmanager.h">
@@ -384,6 +387,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DecreaseSoundEffectButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pause.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

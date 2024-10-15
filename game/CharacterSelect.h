@@ -33,6 +33,7 @@ private:
     // Member data:
 protected:
     Sprite* m_ChrSelectScene;  // Pointer to the splash image sprite
+    Sprite* m_Background;
     Button* characterOne;
     Button* characterTwo;
     Button* characterThree;

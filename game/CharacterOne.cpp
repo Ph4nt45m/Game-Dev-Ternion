@@ -40,8 +40,8 @@ CharacterOne::~CharacterOne()
 bool CharacterOne::Initialise(Renderer& renderer)
 {
     // Load the button sprites
-    m_buttonFrameNormal = renderer.CreateSprite("..\\Sprites\\characterselect\\warriorframe.png"); // Changes made by Karl
-    m_buttonFrameHovered = renderer.CreateSprite("..\\Sprites\\characterselect\\framehighlight.png"); // Changes made by Karl
+    m_buttonFrameNormal = renderer.CreateSprite("..\\Sprites\\Menus\\CharacterSelect\\warriorframe.png"); // Changes made by Karl
+    m_buttonFrameHovered = renderer.CreateSprite("..\\Sprites\\Menus\\CharacterSelect\\framehighlight.png"); // Changes made by Karl
     m_buttonSpriteNormal = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8waridle.png");
     m_buttonSpriteHovered = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8warrun.png");
 

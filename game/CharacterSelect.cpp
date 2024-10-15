@@ -55,7 +55,11 @@ CharacterSelectScene::~CharacterSelectScene()
 
 bool CharacterSelectScene::Initialise(Renderer& renderer)
 {
-    SceneManager::GetInstance().LoadImage(renderer, m_ChrSelectScene, "..\\Sprites\\characterselect\\charselectbg.png"); // Changes made by Karl
+    SceneManager::GetInstance().LoadImage(renderer, m_ChrSelectScene, "..\\Sprites\\Menus\\characterselect\\CharacterSelect.png"); // Changes made by Karl
+    SceneManager::GetInstance().LoadImage(renderer, m_Background, "..\\Sprites\\Menus\\Background.png"); // Changes made by Karl
+    m_Background->SetBlueTint(0.0f);
+    m_Background->SetRedTint(0.0f);
+    m_Background->SetGreenTint(0.0f);
 
     int windowWidth = renderer.GetWidth();
     int windowHeight = renderer.GetHeight();
@@ -116,6 +120,7 @@ void CharacterSelectScene::Draw(Renderer& renderer)
 {
     if (m_ChrSelectScene)
     {
+        m_Background->Draw(renderer, true, false);
         m_ChrSelectScene->Draw(renderer, true, false);
     }
 

@@ -39,8 +39,8 @@ CharacterTwo::~CharacterTwo()
 bool CharacterTwo::Initialise(Renderer& renderer)
 {
     // Load the button sprites
-    m_buttonFrameNormal = renderer.CreateSprite("..\\Sprites\\characterselect\\mageframe.png"); // Changes made by Karl
-    m_buttonFrameHovered = renderer.CreateSprite("..\\Sprites\\characterselect\\framehighlight.png"); // Changes made by Karl
+    m_buttonFrameNormal = renderer.CreateSprite("..\\Sprites\\Menus\\CharacterSelect\\mageframe.png"); // Changes made by Karl
+    m_buttonFrameHovered = renderer.CreateSprite("..\\Sprites\\Menus\\characterselect\\framehighlight.png"); // Changes made by Karl
     m_buttonSpriteNormal = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8mageidle.png");
     m_buttonSpriteHovered = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8magerun.png");
 

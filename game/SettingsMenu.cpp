@@ -61,7 +61,13 @@ SettingScene::~SettingScene()
 
 bool SettingScene::Initialise(Renderer& renderer)
 {
-    SceneManager::GetInstance().LoadImage(renderer, m_BackGroundScene, "..\\Sprites\\characterselect\\charselectbg.png"); // Changes made by Karl
+    SceneManager::GetInstance().LoadImage(renderer, m_BackGroundScene, "..\\Sprites\\Menus\\Settings\\Settings.png"); // Changes made by Karl
+    SceneManager::GetInstance().LoadImage(renderer, m_Background, "..\\Sprites\\Menus\\BackGround.png"); // Changes made by Karl
+
+    m_Background->SetBlueTint(1.0f);
+    m_Background->SetRedTint(1.0f);
+    m_Background->SetGreenTint(1.0f);
+
 
     int windowWidth = renderer.GetWidth();
     int windowHeight = renderer.GetHeight();
@@ -134,6 +140,7 @@ void SettingScene::Draw(Renderer& renderer)
 {
     if (m_BackGroundScene)
     {
+        m_Background->Draw(renderer, false, false);
         m_BackGroundScene->Draw(renderer, true, false);
     }
     if (MainMenu)

@@ -37,10 +37,10 @@ SettingsButton::~SettingsButton()
 bool SettingsButton::Initialise(Renderer& renderer)
 {   
     // Load the button sprites
-    m_buttonSpriteNormal = renderer.CreateSprite("..\\Sprites\\Menus\\settingsNormal.png");
-    m_buttonSpriteHovered = renderer.CreateSprite("..\\Sprites\\Menus\\settingsHovered.png");
-    m_buttonSpritePressed = renderer.CreateSprite("..\\Sprites\\Menus\\settingsPressed.png");
-    m_buttonSpriteHighlight = renderer.CreateSprite("..\\Sprites\\Menus\\border.png");
+    m_buttonSpriteNormal = renderer.CreateSprite("..\\Sprites\\Menus\\Buttons\\settingsNormal.png");
+    m_buttonSpriteHovered = renderer.CreateSprite("..\\Sprites\\Menus\\Buttons\\settingsHovered.png");
+    m_buttonSpritePressed = renderer.CreateSprite("..\\Sprites\\Menus\\Buttons\\settingsPressed.png");
+    m_buttonSpriteHighlight = renderer.CreateSprite("..\\Sprites\\Menus\\Buttons\\border.png");
 
     // Get the screen dimensions
     int windowWidth = renderer.GetWidth();

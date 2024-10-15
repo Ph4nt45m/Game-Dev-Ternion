@@ -37,10 +37,10 @@ ExitButton::~ExitButton()
 bool ExitButton::Initialise(Renderer& renderer)
 {   // Changes made by Karl
     // Load the button sprites
-    m_buttonSpriteNormal = renderer.CreateSprite("..\\Sprites\\Menus\\exitNormal.png");
-    m_buttonSpriteHovered = renderer.CreateSprite("..\\Sprites\\Menus\\exitHovered.png");
-    m_buttonSpritePressed = renderer.CreateSprite("..\\Sprites\\Menus\\exitPressed.png");
-    m_buttonSpriteHighlight = renderer.CreateSprite("..\\Sprites\\Menus\\border.png");
+    m_buttonSpriteNormal = renderer.CreateSprite("..\\Sprites\\Menus\\Buttons\\exitNormal.png");
+    m_buttonSpriteHovered = renderer.CreateSprite("..\\Sprites\\Menus\\Buttons\\exitHovered.png");
+    m_buttonSpritePressed = renderer.CreateSprite("..\\Sprites\\Menus\\Buttons\\exitPressed.png");
+    m_buttonSpriteHighlight = renderer.CreateSprite("..\\Sprites\\Menus\\Buttons\\border.png");
 
     // Get the screen dimensions
     int windowWidth = renderer.GetWidth();

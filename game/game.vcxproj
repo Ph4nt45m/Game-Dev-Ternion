@@ -185,6 +185,7 @@
     <ClCompile Include="matrix4.cpp" />
     <ClCompile Include="MenuButton.cpp" />
     <ClCompile Include="MyContactListener.cpp" />
+    <ClCompile Include="pause.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="projectile.cpp" />
     <ClCompile Include="renderer.cpp" />
@@ -249,6 +250,7 @@
     <ClInclude Include="matrix4.h" />
     <ClInclude Include="MenuButton.h" />
     <ClInclude Include="MyContactListener.h" />
+    <ClInclude Include="pause.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="renderer.h" />

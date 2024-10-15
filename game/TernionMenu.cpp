@@ -45,7 +45,7 @@ MenuScene::~MenuScene()
 
 bool MenuScene::Initialise(Renderer& renderer)
 {
-    SceneManager::GetInstance().LoadImage(renderer, m_BackGroundScene, "..\\Sprites\\Menus\\ternion_Menu.png");
+    SceneManager::GetInstance().LoadImage(renderer, m_BackGroundScene, "..\\Sprites\\Menus\\HomeScreen\\ternion_Menu.png");
 
     int windowWidth = renderer.GetWidth();
     int windowHeight = renderer.GetHeight();

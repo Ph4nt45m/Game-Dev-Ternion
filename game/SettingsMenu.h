@@ -40,6 +40,7 @@ private:
     // Member data:
 protected:
     Sprite* m_BackGroundScene;  // Pointer to the background image sprite
+    Sprite* m_Background;
 
     Button* MainMenu;
     Button* increase;
