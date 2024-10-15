@@ -2,6 +2,7 @@
 #include "golem.h"
 
 // Local includes:
+#include "game.h"
 #include "renderer.h"
 #include "logmanager.h"
 #include "sprite.h"
@@ -45,8 +46,15 @@ Golem::Golem(b2World* world)
     , m_pWorld(world)
     , m_pcamera(nullptr)
     , IsCameraSet(false)
+    , m_pSlamBody(nullptr)
+    , m_fSlamWidth(0.0f)
+    , m_fSlamHeight(0.0f)
+    , m_fSlashHeight(0.0f)
+    , m_fSlashWidth(0.0f)
+    , m_pSlashBody(nullptr)
+    , m_fSlamTime(0.0f)
+    , growSize(0.0)
 {
-
 }
 
 Golem::~Golem()
@@ -76,7 +84,6 @@ Golem::~Golem()
 bool
 Golem::Initialise(Renderer& renderer)
 {
-    const float SCALE = 30.0f;
     if (!SetBodySprites(renderer))
     {
         LogManager::GetInstance().Log("Golem Sprites failed to initialise!");
@@ -90,9 +97,9 @@ Golem::Initialise(Renderer& renderer)
     m_fScaleMin = 0.92f;
     m_fScaleMax = 1.08f;
     m_fAnimateScale = 0.435f;
-    m_fSlashRangeMax = (m_sAnimations.m_pASprGolemSlash->GetWidth() / 2.0f)/SCALE;
-    m_fSlamRangeMax = (m_sAnimations.m_pASprGolemSlam->GetWidth() / 2.0f)/SCALE;
-    m_iAttackType = 2;
+    m_fSlamRangeMax = ((m_sAnimations.m_pASprGolemSlam->GetWidth() / 2.0f) / SCALE);
+    m_fThrowRangeMax = m_fDistToPlayer;
+    m_iAttackType = 0;
     m_bAlive = true;
 
 
@@ -110,7 +117,7 @@ Golem::Initialise(Renderer& renderer)
     }
 
     //Changes made by Rauen
-     
+
     // Create the Box2D body for the Golem
     if (m_pWorld)
     {
@@ -119,20 +126,22 @@ Golem::Initialise(Renderer& renderer)
         // Define the body
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
-        bodyDef.position.Set(m_vPosition.x / SCALE, m_vPosition.y/ SCALE);
+        bodyDef.position.Set(m_vPosition.x / SCALE, m_vPosition.y / SCALE);
 
         // Create the body in the world
         m_pBody = m_pWorld->CreateBody(&bodyDef);
 
         // Define the shape of the body (box shape in this example)
         b2PolygonShape dynamicBox;
-        dynamicBox.SetAsBox((m_pSprSpriteBody->GetWidth()/4.0f)/SCALE, (m_pSprSpriteBody->GetHeight()/4.0f +30)/SCALE);
+        dynamicBox.SetAsBox((m_pSprSpriteBody->GetWidth() / 7.0f) / SCALE, (m_pSprSpriteBody->GetHeight() / 4.0f + 30) / SCALE);
 
         // Define the fixture (physical properties)
         b2FixtureDef fixtureDef;
         fixtureDef.shape = &dynamicBox;
         fixtureDef.density = 1.0f;
         fixtureDef.friction = 0.3f;
+        fixtureDef.filter.categoryBits = GOLEM;
+        fixtureDef.filter.maskBits = PLAYER;
 
         // Attach the fixture to the body
         m_pBody->CreateFixture(&fixtureDef);
@@ -141,9 +150,10 @@ Golem::Initialise(Renderer& renderer)
         m_pBody->SetUserData((void*)GOLEM);
         m_pSprSpriteBody->SetX((int)m_pBody->GetPosition().x * SCALE);
         m_pSprSpriteBody->SetY((int)m_pBody->GetPosition().y * SCALE);
+
     }
 
-	return true;
+    return true;
 }
 
 void
@@ -153,7 +163,6 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         b2Vec2 golemPosition = m_pBody->GetPosition();
 
         // Convert the Golem's Box2D position to pixels (if needed)
-        const float SCALE = 30.0f;  // Assuming this is the scale for meters-to-pixels conversion
         golemPosition.x *= SCALE;
         golemPosition.y *= SCALE;
 
@@ -185,12 +194,14 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         if (m_bPlayerInRange)
         {
             CheckPlayerDist();
+            ProcessAction();
 
             m_fExecutionTime += deltaTime;
             //potentiol
             if (!m_bWalk && (((int)m_fExecutionTime % 5) == 0))
             {
-                Action();
+                //Action(deltaTime);
+
             }
             if (m_bWalk)
             {
@@ -213,28 +224,6 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
             m_fExecutionTime = 0.0f;
         }
 
-        ProcessAction();
-
-        m_vPosition += (m_velocityPos + m_velocityBody) * deltaTime;
-
-        m_pSprSpriteBody->SetX((int)m_pBody->GetPosition().x);
-        m_pSprSpriteBody->SetY((int)m_pBody->GetPosition().y);
-
-        m_sAnimations.m_pASprGolemWalk->SetX((int)m_vPosition.x);
-        m_sAnimations.m_pASprGolemWalk->SetY((int)m_vPosition.y);
-
-        m_sAnimations.m_pASprGolemJump->SetX((int)m_vPosition.x);
-        m_sAnimations.m_pASprGolemJump->SetY((int)m_vPosition.y);
-
-        m_sAnimations.m_pASprGolemSlam->SetX((int)m_vPosition.x);
-        m_sAnimations.m_pASprGolemSlam->SetY((int)(m_fGroundY + 32));
-
-        m_sAnimations.m_pASprGolemSlash->SetX((int)m_vPosition.x);
-        m_sAnimations.m_pASprGolemSlash->SetY((int)m_vPosition.y);
-
-        m_sAnimations.m_pASprGolemThrow->SetX((int)m_vPosition.x);
-        m_sAnimations.m_pASprGolemThrow->SetY((int)m_vPosition.y);
-
         m_sAnimations.m_pASprGolemWalk->Process(deltaTime);
         m_sAnimations.m_pASprGolemJump->Process(deltaTime);
         m_sAnimations.m_pASprGolemSlam->Process(deltaTime);
@@ -242,6 +231,8 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         m_sAnimations.m_pASprGolemThrow->Process(deltaTime);
         m_pEntProjectile->Process(deltaTime, inputSystem);
     }
+
+
 }
 
 void Golem::Draw(Renderer& renderer, Camera& camera)
@@ -252,8 +243,8 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
         Vector2* cameraOffset = camera.GetOffset();
 
         // Adjust Golem position based on camera offset
-        int golemX = (int)(m_pBody->GetPosition().x * 30.0f - cameraOffset->x);
-        int golemY = (int)(m_pBody->GetPosition().y * 30.0f - cameraOffset->y);
+        int golemX = (int)(m_pBody->GetPosition().x * SCALE - cameraOffset->x);
+        int golemY = (int)(m_pBody->GetPosition().y * SCALE - cameraOffset->y);
 
         if (m_bPlayerInRange)
         {
@@ -267,6 +258,8 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
             {
                 if (m_sAnimations.m_pASprGolemSlash->IsAnimating())
                 {
+                    m_sAnimations.m_pASprGolemSlash->SetX(golemX);
+                    m_sAnimations.m_pASprGolemSlash->SetY(golemY);
                     m_sAnimations.m_pASprGolemSlash->Draw(renderer, m_bFlipHorizontally, false);
                 }
                 else
@@ -274,50 +267,70 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
                     m_bSlash = false;
                     m_bIsAnimating = false;
 
-                    if (m_fDistToPlayer < m_fSlamRangeMax)
+                    /*if (m_fDistToPlayer < m_fSlamRangeMax)
                     {
                         m_iAttackType = 1;
-                    }
-                    else if (m_fDistToPlayer >= m_fSlamRangeMax)
+                        growSize = 0.0f;
+                    }*/
+                    /*else if (m_fDistToPlayer >= m_fSlamRangeMax)
                     {
                         m_iAttackType = 2;
-                    }
+                    }*/
+
+                    m_iAttackType = 1;
                 }
             }
             else if (m_bSlam)
             {
                 if (m_sAnimations.m_pASprGolemJump->IsAnimating())
                 {
+                    m_sAnimations.m_pASprGolemJump->SetX(golemX);
+                    m_sAnimations.m_pASprGolemJump->SetY(golemY);
                     m_sAnimations.m_pASprGolemJump->Draw(renderer, m_bFlipHorizontally, false);
+
                 }
                 else
                 {
                     if (m_bJumping)
                     {
-                        m_sAnimations.m_pASprGolemSlam->Animate();
-                        m_bJumping = false;
+
+                        m_sAnimations.m_pASprGolemSlam->SetX(golemX);
+                        m_sAnimations.m_pASprGolemSlam->SetY(golemY);
+
+                        if (!m_sAnimations.m_pASprGolemSlam->IsAnimating())
+                        {
+                            m_bJumping = false;
+                            m_sAnimations.m_pASprGolemSlam->Animate();
+                        }
                     }
                     else if (m_sAnimations.m_pASprGolemSlam->IsAnimating())
                     {
+
+                        m_sAnimations.m_pASprGolemSlam->SetX(golemX);
+                        m_sAnimations.m_pASprGolemSlam->SetY(golemY + 100);
                         m_sAnimations.m_pASprGolemSlam->Draw(renderer, m_bFlipHorizontally, false);
 
                         m_pSprSpriteBody->SetX(golemX);
                         m_pSprSpriteBody->SetY(golemY);
                         m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, true);
+
                     }
                     else
                     {
+
                         m_bSlam = false;
                         m_bIsAnimating = false;
 
-                        if (m_fDistToPlayer < m_fSlamRangeMax)
+                        /*if (m_fDistToPlayer < m_fSlamRangeMax)
                         {
                             m_iAttackType = 0;
                         }
                         else if (m_fDistToPlayer >= m_fSlamRangeMax)
                         {
                             m_iAttackType = 2;
-                        }
+                        }*/
+
+                        m_iAttackType = 0;
                     }
                 }
             }
@@ -405,6 +418,12 @@ Golem::SetBodySprites(Renderer& renderer)
     else
     {
         m_sAnimations.m_pASprGolemSlash->SetupFrames(391, 391);
+        /*m_fSlashWidth = 391 / SCALE / 8.0f;
+        m_fSlashHeight = 391 / SCALE;
+        m_fSlashRangeMax = m_fSlashWidth * 3.0f;*/
+        m_fSlashWidth = ((350 / 2.0f) / SCALE);
+        m_fSlashHeight = ((350 / 2.0f) / SCALE);
+        m_fSlashRangeMax = m_fSlashWidth;
         m_sAnimations.m_pASprGolemSlash->SetFrameDuration(0.15f);
     }
 
@@ -421,7 +440,7 @@ Golem::SetBodySprites(Renderer& renderer)
         m_sAnimations.m_pASprGolemJump->SetFrameDuration(0.1f);
     }
 
-    m_sAnimations.m_pASprGolemSlam = renderer.CreateAnimatedSprite("Sprites\\golem\\anim8golemslam.png");
+    m_sAnimations.m_pASprGolemSlam = renderer.CreateAnimatedSprite("..\\Sprites\\golem\\anim8golemslam.png");
 
     if (!(m_sAnimations.m_pASprGolemSlam))
     {
@@ -430,7 +449,10 @@ Golem::SetBodySprites(Renderer& renderer)
     }
     else
     {
-        m_sAnimations.m_pASprGolemSlam->SetupFrames(708, 159);
+        m_sAnimations.m_pASprGolemSlam->SetupFrames(708, 71);
+        m_fSlamWidth = (708.0f / 2.0f) / SCALE;
+        m_fSlamHeight = 71.0f / SCALE;
+        m_fSlamRangeMax = m_fSlamWidth / 2;
         m_sAnimations.m_pASprGolemSlam->SetFrameDuration(0.15f);
     }
 
@@ -465,7 +487,6 @@ void Golem::Move(int attackType)
                 m_iFacingDirection = -1;
                 m_bFlipHorizontally = true;
                 m_bIsAnimating = true;
-                m_bSlam = true;
                 velocity.x = -0.1f;  // Set movement to left
             }
             else if (m_pEntCharacter->GetPosition().x > (m_pBody->GetPosition().x + m_fSlashRangeMax) &&
@@ -492,7 +513,7 @@ void Golem::Move(int attackType)
                 m_iFacingDirection = -1;
                 m_bFlipHorizontally = true;
                 m_bIsAnimating = true;
-                m_bSlam = true;
+                //m_bSlam = true;
                 velocity.x = -0.1f;  // Move left
             }
             else if (m_pEntCharacter->GetPosition().x > (m_pBody->GetPosition().x + m_fSlamRangeMax) &&
@@ -508,6 +529,7 @@ void Golem::Move(int attackType)
                 velocity.x = 0.0f;  // Stop movement
                 m_bIsAnimating = false;
                 m_bWalk = false;
+                m_bSlam = true;
                 m_fExecutionTime = 0.0f;
             }
             break;
@@ -535,6 +557,7 @@ void Golem::Move(int attackType)
                 velocity.x = 0.0f;  // Stop movement
                 m_bIsAnimating = false;
                 m_bWalk = false;
+                m_bSlam = true;
                 m_fExecutionTime = 0.0f;
             }
             break;
@@ -601,15 +624,16 @@ void Golem::Move(int attackType)
 
         // Apply the updated velocity to the Box2D body
         m_pBody->SetLinearVelocity(velocity);
-        m_pSprSpriteBody->SetX((int)m_pBody->GetPosition().x* SCALE);
-        m_pSprSpriteBody->SetY((int)m_pBody->GetPosition().y* SCALE);
+        m_pSprSpriteBody->SetX((int)m_pBody->GetPosition().x * SCALE);
+        m_pSprSpriteBody->SetY((int)m_pBody->GetPosition().y * SCALE);
     }
 }
 
 
 void
-Golem::Action()
+Golem::Action(float deltaTime)
 {
+    //throw
     if (m_iAttackType == 2)
     {
         if (m_fDistToPlayer <= m_fThrowRangeMax && m_fDistToPlayer >= m_fSlamRangeMax && !m_bIsAnimating)
@@ -632,17 +656,18 @@ Golem::Action()
         {
             m_bWalk = true;
         }
-    }
+    }//slam
     else if (m_iAttackType == 1)
     {
+
         if (m_fDistToPlayer < m_fSlamRangeMax && m_fDistToPlayer >= 0.0f && !m_bIsAnimating)
         {
+
             if (!m_bWalk)
             {
                 m_sAnimations.m_pASprGolemWalk->SetLooping(false);
                 m_sAnimations.m_pASprGolemWalk->Inanimate();
             }
-
             if (!m_sAnimations.m_pASprGolemJump->IsAnimating() && !m_bSlam)
             {
                 m_sAnimations.m_pASprGolemJump->Animate();
@@ -654,11 +679,12 @@ Golem::Action()
         else
         {
             m_bWalk = true;
+
         }
-    }
+    }//slash
     else if (m_iAttackType == 0)
     {
-        if (m_fDistToPlayer <= m_fSlashRangeMax && m_fDistToPlayer >= 0.0f && !m_bIsAnimating)
+        if (m_fDistToPlayer <= m_fSlashRangeMax && !m_bIsAnimating)
         {
             if (!m_bWalk)
             {
@@ -681,34 +707,131 @@ Golem::Action()
     }
 }
 
-//change made by Rauen
-void Golem::ProcessAction() {
-    if (m_bSlash) {
-        // Check if the slash animation is happening
-        if (m_fDistToPlayer >= 0.0f && m_fDistToPlayer < m_fSlashRangeMax) {
-            // Move the Box2D body for the slash, or create it if not created
-            if (!slashBody) {
-                slashWidth = m_sAnimations.m_pASprGolemSlash->GetWidth()/SCALE;
-                slashHeight = m_sAnimations.m_pASprGolemSlash->GetHeight() / SCALE;
-                b2BodyDef slashBodyDef;
-                slashBodyDef.type = b2_kinematicBody;
-                slashBodyDef.position.Set(m_vPosition.x/SCALE, m_vPosition.y/SCALE);
-                slashBody = m_pWorld->CreateBody(&slashBodyDef);
-
-                b2PolygonShape slashBox;
-                slashBox.SetAsBox(slashWidth, slashHeight);
-
-                b2FixtureDef slashFixtureDef;
-                slashFixtureDef.shape = &slashBox;
-                slashFixtureDef.isSensor = true;  // Set as a sensor, no physical response
-                slashBody->CreateFixture(&slashFixtureDef);
-
-                // Set user data to recognize this body as a slash
-                slashBody->SetUserData((void*)GOLEM_SLASH);
-            }
+void Golem::ProcessAction()
+{
+    //slash
+    if (m_bSlash)
+    {
+        if (m_pSlashBody == nullptr)
+        {
+            CreateSlashBody();
         }
-        slashBody->SetTransform(b2Vec2(m_vPosition.x, m_vPosition.y), 0.0f);
     }
+    else
+    {
+        if (m_pSlashBody != nullptr)
+        {
+            DeleteSlash();
+        }
+    }
+
+    //slam
+    if (!m_bJumping && m_bSlam)
+    {
+        if (m_pSlamBody == nullptr)
+        {
+            CreateSlamBody();
+        }
+    }
+    else if (!m_bJumping && !m_bSlam)
+    {
+        if (m_pSlamBody != nullptr)
+        {
+            DeleteSlam();
+        }
+    }
+}
+
+void Golem::CreateSlashBody()
+{
+    // Define the body
+    b2BodyDef SlashbodyDef;
+    SlashbodyDef.type = b2_staticBody;
+    if (m_iFacingDirection == -1)
+    {
+        SlashbodyDef.position.Set((m_pBody->GetPosition().x - 0.5f), m_pBody->GetPosition().y);
+    }
+    else
+    {
+        SlashbodyDef.position.Set((m_pBody->GetPosition().x + 0.5f), m_pBody->GetPosition().y);
+    }
+
+    // Create the body in the world
+    m_pSlashBody = m_pWorld->CreateBody(&SlashbodyDef);
+
+    // Define the shape of the body (box shape in this example)
+    b2PolygonShape staticBox;
+    
+    staticBox.SetAsBox(m_fSlashWidth + 0.1f, m_fSlashHeight);
+
+    // Define the fixture (physical properties)
+    b2FixtureDef SlashfixtureDef;
+    SlashfixtureDef.shape = &staticBox;
+    SlashfixtureDef.density = 0.0f;
+    SlashfixtureDef.friction = 0.0f;
+    SlashfixtureDef.isSensor = true;
+    SlashfixtureDef.filter.categoryBits = GOLEM_SLASH;
+    SlashfixtureDef.filter.maskBits = PLAYER;
+
+    // Attach the fixture to the body
+    m_pSlashBody->CreateFixture(&SlashfixtureDef);
+
+    // Set user data to identify this body as a Golem
+    m_pSlashBody->SetUserData((void*)GOLEM_SLASH);
+
+}
+
+void Golem::DeleteSlash()
+{
+    if (m_pSlashBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pSlashBody);
+        m_pSlashBody = nullptr;
+    }
+}
+
+void Golem::CreateSlamBody()
+{
+    // Define the body
+    b2BodyDef SlambodyDef;
+    SlambodyDef.type = b2_staticBody;
+
+    SlambodyDef.position.Set(m_pBody->GetPosition().x, m_pBody->GetPosition().y);
+
+
+    // Create the body in the world
+    m_pSlamBody = m_pWorld->CreateBody(&SlambodyDef);
+
+    // Define the shape of the body (box shape in this example)
+    b2PolygonShape staticBox;
+
+    staticBox.SetAsBox(m_fSlamWidth, m_fSlamHeight);
+
+    // Define the fixture (physical properties)
+    b2FixtureDef SlamfixtureDef;
+    SlamfixtureDef.shape = &staticBox;
+    SlamfixtureDef.density = 0.0f;
+    SlamfixtureDef.isSensor = true;
+    SlamfixtureDef.filter.categoryBits = GOLEM_SLAM;
+    SlamfixtureDef.filter.maskBits = PLAYER;
+
+    // Attach the fixture to the body
+    m_pSlamBody->CreateFixture(&SlamfixtureDef);
+
+    // Set user data to identify this body as a Golem
+    m_pSlamBody->SetUserData((void*)GOLEM_SLAM);
+
+}
+
+
+void Golem::DeleteSlam()
+{
+    if (m_pSlamBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pSlamBody);
+        m_pSlamBody = nullptr;
+    }
+
 }
 
 Vector2&
@@ -720,14 +843,14 @@ Golem::GetPosition()
 
 void Golem::CheckPlayerDist()
 {
-    // Get player position using Box2D body
-    b2Vec2 playerPosition = m_pEntCharacter->GetPosition();  
+    // Get player position using Box2D body - in meters
+    b2Vec2 playerPosition = m_pEntCharacter->GetPosition();
 
-    // Get Golem's current position
+    // Get Golem's current position - in meters
     b2Vec2 golemPosition = m_pBody->GetPosition();
-
+    
     // Calculate the differences in the x and y coordinates
-    m_fDistToPlayer = playerPosition.x - golemPosition.x;
+    m_fDistToPlayer = abs(playerPosition.x - golemPosition.x);
 }
 
 void Golem::SetPlayer(/*Character* player*/ Player* player) // Changes made by Karl

@@ -32,9 +32,9 @@ public:
     void Process(float deltaTime, InputSystem& inputSystem) override;
     void DrawWithCam(Renderer& renderer, Camera& camera) override;
     void Draw(Renderer& renderer, Camera& camera) override;
-    bool SetBodySprites(Renderer& renderer) override;
-    void GetInputs(InputSystem& inputSystem);
+    bool SetBodySprites(Renderer& renderer) override; // Changes made by Karl
     void HandleInput(float deltaTime, InputSystem& inputSystem);
+    void ProcessActions(float deltaTime); // Changes made by Karl
 
     b2Vec2 GetPosition() override;
     Vector2& GetVelocityBody();
@@ -43,6 +43,8 @@ public:
     void DefineCharacter(Renderer& renderer);
     bool IsDefined();
     void SetDefined(bool define);
+    void CreateSPAttack();
+    void DeleteSPAttack();
     Vector2& GetProjectilePos();
     float GetProjWidth();
     float GetProjHeight();
@@ -77,16 +79,22 @@ protected:
     //Box2D verables
     b2Body* m_pBody;
     b2World* m_pWorld;
+    b2Body* m_pSPAttackBody; // Changes made by Karl
 
     Actions m_sActions;
 private:
     float m_fHeadBodyOffset;
     float m_fLengthFootToBody;
     float m_fLegBodyOffset;
+    float m_fElapsedTime; // Changes made by Karl
     float m_fStepTimer;
     float m_fStepDuration;
     float m_jumpTimer;
-    float offset;
+    float m_fOffset;
+    float m_fPlayerWidth; // Changes made by Karl
+    float m_fPlayerHeight;
+    float m_fAttackWidth;
+    float m_fAttackHeight;
 };
 
 #endif // !WARRIOR_H

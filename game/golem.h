@@ -6,6 +6,8 @@
 #include "vector2.h"
 #include "inputsystem.h"
 #include "Camera.h"
+#include "player.h"
+#include "enemy.h"
 
 //Box2d
 #include<Box2D.h>
@@ -15,7 +17,6 @@ class Renderer;
 class Sprite;
 class AnimatedSprite;
 class Character;
-class Player;
 class Projectile;
 
 // Golem animations:
@@ -28,7 +29,7 @@ typedef struct {
 } Animations;
 
 // Class declaration:
-class Golem : public Entity
+class Golem : public Enemy
 {
     // Member methods:
 public:
@@ -43,12 +44,15 @@ public:
     Vector2& GetPosition();
     void CheckPlayerDist();
     void SetCamera(Camera* camera);
+    void ProcessAction();
 
     void Move(int attackType);
-    void Action();
-    void ProcessAction();
-    //void SetPlayer(Character* player); // Changes made by Karl
+    void Action(float deltaTime);
     void SetPlayer(Player* player);
+    void CreateSlashBody();
+    void CreateSlamBody();
+    void DeleteSlash();
+    void DeleteSlam();
 
     //void DebugDraw() override;
 
@@ -58,23 +62,25 @@ private:
     Golem(const Golem& golem);
     Golem& operator=(const Golem& golem);
 
-public: 
+public:
     //box2d verables
     b2World* m_pWorld;
     b2Body* m_pBody;
+    b2Body* m_pSlashBody;
+    b2Body* m_pSlamBody;
 
     //attacks
     b2Body* slashBody;
     float slashWidth;
     float slashHeight;
+    float m_fSlamWidth;
+    float m_fSlamHeight;
 
     Camera* m_pcamera;
     bool IsCameraSet;
-    const float SCALE = 30.0f;
 
     // Member data:
 protected:
-    //Character* m_pEntCharacter; // Changes made by Karl
     Player* m_pEntCharacter;
     Sprite* m_pSprSpriteBody;
     Projectile* m_pEntProjectile;
@@ -88,15 +94,19 @@ protected:
     float m_fSlamRangeMax;
     float m_fThrowRangeMax;
     float m_fGroundY;
+    float m_fSlashWidth;
+    float m_fSlashHeight;
     bool m_bPlayerInRange;
     bool m_bSpotted;
     bool m_bEngage;
     bool m_bIsAnimating;
     bool m_bSlam;
     bool m_bWalk;
+    float m_fSlamTime;
+    float growSize;
 
 private:
-    
+
 };
 
 #endif // !GOLEM_H

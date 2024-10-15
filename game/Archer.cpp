@@ -18,7 +18,6 @@
 #include <cstdio>
 
 //Box2D world
-#define SCALE 30.0f
 
 Archer::Archer(b2World* world)
     : m_pSprSpriteHead(0)
@@ -36,13 +35,19 @@ Archer::Archer(b2World* world)
     , m_fHeadBodyOffset(0.0f)
     , m_fLengthFootToBody(0.0f)
     , m_fLegBodyOffset(0.0f)
+    , m_fElapsedTime(0.0f)
     , m_fStepTimer(0.0f)
     , m_fStepDuration(0.0f)
-    , m_pWorld(world)
     , m_pBody(nullptr)
+    , m_pWorld(world)
+    , m_pSPAttackBody(nullptr) // Changes made by Karl
     , m_jumpTimer(0.0f)
     , m_sActions{ 0, 0, 0, 0 }
-    , offset(0.0f)
+    , m_fOffset(0.0f)
+    , m_fPlayerWidth(0.0f) // Changes made by Karl
+    , m_fPlayerHeight(0.0f)
+    , m_fAttackWidth(0.0f)
+    , m_fAttackHeight(0.0f)
 {
 
 }
@@ -87,8 +92,15 @@ Archer::~Archer()
 
     delete m_sActions.m_pASpriteAttack;
     m_sActions.m_pASpriteAttack = 0;
-
+    // Changes made by Karl
     m_pWorld->DestroyBody(m_pBody);
+    m_pBody = nullptr;
+
+    if (m_pSPAttackBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pSPAttackBody);
+        m_pSPAttackBody = nullptr;
+    }
 }
 
 bool Archer::Initialise(Renderer& renderer)
@@ -101,7 +113,9 @@ bool Archer::Initialise(Renderer& renderer)
     // Changes made by Karl
     m_vPosition.x = 100.0f;  // Position in pixels
     m_vPosition.y = 500.0f; // Position in pixels
-    offset = 82.0f; // Y offset in pixels
+    m_fPlayerWidth = 56.0f; // Changes made by Karl
+    m_fPlayerHeight = 120.0f;
+    m_fOffset = 82.0f; // Y offset in pixels
 
     return true;
 }
@@ -110,6 +124,7 @@ void Archer::Process(float deltaTime, InputSystem& inputSystem)
 {
     // Handle user input for movement
     HandleInput(deltaTime, inputSystem);
+    ProcessActions(deltaTime); // Changes made by Karl
 
     // Get the current Box2D body position (in meters) and convert it back to pixels for rendering
     b2Vec2 bodyPosition = m_pBody->GetPosition();
@@ -133,13 +148,13 @@ void Archer::Process(float deltaTime, InputSystem& inputSystem)
 
     // Set the sprite's position to match the Box2D body position
     m_sActions.m_pASpriteIdle->SetX((int)m_vPosition.x);
-    m_sActions.m_pASpriteIdle->SetY((int)m_vPosition.y - offset);
+    m_sActions.m_pASpriteIdle->SetY((int)m_vPosition.y - m_fOffset);
     m_sActions.m_pASpriteRun->SetX((int)m_vPosition.x);
-    m_sActions.m_pASpriteRun->SetY((int)m_vPosition.y - offset);
+    m_sActions.m_pASpriteRun->SetY((int)m_vPosition.y - m_fOffset);
     m_sActions.m_pASpriteJump->SetX((int)m_vPosition.x);
-    m_sActions.m_pASpriteJump->SetY((int)m_vPosition.y - offset);
+    m_sActions.m_pASpriteJump->SetY((int)m_vPosition.y - m_fOffset);
     m_sActions.m_pASpriteAttack->SetX((int)m_vPosition.x); // Changes made by Karl
-    m_sActions.m_pASpriteAttack->SetY((int)m_vPosition.y - offset);
+    m_sActions.m_pASpriteAttack->SetY((int)m_vPosition.y - m_fOffset);
 
     m_sActions.m_pASpriteIdle->Process(deltaTime);
     m_sActions.m_pASpriteRun->Process(deltaTime);
@@ -211,70 +226,18 @@ void Archer::DrawWithCam(Renderer& renderer, Camera& camera)
         m_pHealthbar->Draw(renderer);
     }
 }
-
-
+// Changes made by Karl
 void
-Archer::GetInputs(InputSystem& inputSystem)
-{
-    // Gets movement keys' states
-    m_sMotionKeyStates.MoveForward = inputSystem.GetKeyState(SDL_SCANCODE_D);
-    m_sMotionKeyStates.MoveBackward = inputSystem.GetKeyState(SDL_SCANCODE_A);
-    m_sMotionKeyStates.MoveUp = inputSystem.GetKeyState(SDL_SCANCODE_W); // For future updates
-    m_sMotionKeyStates.MoveDown = inputSystem.GetKeyState(SDL_SCANCODE_S); // For future updates
-    m_sMotionKeyStates.Jump = inputSystem.GetKeyState(SDL_SCANCODE_SPACE);
-    m_sMotionKeyStates.LeftClickAttack = inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT);
-
-    if (m_sMotionKeyStates.Jump == BS_PRESSED)
-    {
-        m_sKeyboardMotions.Heave = MOTION_JUMP;
-    }
-
-    if (m_sMotionKeyStates.LeftClickAttack == BS_PRESSED)
-    {
-        m_sKeyboardMotions.Attack = MOTION_ATTACK;
-    }
-    else
-    {
-        m_sKeyboardMotions.Attack = MOTION_NONE;
-    }
-
-    if (m_sMotionKeyStates.MoveForward == BS_PRESSED || m_sMotionKeyStates.MoveForward == BS_HELD)
-    {
-        m_sKeyboardMotions.Surge = MOTION_FORWARD;
-    }
-    else if (m_sMotionKeyStates.MoveBackward == BS_PRESSED || m_sMotionKeyStates.MoveBackward == BS_HELD)
-    {
-        m_sKeyboardMotions.Surge = MOTION_BACKWARD;
-    }
-    else
-    {
-        m_sKeyboardMotions.Surge = MOTION_NONE;
-    }
-
-    if (m_sMotionKeyStates.MoveUp == BS_PRESSED || m_sMotionKeyStates.MoveUp == BS_HELD)
-    {
-        m_sKeyboardMotions.Sway = MOTION_UP;
-    }
-    else if (m_sMotionKeyStates.MoveDown == BS_PRESSED || m_sMotionKeyStates.MoveDown == BS_HELD)
-    {
-        m_sKeyboardMotions.Sway = MOTION_DOWN;
-    }
-    else
-    {
-        m_sKeyboardMotions.Sway = MOTION_NONE;
-    }
-}
-
-
-void Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
+Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
 {
     b2Vec2 velocity = m_pBody->GetLinearVelocity();
 
     // Move right when pressing D
-    if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD) {
+    if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD)
+    {
         if (!m_bSlash)
         {
-            velocity.x = 1.0f;  // Set a fixed speed to move right
+            velocity.x = 0.5f;  // Set a fixed speed to move right
 
             if (!m_bMovingX)
             {
@@ -296,10 +259,11 @@ void Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
             }
         } // Changes made by Karl
     }
-    else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD) {
+    else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD)
+    {
         if (!m_bSlash)
         {
-            velocity.x = -1.0f;  // Set a fixed speed to move left
+            velocity.x = -0.5f;  // Set a fixed speed to move left
 
             if (!m_bMovingX)
             {
@@ -321,7 +285,8 @@ void Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
             }
         } // Changes made by Karl
     }
-    else {
+    else
+    {
         velocity.x = 0.0f;  // No horizontal movement
 
         if (m_bMovingX)
@@ -345,44 +310,43 @@ void Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
     // Attack logic
     if (inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT) == BS_PRESSED)
     {   // Allow attack only when on the ground
-        if (!m_bJumping && !m_bDoubleJump)
-        {
-            if (!m_bSlash)
+        if (!m_bJumping && !m_bDoubleJump && !m_bSlash)
+        {   // Changes made by Karl
+            m_bSlash = true;
+
+            // Disable all other animations
+            if (m_sActions.m_pASpriteIdle->IsAnimating())
             {
-                m_bSlash = true;
+                m_sActions.m_pASpriteIdle->Inanimate();
+            }
 
-                // Disable all other animations
-                if (m_sActions.m_pASpriteIdle->IsAnimating())
-                {
-                    m_sActions.m_pASpriteIdle->Inanimate();
-                }
+            if (m_sActions.m_pASpriteRun)
+            {
+                m_sActions.m_pASpriteRun->Inanimate();
+                velocity.x = 0.0f; // Changes made by Karl
+            }
 
-                if (m_sActions.m_pASpriteRun)
-                {
-                    m_sActions.m_pASpriteRun->Inanimate();
-                }
-
-                // Enable attack animation
-                if (!m_sActions.m_pASpriteAttack->IsAnimating())
-                {
-                    m_sActions.m_pASpriteAttack->Animate();
-                    // Set sound effects here
-                }
+            // Enable attack animation
+            if (!m_sActions.m_pASpriteAttack->IsAnimating())
+            {
+                m_sActions.m_pASpriteAttack->Animate();
+                // Set sound effects here
             }
         }
     }
 
-    // Check if attack animation has finished
     if (!m_sActions.m_pASpriteAttack->IsAnimating())
     {
         m_bSlash = false;
     }
 
     // Jumping logic
-    if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED) {
-        if (!m_bJumping) {
+    if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED)
+    {
+        if (!m_bJumping && !m_bSlash)
+        {
             // First jump
-            velocity.y = -5.0f;  // Apply upward force
+            velocity.y = -3.0f;  // Apply upward force
             m_bJumping = true;        // Character is now jumping
 
             if (m_sActions.m_pASpriteIdle->IsAnimating())
@@ -404,7 +368,7 @@ void Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
         }
         else if (m_bJumping && !m_bDoubleJump) {
             // Double jump
-            velocity.y = -5.0f;  // Apply upward force
+            velocity.y = -3.0f;  // Apply upward force
             m_bDoubleJump = true;     // Double jump has been used
             m_sActions.m_pASpriteJump->Restart();
             m_sActions.m_pASpriteJump->Animate();
@@ -418,8 +382,21 @@ void Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
             m_bJumping = false;  // Reset jump
             m_bDoubleJump = false;
             m_jumpTimer = 0.0f;  // Reset the timer
-            m_sActions.m_pASpriteIdle->Animate();
-            m_sActions.m_pASpriteIdle->SetLooping(true);
+            // Changes made by Karl - Disable jump animation, enable animation based on current input
+            if (m_sActions.m_pASpriteJump->IsAnimating())
+            {
+                m_sActions.m_pASpriteJump->Inanimate();
+            }
+
+            if (!m_bMovingX)
+            {
+                m_sActions.m_pASpriteIdle->Animate();
+                m_sActions.m_pASpriteIdle->SetLooping(true);
+            }
+            else if (!m_sActions.m_pASpriteRun->IsAnimating())
+            {
+                m_sActions.m_pASpriteRun->Animate();
+            }
         }
     }
 
@@ -438,9 +415,36 @@ void Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
     m_sActions.m_pASpriteRun->SetX(static_cast<int>(spriteX));
     m_sActions.m_pASpriteRun->SetY(static_cast<int>(spriteY));
     m_sActions.m_pASpriteJump->SetX(static_cast<int>(spriteX));
-    m_sActions.m_pASpriteJump->SetY(static_cast<int>(spriteY) - offset);
+    m_sActions.m_pASpriteJump->SetY(static_cast<int>(spriteY) - m_fOffset);
 }
+// Changes made by Karl
+void
+Archer::ProcessActions(float deltaTime)
+{
+    // Check if attack 
+    if (m_bSlash)
+    {
+        m_fElapsedTime += deltaTime;
 
+        if (m_fElapsedTime >= 0.7f)
+        {
+            if (m_pSPAttackBody == nullptr)
+            {
+                CreateSPAttack();
+            }
+        }
+    }
+
+    // Check if attack animation has finished
+    if (!m_bSlash)
+    {
+        if (m_pSPAttackBody != nullptr)
+        {
+            DeleteSPAttack();
+            m_fElapsedTime = 0.0f;
+        }
+    }
+}
 
 bool
 Archer::SetBodySprites(Renderer& renderer)
@@ -470,7 +474,7 @@ Archer::SetBodySprites(Renderer& renderer)
     else
     {
         m_sActions.m_pASpriteRun->SetupFrames(515, 286);
-        m_sActions.m_pASpriteRun->SetFrameDuration(0.15f);
+        m_sActions.m_pASpriteRun->SetFrameDuration(0.1f);
     }
 
     m_sActions.m_pASpriteJump = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\archer\\anim8archjump.png");
@@ -483,20 +487,22 @@ Archer::SetBodySprites(Renderer& renderer)
     else
     {
         m_sActions.m_pASpriteJump->SetupFrames(515, 286);
-        m_sActions.m_pASpriteJump->SetFrameDuration(0.1f);
+        m_sActions.m_pASpriteJump->SetFrameDuration(0.03f);
     }
     // Changes made by Karl
     m_sActions.m_pASpriteAttack = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\archer\\anim8archattack.png");
 
     if (!m_sActions.m_pASpriteAttack)
     {
-        LogManager::GetInstance().Log("Player jump failed to initialise!");
+        LogManager::GetInstance().Log("Player attack failed to initialise!");
         return false;
     }
     else
     {
         m_sActions.m_pASpriteAttack->SetupFrames(515, 286);
-        m_sActions.m_pASpriteAttack->SetFrameDuration(0.15f);
+        m_sActions.m_pASpriteAttack->SetFrameDuration(0.07f);
+        m_fAttackWidth = 515 / SCALE;
+        m_fAttackHeight = 286 / SCALE;
     }
 
     return true;
@@ -550,16 +556,18 @@ Archer::DefineCharacter(Renderer& renderer)
     m_pBody = m_pWorld->CreateBody(&bodyDef);
 
     // Define the character's shape as a box (in meters)
-    b2PolygonShape characterBox;
-    float boxWidth = (56.0f / 2.0f) / SCALE;   // Convert pixel width to meters (half-width for Box2D)
-    float boxHeight = (120.0f / 2.0f) / SCALE; // Convert pixel height to meters (half-height for Box2D)
+    b2PolygonShape characterBox; // Changes made by Karl
+    float boxWidth = (m_fPlayerWidth / 2.0f) / SCALE;   // Convert pixel width to meters (half-width for Box2D)
+    float boxHeight = (m_fPlayerHeight / 2.0f) / SCALE; // Convert pixel height to meters (half-height for Box2D)
     characterBox.SetAsBox(boxWidth, boxHeight);
 
     // Create a fixture for the body (set density, friction, etc.)
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &characterBox;
     fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
+    fixtureDef.friction = 0.0f;
+    fixtureDef.filter.categoryBits = PLAYER;
+    fixtureDef.filter.maskBits = GOLEM | GOLEM_SLASH | GOLEM_SLAM;
 
     // Attach the fixture to the body
     m_pBody->CreateFixture(&fixtureDef);
@@ -578,6 +586,56 @@ void
 Archer::SetDefined(bool define)
 {
     m_bDefined = define;
+} // Changes made by Karl - End
+// Changes made by Karl - Start
+void
+Archer::CreateSPAttack()
+{
+    // Define the body
+    b2BodyDef SpecialBodyDef;
+    SpecialBodyDef.type = b2_staticBody;
+    if (m_iFacingDirection == -1)
+    {
+        SpecialBodyDef.position.Set((m_pBody->GetPosition().x - 0.5f), m_pBody->GetPosition().y);
+    }
+    else
+    {
+        SpecialBodyDef.position.Set((m_pBody->GetPosition().x + 0.5f), m_pBody->GetPosition().y);
+    }
+
+    // Create the body in the world
+    m_pSPAttackBody = m_pWorld->CreateBody(&SpecialBodyDef);
+
+    // Define the shape of the body (box shape in this example)
+    b2PolygonShape staticBox;
+    float specialWidth = ((m_fPlayerWidth * 2.8f)) / SCALE;
+    float specialHeight = ((m_fPlayerHeight * 1.5f)) / SCALE;
+
+    staticBox.SetAsBox(specialWidth, specialHeight);
+
+    // Define the fixture (physical properties)
+    b2FixtureDef SlashfixtureDef;
+    SlashfixtureDef.shape = &staticBox;
+    SlashfixtureDef.density = 0.0f;
+    SlashfixtureDef.friction = 0.0f;
+    SlashfixtureDef.isSensor = true;
+
+    // Attach the fixture to the body
+    m_pSPAttackBody->CreateFixture(&SlashfixtureDef);
+    m_pSPAttackBody->SetActive(true);
+
+    // Set user data to identify this body as a Golem
+    m_pSPAttackBody->SetUserData((void*)PLAYER_SP_ATTACK);
+}
+
+void
+Archer::DeleteSPAttack()
+{
+    if (m_pSPAttackBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pSPAttackBody);
+        m_pSPAttackBody = nullptr;
+    }
 }
 // Changes made by Karl - End
 Vector2&

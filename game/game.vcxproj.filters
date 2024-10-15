@@ -183,37 +183,16 @@
     <ClCompile Include="Archer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="alphabet.cpp">
+    <ClCompile Include="enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MenuButton.cpp">
+    <ClCompile Include="mushroom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SettingsMenu.cpp">
+    <ClCompile Include="skeleton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DecreaseButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IncreaseButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IncreaseSoundEffectButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DecreaseSoundEffectButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="pause.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="resumeButton.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="resumeButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="restartButton.cpp">
+    <ClCompile Include="spider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -377,31 +356,16 @@
     <ClInclude Include="Archer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="alphabet.h">
+    <ClInclude Include="enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MenuButton.h">
+    <ClInclude Include="mushroom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SettingsMenu.h">
+    <ClInclude Include="skeleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="decreaseButton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IncreaseButton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IncreaseSoundEffectButton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DecreaseSoundEffectButton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pause.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="restartButton.h">
+    <ClInclude Include="spider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

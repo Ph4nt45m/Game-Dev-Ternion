@@ -43,7 +43,6 @@ void Terrain::Draw(Renderer& renderer, Camera& camera)
     b2Vec2 position = m_pBody->GetPosition();
 
     // Convert the position from meters to pixels
-    const float SCALE = 30.0f;  // Conversion factor (meters to pixels)
     int xPos = (int)(position.x * SCALE);
     int yPos = (int)(position.y * SCALE);
 
