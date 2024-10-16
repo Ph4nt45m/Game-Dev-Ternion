@@ -163,7 +163,7 @@ ForestTest::SetEnemies(Renderer& renderer)
 		return false;
 	}
 
-	m_pMushroom = new Mushroom(m_pWorld);
+	/*m_pMushroom = new Mushroom(m_pWorld);
 	m_pMushroom->SetCamera(&camera);
 	m_pMushroom->SetPlayer(m_pCharacter);
 
@@ -191,7 +191,7 @@ ForestTest::SetEnemies(Renderer& renderer)
 	{
 		LogManager::GetInstance().Log("Spider failed to initialise!");
 		return false;
-	}
+	}*/
 
 	return true;
 }
