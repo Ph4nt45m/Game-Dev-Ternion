@@ -3,6 +3,11 @@
 
 #include <Box2D.h>
 
+typedef struct {
+    int type;  // Object type identifier
+    void* object;  // Pointer to the game object (e.g., Golem*, Character*)
+}userData;
+
 // Define identifiers for game objects
 enum GameObjectType {
     PLAYER = 1,
@@ -11,6 +16,11 @@ enum GameObjectType {
     GOLEM_SLAM = 4,
     GOLEM_PROJECTILE = 5,
     TERRAIN = 6,
+    GROUND_COLLISION = 7,
+    ENEMY_PROJECTILE = 8,
+    PLAYER_SP_ATTACK = 9, 
+    PLAYER_PROJECTILE = 10,
+    MUSHROOM = 11
 };
 
 // MyContactListener class inheriting from b2ContactListener

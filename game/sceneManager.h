@@ -4,12 +4,14 @@
 #define   __SCENEMANAGER_H_
 
 // Forward declarations:
-#include "sprite.h"
-#include "scene.h"
+#include "pause.h"
+
+//libs
 #include <string>
 #include <vector>
 
 // Class declaration: 
+class Sprite;
 class Renderer;
 class scene;
 class SceneManager
@@ -25,6 +27,9 @@ public:
 
 	void ChangeScene(int scene);
 	void PerformSceneTransition(); // Actually performs the scene change
+
+	bool getpauseBool();
+	void setpauseBool(bool setPause);
 
 protected:
 	SceneManager();
@@ -47,9 +52,16 @@ public:
 
 protected:
 	static SceneManager* sm_pInstance;
+	float m_fElapsedTime; // Changes made by Karl
+	int sceneId;
+	float m_iRed;
+	float m_iGreen;
+	float m_iBlue;
 
 private:
 	std::vector<Sprite*> m_sprites; // Store allocated sprites
+	bool pause;
+	PauseScene* pauseScene;
 };
 
 #endif // !__SCENEMANAGER_H_

@@ -39,6 +39,7 @@ Character::Character(b2World* world)
     , m_fStepDuration(0.0f)
     , m_pWorld(world)
     , m_pBody(nullptr)
+    , m_jumpTimer(0.0f)
 {
 
 }
@@ -92,8 +93,6 @@ bool Character::Initialise(Renderer& renderer)
 
     m_vPosition.x = 50.0f;  // Position in pixels
     m_vPosition.y = 500.0f; // Position in pixels
-
-    ComputeBounds(sm_fBoundaryWidth, sm_fBoundaryHeight);
 
     // Weapon initialization based on type
     switch (m_iWeaponType)
@@ -155,35 +154,35 @@ bool Character::Initialise(Renderer& renderer)
     }
 
     // Initialize healthbar
-    m_pHealthbar = new Healthbar(renderer);
+    m_pHealthbar = new Healthbar(renderer, 100.0f);
 
     // Box2D Body Initialization (Changes made by Rauen)
 
     // Create the Box2D body definition
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(m_vPosition.x / SCALE, m_vPosition.y / SCALE);  // Convert from pixels to meters
+    //b2BodyDef bodyDef;
+    //bodyDef.type = b2_dynamicBody;
+    //bodyDef.position.Set(m_vPosition.x / SCALE, m_vPosition.y / SCALE);  // Convert from pixels to meters
 
-    // Create the Box2D body in the world
-    m_pBody = m_pWorld->CreateBody(&bodyDef);
+    //// Create the Box2D body in the world
+    //m_pBody = m_pWorld->CreateBody(&bodyDef);
 
-    // Define the character's shape as a box (in meters)
-    b2PolygonShape characterBox;
-    float boxWidth = (m_pSprSpriteBody->GetWidth() /2.0f) / SCALE;   // Convert pixel width to meters (half-width for Box2D)
-    float boxHeight = (m_pSprSpriteBody->GetHeight()/2.0f)/ SCALE; // Convert pixel height to meters (half-height for Box2D)
-    characterBox.SetAsBox(boxWidth, boxHeight);
+    //// Define the character's shape as a box (in meters)
+    //b2PolygonShape characterBox;
+    //float boxWidth = (m_pSprSpriteBody->GetWidth() / 2.0f) / SCALE;   // Convert pixel width to meters (half-width for Box2D)
+    //float boxHeight = (m_pSprSpriteBody->GetHeight() / 2.0f) / SCALE; // Convert pixel height to meters (half-height for Box2D)
+    //characterBox.SetAsBox(boxWidth, boxHeight);
 
-    // Create a fixture for the body (set density, friction, etc.)
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &characterBox;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
+    //// Create a fixture for the body (set density, friction, etc.)
+    //b2FixtureDef fixtureDef;
+    //fixtureDef.shape = &characterBox;
+    //fixtureDef.density = 1.0f;
+    //fixtureDef.friction = 0.3f;
 
-    // Attach the fixture to the body
-    m_pBody->CreateFixture(&fixtureDef);
+    //// Attach the fixture to the body
+    //m_pBody->CreateFixture(&fixtureDef);
 
-    // Set user data for collision detection
-    m_pBody->SetUserData((void*)PLAYER);
+    //// Set user data for collision detection
+    //m_pBody->SetUserData((void*)PLAYER);
 
     return true;
 }
@@ -293,10 +292,12 @@ Character::GetInputs(InputSystem& inputSystem)
     if (m_sMotionKeyStates.MoveForward == BS_PRESSED || m_sMotionKeyStates.MoveForward == BS_HELD)
     {
         m_sKeyboardMotions.Surge = MOTION_FORWARD;
+
     }
     else if (m_sMotionKeyStates.MoveBackward == BS_PRESSED || m_sMotionKeyStates.MoveBackward == BS_HELD)
     {
         m_sKeyboardMotions.Surge = MOTION_BACKWARD;
+
     }
     else
     {
@@ -325,6 +326,7 @@ void Character::HandleInput(float deltaTime, InputSystem& inputSystem)
     // Move right when pressing D
     if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD) {
         velocity.x = 1.0f;  // Set a fixed speed to move right
+
     }
     else if (inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_A) == BS_HELD) {
         velocity.x = -1.0f;  // Set a fixed speed to move left
@@ -346,12 +348,22 @@ void Character::HandleInput(float deltaTime, InputSystem& inputSystem)
             m_bDoubleJump = true;     // Double jump has been used
         }
     }
-    
+
+
+    // If the player is jumping, update the jump timer
+    if (m_bJumping) {
+        m_jumpTimer += deltaTime;
+        if (m_jumpTimer >= 3.0f) {
+            m_bJumping = false;  // Reset jump
+            m_bDoubleJump = false;
+            m_jumpTimer = 0.0f;  // Reset the timer
+        }
+    }
+
     m_pBody->SetLinearVelocity(velocity);
 
     // Get the body's position in Box2D
     b2Vec2 bodyPos = m_pBody->GetPosition();
-
     // Update sprite position based on Box2D body position, applying the scale factor
     float spriteX = bodyPos.x * SCALE;  // Convert from Box2D meters to pixels
     float spriteY = bodyPos.y * SCALE;  // Convert from Box2D meters to pixels
@@ -423,12 +435,6 @@ Character::GetPosition()
 }
 
 Vector2&
-Character::GetFeetPos()
-{
-    return m_vFeetPos;
-}
-
-Vector2&
 Character::GetVelocityBody()
 {
     return m_velocityBody;
@@ -470,90 +476,7 @@ Character::SetProjAlive(bool alive)
     m_pEntArrow->SetAlive(alive);
 }
 
-void
-Character::SetCentered(bool centered)
-{
-    sm_bCameraCentered = centered;
-}
-
-bool
-Character::IsCentered()
-{
-    return sm_bCameraCentered;
-}
-
-void
-Character::SetTerrainMoving(bool moving)
-{
-    sm_bTerrainMoving = moving;
-}
-
-bool
-Character::IsTerrainMoving()
-{
-    return sm_bTerrainMoving;
-}
-
-int
-Character::GetBodyWidth()
-{
-    return m_pSprSpriteBody->GetWidth();
-}
-
-int
-Character::GetBodyHeight()
-{
-    return m_pSprSpriteBody->GetHeight();
-}
-
-void
-Character::SetNumSegments(int amount)
-{
-    sm_iNumSegments = amount;
-}
-
-void
-Character::ShiftX(float amount)
-{
-    m_vPosition.x += amount;
-    m_vFeetPos.x += amount;
-    m_vStandingPos.x += amount;
-}
-
-void
-Character::ShiftY(float amount)
-{
-    m_vStandingPos.y += amount;
-    m_vBoundaryLow.y += amount;
-    m_vBoundaryHigh.y += amount;
-
-    if (m_vFeetPos.y < m_vStandingPos.y)
-    {
-        if (m_velocityJump.y == 0.0f)
-        {
-            m_bJumping = true;
-
-            if (amount < 90)
-            {
-                m_bDoubleJump = true;
-            }
-
-            m_sKeyboardMotions.Heave = MOTION_DECENT;
-        }
-    }
-}
-
-void
-Character::ComputeBounds(float width, float height)
-{
-    // Set boundaries
-    m_vBoundaryLow.x = (m_pSprSpriteBody->GetWidth() / 2.0f);
-    m_vBoundaryLow.y = ((sm_fBoundaryHeight / 7.0f) * 5.0f);
-
-    m_vBoundaryHigh.x = width - (m_pSprSpriteBody->GetWidth() / 2.0f);
-    m_vBoundaryHigh.y = height;
-}
-void Character::Draw(Renderer& renderer)
+void Character::Draw(Renderer& renderer, Camera& camera)
 {}
 
 //void

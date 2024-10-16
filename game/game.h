@@ -6,6 +6,8 @@
 #include "vector2.h"
 #include "inputsystem.h"
 #include "MyContactListener.h"
+#include "SoundManager.h"
+#include "alphabet.h"
 
 // Library includes:
 #include <vector>
@@ -18,6 +20,7 @@ class Renderer;
 class Sprite;
 class AnimatedSprite;
 class Character;
+class Player; // Changes made by Karl
 class scene;
 class Game
 {
@@ -32,8 +35,17 @@ public:
 	bool DoGameLoop();
 	void Quit();
 
-	Character* GetCharacter() const;
+	b2Vec2 GetGravity();
+	void SetGravity(float x, float y);
+
+	void CreateCharacter(int type); // Changes made by Karl
+	//Character* GetCharacter() const; // Changes made by Karl
+	Player* GetCharacter() const;
 	b2World* GetWorld() const;
+
+	SoundManager* GetSounds();
+	void setsoundEffectsVolume(int SoundVol);
+	int getsoundEffectsVolume();
 
 protected:
 	void Process(float deltaTime);
@@ -57,9 +69,10 @@ public:
 	//Box2D
 	
 	b2World* world;
+	b2Vec2 m_gravity;
 
 	//Box2D stuff
-
+	
 protected:
 	static Game* sm_pInstance;
 	Renderer* m_pRenderer;
@@ -77,7 +90,8 @@ protected:
 
 	Vector2 m_pCursor;
 	Scene* m_pScForestScene;
-	Character* m_pEntCharacter;
+	/*Character* m_pEntCharacter;*/ // Changes made by Karl
+	Player* m_pEntCharacter;
 
 #ifdef USE_LAG
 	float m_fLag;
@@ -92,6 +106,12 @@ private:
 	Sprite* m_sprCursorBodySprite;
 	Sprite* m_sprCursorBorderSprite;
 	int m_iMouseState;
+	int soundEffectsVolume;
+
+	float m_elapsedTime;
+
+	SoundManager* soundManager;
+	Alphabet* alphabet;
 
 	MyContactListener m_contactListener;
 };

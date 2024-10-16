@@ -1,5 +1,7 @@
 #include "Camera.h"
 #include "character.h"
+#include "player.h" // Changes made by Karl
+#include "Warrior.h"
 #include <stdio.h>
 
 
@@ -23,9 +25,9 @@ void Camera::SetCamera(int screenWidth, int screenHeight, int worldWidth, int wo
 
 }
 
-void Camera::Update(Character& player)
+void Camera::Update(/*Character& player*/ Player& player) // Changes made by Karl
 {
-    const float SCALE = 30.0f;  // Scaling factor from Box2D meters to pixels
+    //const float SCALE = 30.0f;  // Scaling factor from Box2D meters to pixels
 
     // Get the player's Box2D body position in meters, no need to adjust
     b2Vec2 playerPosition = player.GetPosition();

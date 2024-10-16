@@ -13,7 +13,9 @@ ExitButton::ExitButton(float x, float y)
     : Button(x, y),
     m_buttonSpriteNormal(nullptr),
     m_buttonSpriteHovered(nullptr),
-    m_buttonSpritePressed(nullptr)
+    m_buttonSpritePressed(nullptr),
+    m_buttonSpriteHighlight(nullptr),// Changes made by Karl
+    m_fBlueTint(1.0f)
 {
 }
 
@@ -27,14 +29,18 @@ ExitButton::~ExitButton()
 
     delete m_buttonSpritePressed;
     m_buttonSpritePressed = nullptr;
+    // Changes made by Karl
+    delete m_buttonSpriteHighlight;
+    m_buttonSpriteHighlight = nullptr;
 }
 
 bool ExitButton::Initialise(Renderer& renderer)
-{
+{   // Changes made by Karl
     // Load the button sprites
-    m_buttonSpriteNormal = renderer.CreateSprite("..\\Sprites\\Menus\\exitNormal.png");
-    m_buttonSpriteHovered = renderer.CreateSprite("..\\Sprites\\Menus\\exitHovered.png");
-    m_buttonSpritePressed = renderer.CreateSprite("..\\Sprites\\Menus\\exitPressed.png");
+    m_buttonSpriteNormal = renderer.CreateSprite("..\\Sprites\\Menus\\Buttons\\exitNormal.png");
+    m_buttonSpriteHovered = renderer.CreateSprite("..\\Sprites\\Menus\\Buttons\\exitHovered.png");
+    m_buttonSpritePressed = renderer.CreateSprite("..\\Sprites\\Menus\\Buttons\\exitPressed.png");
+    m_buttonSpriteHighlight = renderer.CreateSprite("..\\Sprites\\Menus\\Buttons\\border.png");
 
     // Get the screen dimensions
     int windowWidth = renderer.GetWidth();
@@ -55,6 +61,7 @@ bool ExitButton::Initialise(Renderer& renderer)
     m_buttonSpriteNormal->SetScale(finalScale);
     m_buttonSpriteHovered->SetScale(finalScale);
     m_buttonSpritePressed->SetScale(finalScale);
+    m_buttonSpriteHighlight->SetScale(finalScale); // Changes made by Karl
 
     // Set the size of the button interaction area (adjust scale for interaction zone)
     SetWidth(spriteWidth * finalScale);
@@ -67,6 +74,8 @@ bool ExitButton::Initialise(Renderer& renderer)
     m_buttonSpriteHovered->SetY(m_y);
     m_buttonSpritePressed->SetX(m_x);
     m_buttonSpritePressed->SetY(m_y);
+    m_buttonSpriteHighlight->SetX(m_x); // Changes made by Karl
+    m_buttonSpriteHighlight->SetY(m_y);
 
     // Ensure all sprites are loaded
     return (m_buttonSpriteNormal && m_buttonSpriteHovered && m_buttonSpritePressed);
@@ -79,10 +88,36 @@ void ExitButton::Update(float deltaTime, InputSystem& inputSystem)
     {
         Game::GetInstance().Quit();
     }
+    else if (m_isHovered) // Changes made by Karl
+    {
+        if (m_fBlueTint > 0.0f)
+        {
+            m_fBlueTint -= 2.0f * deltaTime;
+        }
+        else
+        {
+            m_fBlueTint = 0.0f;
+        }
+    }
+    else
+    {
+        if (m_fBlueTint < 1.0f)
+        {
+            m_fBlueTint += 2.0f * deltaTime;
+        }
+        else
+        {
+            m_fBlueTint = 1.0f;
+        }
+    }
+
+    // Set blue tint for border highlight
+    m_buttonSpriteHighlight->SetBlueTint(m_fBlueTint);
 }
 
 void ExitButton::Draw(Renderer& renderer)
 {
+    
     if (m_isHeld)
     {
         m_buttonSpritePressed->Draw(renderer, true, false);
@@ -95,4 +130,6 @@ void ExitButton::Draw(Renderer& renderer)
     {
         m_buttonSpriteNormal->Draw(renderer, true, false);
     }
+    // Changes made by Karl
+    m_buttonSpriteHighlight->Draw(renderer, true, false);
 }

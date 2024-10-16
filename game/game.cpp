@@ -15,6 +15,9 @@
 #include "animatedsprite.h"
 #include "vector2.h"
 #include "sceneManager.h"
+#include "Warrior.h" // Changes made by Karl
+#include "Mage.h" // Changes made by Karl
+#include "Archer.h" // Changes made by Karl
 
 // Library includes:
 #include <windows.h>
@@ -57,6 +60,9 @@ Game::Game()
 	, m_pInputSystem(0)
 	, m_iMouseState(0)
 	, m_bLooping(true)
+	, soundManager(0)
+	, alphabet(0)
+	, soundEffectsVolume(0)
 {
 
 }
@@ -77,6 +83,11 @@ Game::~Game()
 
 	delete m_pEntCharacter;
 	m_pEntCharacter = 0;
+	
+	if (soundManager) {
+		delete soundManager;
+		soundManager = nullptr;
+	}
 }
 
 void Game::Quit()
@@ -93,8 +104,8 @@ bool Game::Initialise()
 	int bbHeight = 800; // 800 originally
 
 	//World init
-	b2Vec2 gravity{ 0.0f, 0.0f };
-	world = new b2World{ gravity };
+	SetGravity(0.0f, 0.0f);
+	world = new b2World{ m_gravity };
 	world->SetContactListener(&m_contactListener);
 
 	//Renderder
@@ -120,12 +131,12 @@ bool Game::Initialise()
 	}
 
 	//Character made
-	m_pEntCharacter = new Character(world);
+	/*m_pEntCharacter = new Character(world); // Changes made by Karl
 	if (!m_pEntCharacter->Initialise(*m_pRenderer))
 	{
 		LogManager::GetInstance().Log("Character failed to initialise!");
 		return false;
-	}
+	}*/
 
 	//Scene
 	// Initialize SceneManager and the first scene
@@ -158,6 +169,25 @@ bool Game::Initialise()
 	for (b2Body* body = world->GetBodyList(); body != nullptr; body = body->GetNext()) {
 		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
 	}
+
+	//Kyle code
+	// Initialize the SoundManager
+	soundManager = new SoundManager();
+
+	// Initialize SDL_mixer
+	if (!soundManager->init()) {
+		return false;
+	}
+	//// Load sounds and music
+	soundManager->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
+	soundManager->loadMusic("background", "..\\Sprites\\sounds\\JoshWoodward-Circles-NoVox.mp3");
+	//// Load and play the new music
+	soundManager->loadMusic("newBackground", "..\\Sprites\\sounds\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
+
+	// Play the background music (loop infinitely)
+//	soundManager->playMusic("background", -1);	//Kyle end
+	soundManager->setMusicVolume(80);
+	setsoundEffectsVolume(80);	//Kyle code end
 
 	return true;
 }
@@ -205,10 +235,14 @@ void
 Game::Process(float deltaTime)
 {
 	ProcessFrameCounting(deltaTime);
-
+	m_elapsedTime += deltaTime;
 	// TODO: Add game objects to process here!
-
-
+	if (m_elapsedTime > 3.0f)
+	{
+		soundManager->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
+		soundManager->playSound("bounce", 0, getsoundEffectsVolume());
+		m_elapsedTime = 0;
+	}
 	// Box2D time step
 	const float32 timeStep = 1.0f / 60.0f;  // 60Hz update rate
 	const int32 velocityIterations = 6;     // Box2D velocity solver iterations
@@ -223,7 +257,11 @@ Game::Process(float deltaTime)
 	SceneManager::GetInstance().Process(deltaTime, *m_pInputSystem);
 
 	//I think this runs player character
-	m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
+	/*if (m_pEntCharacter->IsDefined()) // Changes made by Karl
+	{
+		m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
+	}*/
+	
 	m_pASprAnimatedSprite->Process(deltaTime);
 
 	//Cursor that follows mouse and explodes when presses
@@ -256,7 +294,6 @@ Game::Draw(Renderer& renderer)
 	renderer.Clear();
 
 	// TODO: Add game objects to draw here!
-
 	SceneManager::GetInstance().Draw(renderer);
 
 	if (m_pASprAnimatedSprite->IsAnimating())
@@ -306,7 +343,7 @@ Game::DebugDraw()
 
 	//ImGui::SliderInt("Active scene", &m_iCurrentScene, 0, (m_scenes.size() > 0) ? m_scenes.size() - 1 : 0, "%d");
 	//m_scenes[m_iCurrentScene]->DebugDraw(); // Call DebugDraw of the scene, for example bouncing balls
-
+	
 	//ImGui::End();
 
 	ImGui::Begin("Debug Window - Cursor", &open, ImGuiWindowFlags_MenuBar);
@@ -349,8 +386,39 @@ Game::ToggleDebugWindow()
 
 	m_pInputSystem->ShowMouseCursor(m_bShowDebugWindow);
 }
+// Changes made by Karl
+void
+Game::CreateCharacter(int type)
+{
+	switch (type)
+	{
+	case 0:
+		m_pEntCharacter = new Warrior(world);
+		break;
+	case 1:
+		m_pEntCharacter = new Mage(world);
+		break;
+	case 2:
+		m_pEntCharacter = new Archer(world);
+		break;
+	}
 
-Character* Game::GetCharacter() const
+	if (!m_pEntCharacter->Initialise(*m_pRenderer))
+	{
+		LogManager::GetInstance().Log("Character failed to initialise!");
+	}
+	else
+	{
+		m_pEntCharacter->SetCharacterType(*m_pRenderer, type);
+	}
+}
+// Changes made by Karl
+//Character* Game::GetCharacter() const
+//{
+//	return m_pEntCharacter;
+//}
+
+Player* Game::GetCharacter() const
 {
 	return m_pEntCharacter;
 }
@@ -358,4 +426,29 @@ Character* Game::GetCharacter() const
 b2World* Game::GetWorld() const
 {
 	return world;
+}
+
+b2Vec2 Game::GetGravity()
+{
+	return m_gravity;
+}
+
+void Game::SetGravity(float x, float y)
+{
+	m_gravity.x = x;
+	m_gravity.y = y;
+}
+
+SoundManager* Game::GetSounds()
+{
+	return soundManager;
+}
+
+void Game::setsoundEffectsVolume(int SoundVol)
+{
+	soundEffectsVolume = SoundVol;
+}
+int Game::getsoundEffectsVolume()
+{
+	return soundEffectsVolume;
 }

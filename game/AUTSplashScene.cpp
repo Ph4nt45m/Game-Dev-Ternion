@@ -9,16 +9,6 @@
 #include "logmanager.h"
 #include "scene.h"
 
-#include "game.h"
-#include "logmanager.h"
-#include "renderer.h"
-#include "inputsystem.h"
-#include "sprite.h"
-#include "forest.h"
-#include "character.h"
-#include "golem.h"
-
-
 // Library includes:
 #include <cassert>
 #include <cstdlib>
@@ -49,7 +39,7 @@ void SplashScene::Process(float deltaTime, InputSystem& inputSystem)
     m_fElapsedTime += deltaTime;
 
     // For now, just transition to the next scene after a set time
-    if (m_fElapsedTime > 3.0f) // e.g., 3 seconds
+    if (m_fElapsedTime > 2.35f) // 2.35 to sync with sound
     {
         // Code to change scene (handled by Game or SceneManager)
         SceneManager::GetInstance().ChangeScene(1);

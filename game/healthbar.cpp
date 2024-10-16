@@ -10,9 +10,9 @@
 // Library includes:
 #include <cmath>
 
-Healthbar::Healthbar(Renderer& renderer)
-	: m_fCurrentHealth(100)
-	, m_fMaxHealth(100)
+Healthbar::Healthbar(Renderer& renderer, float maxHealth)
+	: m_fCurrentHealth(maxHealth)
+	, m_fMaxHealth(maxHealth)
 {
 	// Load healthbar sprites
 	m_pHealthbarSprite = renderer.CreateSprite("..\\Sprites\\healthbar\\Healthbar.png");
@@ -29,7 +29,7 @@ Healthbar::Healthbar(Renderer& renderer)
 	int bbHeight = renderer.GetHeight();
 
 	m_fHealthbarX = 300;
-	m_fHealthbarY = bbHeight - 100;
+	m_fHealthbarY = 100;
 	m_fHealthbarScale = 2.0f;
 
 	m_pHealthbarSprite->SetX(m_fHealthbarX);

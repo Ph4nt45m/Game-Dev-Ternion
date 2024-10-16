@@ -15,7 +15,7 @@ class Healthbar
 {
 	// Member methods:
 	public:
-		Healthbar(Renderer& renderer);
+		Healthbar(Renderer& renderer, float maxHealthbar);
 		~Healthbar();
 		void Process(float deltaTime, InputSystem& inputSystem);
 		void Draw(Renderer& renderer);
