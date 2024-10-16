@@ -117,6 +117,7 @@ Mushroom::Process(float deltaTime, InputSystem& inputSystem)
 
     if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
     {
+        DeleteBody();
         m_bAlive = false;
     }
     CheckPlayerDist();
