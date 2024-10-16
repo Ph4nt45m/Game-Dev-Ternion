@@ -102,6 +102,7 @@ Mushroom::Initialise(Renderer& renderer)
         m_sAnimations.m_pASprMushIdle->SetY((int)m_pBody->GetPosition().y * SCALE);
 
     }
+    healthBar = new Healthbar(renderer, 20.0f);//Changes made by kyle
 
     return true;
 }
@@ -109,6 +110,10 @@ Mushroom::Initialise(Renderer& renderer)
 void
 Mushroom::Process(float deltaTime, InputSystem& inputSystem)
 {
+    if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
+    {
+        m_bAlive = false;
+    }
     CheckPlayerDist();
     ProcessAction();
 
@@ -190,41 +195,31 @@ Mushroom::Process(float deltaTime, InputSystem& inputSystem)
 void
 Mushroom::Draw(Renderer& renderer, Camera& camera)
 {
-    if (m_bAlive)
+    Vector2* cameraOffset = camera.GetOffset();
+
+    int mushX = (int)(m_pBody->GetPosition().x * SCALE - cameraOffset->x);
+    int mushY = (int)(m_pBody->GetPosition().y * SCALE - cameraOffset->y);
+
+    if (m_bPlayerInRange)
     {
-
-        Vector2* cameraOffset = camera.GetOffset();
-
-        int mushX = (int)(m_pBody->GetPosition().x * SCALE - cameraOffset->x);
-        int mushY = (int)(m_pBody->GetPosition().y * SCALE - cameraOffset->y);
-
-        if (m_bPlayerInRange)
+        if (m_bRun)
         {
-            if (m_bRun)
+            m_sAnimations.m_pASprMushWalk->SetX(mushX);
+            m_sAnimations.m_pASprMushWalk->SetY(mushY);
+            m_sAnimations.m_pASprMushWalk->Draw(renderer, m_bFlipHorizontally, false);
+        }
+        else if (m_bAttack)
+        {
+            if (m_sAnimations.m_pASprMushAttack->IsAnimating())
             {
-                m_sAnimations.m_pASprMushWalk->SetX(mushX);
-                m_sAnimations.m_pASprMushWalk->SetY(mushY);
-                m_sAnimations.m_pASprMushWalk->Draw(renderer, m_bFlipHorizontally, false);
-            }
-            else if (m_bAttack)
-            {
-                if (m_sAnimations.m_pASprMushAttack->IsAnimating())
-                {
-                    m_sAnimations.m_pASprMushAttack->SetX(mushX);
-                    m_sAnimations.m_pASprMushAttack->SetY(mushY);
-                    m_sAnimations.m_pASprMushAttack->Draw(renderer, m_bFlipHorizontally, false);
-                }
-                else
-                {
-                    m_bAttack = false;
-                    m_bIsAnimating = false;
-                }
+                m_sAnimations.m_pASprMushAttack->SetX(mushX);
+                m_sAnimations.m_pASprMushAttack->SetY(mushY);
+                m_sAnimations.m_pASprMushAttack->Draw(renderer, m_bFlipHorizontally, false);
             }
             else
             {
-                m_sAnimations.m_pASprMushIdle->SetX(mushX);
-                m_sAnimations.m_pASprMushIdle->SetY(mushY);
-                m_sAnimations.m_pASprMushIdle->Draw(renderer, m_bFlipHorizontally, false);
+                m_bAttack = false;
+                m_bIsAnimating = false;
             }
         }
         else
@@ -233,6 +228,12 @@ Mushroom::Draw(Renderer& renderer, Camera& camera)
             m_sAnimations.m_pASprMushIdle->SetY(mushY);
             m_sAnimations.m_pASprMushIdle->Draw(renderer, m_bFlipHorizontally, false);
         }
+    }
+    else
+    {
+        m_sAnimations.m_pASprMushIdle->SetX(mushX);
+        m_sAnimations.m_pASprMushIdle->SetY(mushY);
+        m_sAnimations.m_pASprMushIdle->Draw(renderer, m_bFlipHorizontally, false);
     }
 }
 
@@ -441,6 +442,12 @@ void Mushroom::SetCamera(Camera* camera)
 void Mushroom::SetPlayer(Player* player)
 {
     m_pEntCharacter = player;
+}
+
+//Changes made by Kyle
+Healthbar* Mushroom::getEnemyHealth()
+{
+    return healthBar;
 }
 
 //void
