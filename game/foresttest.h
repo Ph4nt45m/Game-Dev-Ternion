@@ -36,6 +36,7 @@ public:
 	virtual void DebugDraw();
 
 	bool SetEnemies(Renderer& renderer);
+	bool SetBGSprites(Renderer& renderer); // Changes made by Karl - Function for setting background sprites
 
 protected:
 
@@ -50,7 +51,12 @@ public:
 	b2World* m_pWorld;
 
 protected:
-	Sprite* m_pBackground;
+	Sprite* m_pSkyFrameOne; // Changes made by Karl - Start - Split background to layered sprites
+	Sprite* m_pSkyFrameTwo;
+	Sprite* m_pTreesFrameOne;
+	Sprite* m_pTreesFrameTwo;
+	Sprite* m_pGroundFrameOne;
+	Sprite* m_pGroundFrameTwo; // Changes made by Karl - End
 	Golem* m_pGolem;
 	Mushroom* m_pMushroom;
 	Skeleton* m_pSkeleton; // Changes made by Karl
@@ -61,6 +67,9 @@ protected:
 	Terrain* leftWall;
 	Terrain* rightWall;
 	Terrain* platform;
+
+	float m_fWindowWidth;
+	float m_fWindowHeight;
 private:
 	std::vector<Terrain*> m_terrainSegments;
 };
