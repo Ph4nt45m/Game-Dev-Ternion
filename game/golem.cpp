@@ -853,7 +853,7 @@ void Golem::CheckPlayerDist()
     m_fDistToPlayer = abs(playerPosition.x - golemPosition.x);
 }
 
-void Golem::SetPlayer(/*Character* player*/ Player* player) // Changes made by Karl
+void Golem::SetPlayer(Player* player)
 {
     m_pEntCharacter = player;
 }

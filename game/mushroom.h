@@ -7,43 +7,42 @@
 #include "vector2.h"
 #include "inputsystem.h"
 
+#include <Box2D.h>
+
 // Forward declarations:
 class Renderer;
 class Sprite;
 class AnimatedSprite;
-class Character;
+class Player;
 
 // Golem animations:
 typedef struct {
     AnimatedSprite* m_pASprMushIdle;
-    AnimatedSprite* m_pASprSkelWalk;
+    AnimatedSprite* m_pASprMushWalk;
     AnimatedSprite* m_pASprMushAttack;
-} Animations;
+} MushAnimations;
 
 // Class declaration:
 class Mushroom : public Enemy
 {
     // Member methods:
 public:
-    Mushroom();
+    Mushroom(b2World* world);
     ~Mushroom();
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;
-    void Draw(Renderer& renderer) override;
+    void Draw(Renderer& renderer, Camera& camera) override;
     bool SetBodySprites(Renderer& renderer) override;
-    void SetNumSegments(int amount) override;
-    void GetInputs(InputSystem& inputSystem) override;
-    void HandleInput(float deltaTime) override;
-    void SetTerrainMoving(bool moving) override;
-    bool IsTerrainMoving() override;
 
-    Vector2& GetPosition();
-    void SetCharacter(Character& character);
     void CheckPlayerDist();
     int GetBodyWidth();
-    void ShiftX(float amount);
-    void SetNumWalkableSegs(int amount);
+
+    void SetCamera(Camera* camera);
+    void SetPlayer(Player* player);
+    void CreateHeadButt();
+    void DeleteHeadButt();
+
 
     void Move(void);
     void Action();
@@ -52,7 +51,6 @@ public:
     //void DebugDraw() override;
 
 protected:
-    void ComputeBounds(float width, float height);
 
 private:
     Mushroom(const Mushroom& mushroom);
@@ -60,10 +58,10 @@ private:
 
     // Member data:
 protected:
-    Character* m_pEntCharacter;
+    Player* m_pEntCharacter;
     Sprite* m_pSprSpriteBody;
     Vector2 m_vStartingPos;
-    Animations m_sAnimations;
+    MushAnimations m_sAnimations;
     int m_iNumSegments;
     int m_iNumWalkableSegs;
     float m_fAnimateScale;
@@ -78,6 +76,11 @@ protected:
     bool m_bIsAnimating;
     bool m_bAttack;
     bool m_bRun;
+
+    b2World* m_pWorld;
+    b2Body* m_pBody;
+    b2Body* m_pHeadButt;
+    Camera* m_pCamera;
 
 private:
 

@@ -13,6 +13,7 @@
 #include "character.h"
 #include "player.h"
 #include "golem.h"
+#include "mushroom.h"
 
 // Library includes:
 #include <iostream>
@@ -58,7 +59,7 @@ ForestTest::Initialise(Renderer& renderer)
 
 	//const float SCALE = 30.0f;
 	float terrainWidth = 300.0f / SCALE;  // Convert pixel width to meters
-	float terrainHeight = 200.0f / SCALE;  // Convert pixel height to meters
+	float terrainHeight = 100.0f / SCALE;  // Convert pixel height to meters
 	float wallWidth = 100.0f / SCALE;  // Thin wall, converted to meters
 	float wallHeight = 10000.0f / SCALE;  // Wall height in meters
 	float worldWidth = 500000.0f / SCALE;  // World width converted to meters
@@ -67,26 +68,26 @@ ForestTest::Initialise(Renderer& renderer)
 	float windowWidth = renderer.GetWidth();
 
 	// Set the Y position to the bottom of the window and convert to meters
-	float groundY = (windowHeight - terrainHeight) / SCALE;  // Convert to meters
+	//float groundY = (windowHeight - terrainHeight) / SCALE;  // Convert to meters
 
 	// Create the ground object, converting width/height to meters
-	ground = new Terrain(m_pWorld, 0.0f, groundY, worldWidth, terrainHeight);
+	ground = new Terrain(m_pWorld, 0.0f, windowHeight/SCALE, worldWidth, terrainHeight, GROUND);
 	m_terrainSegments.push_back(ground);  // Ground
-	ground->SetSprite(renderer, GROUND, worldWidth * SCALE, terrainHeight * SCALE);
+	ground->Initialise(renderer);
 
-	platform = new Terrain(m_pWorld, 1200.0 / SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
-	m_terrainSegments.push_back(platform);  // Another platform
-	platform->SetSprite(renderer, PLATFORM, terrainWidth * SCALE, terrainHeight * SCALE);
+	//platform = new Terrain(m_pWorld, 1200.0 / SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
+	//m_terrainSegments.push_back(platform);  // Another platform
+	//platform->SetSprite(renderer, PLATFORM, terrainWidth * SCALE, terrainHeight * SCALE);
 
 	// Add a left wall
-	leftWall = new Terrain(m_pWorld, 0.0f, groundY, wallWidth, wallHeight);
-	m_terrainSegments.push_back(leftWall);  // Left boundary
-	leftWall->SetSprite(renderer, LEFT_WALL, wallWidth * SCALE, wallHeight * SCALE);
+	//leftWall = new Terrain(m_pWorld, 0.0f, 0.0f, wallWidth, wallHeight);
+	//m_terrainSegments.push_back(leftWall);  // Left boundary
+	//leftWall->SetSprite(renderer, LEFT_WALL, wallWidth * SCALE, wallHeight * 2* SCALE);
 
-	// Add a right wall 
-	rightWall = new Terrain(m_pWorld, worldWidth, groundY, wallWidth, wallHeight);
-	m_terrainSegments.push_back(rightWall);  // Right boundary
-	rightWall->SetSprite(renderer, RIGHT_WALL, wallWidth * SCALE, wallHeight * SCALE);
+	//// Add a right wall 
+	//rightWall = new Terrain(m_pWorld, worldWidth, 0.0f, wallWidth, wallHeight);
+	//m_terrainSegments.push_back(rightWall);  // Right boundary
+	//rightWall->SetSprite(renderer, RIGHT_WALL, wallWidth * SCALE, wallHeight * SCALE);
 
 	//m_terrainSegments.push_back(new Terrain(m_pWorld, 450.0f, 450.0f, terrainWidth, terrainHeight));  // Elevated platform
 
@@ -106,6 +107,7 @@ ForestTest::Process(float deltaTime, InputSystem& inputSystem)
 	//}
 	m_pCharacter->Process(deltaTime, inputSystem);
 	m_pGolem->Process(deltaTime, inputSystem);
+	m_pMushroom->Process(deltaTime, inputSystem);
 	camera.Update(*m_pCharacter);
 	//printf("char: %f\n", m_pCharacter->GetPosition().x - platform->GetPosition().x);
 }
@@ -122,6 +124,7 @@ ForestTest::Draw(Renderer& renderer)
 	}
 
 	m_pGolem->Draw(renderer, camera);
+	m_pMushroom->Draw(renderer, camera);
 }
 
 //Testing stuff with enemies for later
@@ -137,6 +140,16 @@ ForestTest::SetEnemies(Renderer& renderer)
 		LogManager::GetInstance().Log("Golem failed to initialise!");
 		return false;
 	}
+	m_pMushroom = new Mushroom(m_pWorld);
+	m_pMushroom->SetCamera(&camera);
+	m_pMushroom->SetPlayer(m_pCharacter);
+
+	if (!(m_pMushroom->Initialise(renderer)))
+	{
+		LogManager::GetInstance().Log("Mushroom failed to initialise!");
+		return false;
+	}
+	
 
 	return true;
 }

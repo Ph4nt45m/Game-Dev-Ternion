@@ -19,23 +19,9 @@ void MyContactListener::BeginContact(b2Contact* contact)
     if (!userDataA || !userDataB) {
         return;  // If user data is missing, just return early
     }
-    //// Check for terrain collisions
-    //if ((int)userDataA == PLAYER && (int)userDataB == GROUND) {
-    //    // Player collided with terrain
-    //    //printf("Player collided with terrain!\n");
-    //    //static_cast<Player*>(userDataB)
-    //}
-    //else if ((int)userDataA == GROUND && (int)userDataB == PLAYER) {
-    //    // Reverse case: terrain collided with player
-    //    //printf("Player collided with terrain (reverse case)!\n");
-
-    //}
 
     bool fixtureAIsSensor = fixtureA->IsSensor();
     bool fixtureBIsSensor = fixtureB->IsSensor();
-
-    /*printf("AT: %d AS: %d\n", (int)userDataA, fixtureAIsSensor);
-    printf("BT: %d BS: %d\n", (int)userDataB, fixtureBIsSensor);*/
 
     if (fixtureBIsSensor && (int)userDataA == GOLEM && (int)userDataB == PLAYER_SP_ATTACK)
     {
@@ -64,59 +50,24 @@ void MyContactListener::BeginContact(b2Contact* contact)
         printf("Player hit with slam (reverse)\n");
     }
 
-    //if (fixtureA->IsSensor() || fixtureB->IsSensor())
-    //{
-    //    bool fixtureAIsSensor = fixtureA->IsSensor();
-    //    bool fixtureBIsSensor = fixtureB->IsSensor();
+    //mushroom Body
+    if (fixtureAIsSensor && (int)userDataA == MUSHROOM && (int)userDataB == PLAYER)
+    {
+        printf("Player hit with mushroom\n");
+    }
+    else if (fixtureBIsSensor && (int)userDataA == PLAYER && (int)userDataB == MUSHROOM)
+    {
+        printf("Player hit with mushroom (reverse)\n");
+    }
 
-    //    printf("AT: %d AS: %d\n", (int)userDataA, fixtureAIsSensor);
-    //    printf("BT: %d BS: %d\n", (int)userDataB, fixtureBIsSensor);
-    //    
-    //    if (fixtureBIsSensor && (int)userDataA == GOLEM && (int)userDataB == PLAYER_SP_ATTACK)
-    //    {
-    //        printf("Golem hit with special\n");
-    //    }
-    //    else if (fixtureAIsSensor && (int)userDataA == PLAYER_SP_ATTACK && (int)userDataB == GOLEM)
-    //    {
-    //        printf("Golem hit with special (reverse)\n");
-    //    }
-
-    //    if (fixtureAIsSensor && (int)userDataA == GOLEM_SLASH && (int)userDataB == PLAYER)
-    //    {
-    //        printf("Player hit with slash\n");
-    //    }
-    //    else if (fixtureBIsSensor && (int)userDataA == PLAYER && (int)userDataB == GOLEM_SLASH)
-    //    {
-    //        printf("Player hit with slash (reverse)\n");
-    //    }
-
-    //    if (fixtureAIsSensor && (int)userDataA == GOLEM_SLAM && (int)userDataB == PLAYER)
-    //    {
-    //        printf("Player hit with slam\n");
-    //    }
-    //    else if (fixtureBIsSensor && (int)userDataA == PLAYER && (int)userDataB == GOLEM_SLAM)
-    //    {
-    //        printf("Player hit with slam (reverse)\n");
-    //    }
-    //    
-    //    /*if (fixtureBIsSensor && (int)userDataA == PLAYER && (int)userDataB == GOLEM_SLASH)
-    //    {
-    //        printf("Player hit with slash\n");
-    //    }
-    //    else if (fixtureAIsSensor && (int)userDataA == GOLEM_SLASH && (int)userDataB == PLAYER)
-    //    {
-    //        printf("Player hit with slash (reverse)\n");
-    //    }
-    //    
-    //    if (fixtureBIsSensor && (int)userDataA == PLAYER && (int)userDataB == GOLEM_SLAM)
-    //    {
-    //        printf("Player hit with slam\n");
-    //    }
-    //    else if (fixtureAIsSensor && (int)userDataA == GOLEM_SLAM && (int)userDataB == PLAYER)
-    //    {
-    //        printf("Player hit with slam (reverse)\n");
-    //    }*/
-    //}
+    if ((int)userDataA == MUSHROOM && (int)userDataB == PLAYER)
+    {
+        printf("Player hit with mushroom\n");
+    }
+    else if ((int)userDataA == PLAYER && (int)userDataB == MUSHROOM)
+    {
+        printf("Player hit with mushroom (reverse)\n");
+    }
 
     // Check for terrain collisions
     if ((int)userDataA == PLAYER && (int)userDataB == TERRAIN) {

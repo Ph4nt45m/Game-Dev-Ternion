@@ -26,7 +26,7 @@ typedef struct {
     AnimatedSprite* m_pASprGolemJump;
     AnimatedSprite* m_pASprGolemSlam;
     AnimatedSprite* m_pASprGolemThrow;
-} Animations;
+}Animations;
 
 // Class declaration:
 class Golem : public Enemy

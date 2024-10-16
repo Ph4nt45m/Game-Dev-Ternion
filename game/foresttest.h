@@ -18,6 +18,7 @@ class InputSystem;
 class Forest;
 class Player;
 class Golem;
+class Mushroom;
 class Sprite;
 
 // Class declarations:
@@ -49,6 +50,7 @@ public:
 protected:
 	Sprite* m_pBackground;
 	Golem* m_pGolem;
+	Mushroom* m_pMushroom;
 	Player* m_pCharacter;
 	Camera camera;
 	Terrain* ground;

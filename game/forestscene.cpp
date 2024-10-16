@@ -60,24 +60,24 @@ ForestScene::Initialise(Renderer& renderer)
 	// Set the Y position to the bottom of the window and convert to meters
 	float groundY = (windowHeight - terrainHeight) / SCALE;  // Convert to meters
 
-	// Create the ground object, converting width/height to meters
-	ground = new Terrain(m_pWorld, 0.0f, groundY, worldWidth, terrainHeight);
-	m_terrainSegments.push_back(ground);  // Ground
-	ground->SetSprite(renderer, GROUND, worldWidth * SCALE, terrainHeight * SCALE);
+	//// Create the ground object, converting width/height to meters
+	//ground = new Terrain(m_pWorld, 0.0f, groundY, worldWidth, terrainHeight);
+	//m_terrainSegments.push_back(ground);  // Ground
+	//ground->SetSprite(renderer, GROUND, worldWidth * SCALE, terrainHeight * SCALE);
 
-	platform = new Terrain(m_pWorld, 1200.0/SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
-	m_terrainSegments.push_back(platform);  // Another platform
-	platform->SetSprite(renderer, PLATFORM, terrainWidth * SCALE, terrainHeight * SCALE);
-	
-	// Add a left wall
-	leftWall = new Terrain(m_pWorld, 0.0f, groundY, wallWidth, wallHeight);
-	m_terrainSegments.push_back(leftWall);  // Left boundary
-	leftWall->SetSprite(renderer, LEFT_WALL, wallWidth * SCALE, wallHeight * SCALE);
-	
-	// Add a right wall 
-	rightWall = new Terrain(m_pWorld, worldWidth, groundY, wallWidth, wallHeight);
-	m_terrainSegments.push_back(rightWall);  // Right boundary
-	rightWall->SetSprite(renderer, RIGHT_WALL, wallWidth * SCALE, wallHeight * SCALE);
+	//platform = new Terrain(m_pWorld, 1200.0/SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
+	//m_terrainSegments.push_back(platform);  // Another platform
+	//platform->SetSprite(renderer, PLATFORM, terrainWidth * SCALE, terrainHeight * SCALE);
+	//
+	//// Add a left wall
+	//leftWall = new Terrain(m_pWorld, 0.0f, groundY, wallWidth, wallHeight);
+	//m_terrainSegments.push_back(leftWall);  // Left boundary
+	//leftWall->SetSprite(renderer, LEFT_WALL, wallWidth * SCALE, wallHeight * SCALE);
+	//
+	//// Add a right wall 
+	//rightWall = new Terrain(m_pWorld, worldWidth, groundY, wallWidth, wallHeight);
+	//m_terrainSegments.push_back(rightWall);  // Right boundary
+	//rightWall->SetSprite(renderer, RIGHT_WALL, wallWidth * SCALE, wallHeight * SCALE);
 
 	//m_terrainSegments.push_back(new Terrain(m_pWorld, 450.0f, 450.0f, terrainWidth, terrainHeight));  // Elevated platform
 

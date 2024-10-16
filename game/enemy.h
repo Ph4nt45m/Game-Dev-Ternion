@@ -35,7 +35,7 @@ private:
 
 	// Member data: 
 public:
-
+	bool IsCameraSet = false;
 
 protected:
 
