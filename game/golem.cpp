@@ -40,7 +40,6 @@ Golem::Golem(b2World* world)
     , m_bSlam(false)
     , m_bWalk(false)
     , m_pBody(0)
-    , slashBody(nullptr)
     , slashWidth(0)
     , slashHeight(0)
     , m_pWorld(world)
@@ -116,6 +115,7 @@ Golem::Initialise(Renderer& renderer)
         m_pEntProjectile->SetTimeToTarget(1.5f);
     }
 
+    healthBar = new Healthbar(renderer, 300.0f);//Changes made by kyle
     //Changes made by Rauen
 
     // Create the Box2D body for the Golem
@@ -160,6 +160,10 @@ Golem::Initialise(Renderer& renderer)
 void
 Golem::Process(float deltaTime, InputSystem& inputSystem)
 {
+    if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
+    {
+        m_bAlive = false;
+    }
     if (IsCameraSet) {
         b2Vec2 golemPosition = m_pBody->GetPosition();
 
@@ -238,134 +242,125 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
 
 void Golem::Draw(Renderer& renderer, Camera& camera)
 {
-    if (m_bAlive)
+    // Get the camera offset
+    Vector2* cameraOffset = camera.GetOffset();
+
+    // Adjust Golem position based on camera offset
+    int golemX = (int)(m_pBody->GetPosition().x * SCALE - cameraOffset->x);
+    int golemY = (int)(m_pBody->GetPosition().y * SCALE - cameraOffset->y);
+
+    if (m_bPlayerInRange)
     {
-        // Get the camera offset
-        Vector2* cameraOffset = camera.GetOffset();
-
-        // Adjust Golem position based on camera offset
-        int golemX = (int)(m_pBody->GetPosition().x * SCALE - cameraOffset->x);
-        int golemY = (int)(m_pBody->GetPosition().y * SCALE - cameraOffset->y);
-
-        if (m_bPlayerInRange)
+        if (m_bWalk)
         {
-            if (m_bWalk)
+            m_sAnimations.m_pASprGolemWalk->SetX(golemX);
+            m_sAnimations.m_pASprGolemWalk->SetY(golemY);
+            m_sAnimations.m_pASprGolemWalk->Draw(renderer, m_bFlipHorizontally, false);
+        }
+        else if (m_bSlash)
+        {
+            if (m_sAnimations.m_pASprGolemSlash->IsAnimating())
             {
-                m_sAnimations.m_pASprGolemWalk->SetX(golemX);
-                m_sAnimations.m_pASprGolemWalk->SetY(golemY);
-                m_sAnimations.m_pASprGolemWalk->Draw(renderer, m_bFlipHorizontally, false);
+                m_sAnimations.m_pASprGolemSlash->SetX(golemX);
+                m_sAnimations.m_pASprGolemSlash->SetY(golemY);
+                m_sAnimations.m_pASprGolemSlash->Draw(renderer, m_bFlipHorizontally, false);
             }
-            else if (m_bSlash)
+            else
             {
-                if (m_sAnimations.m_pASprGolemSlash->IsAnimating())
+                m_bSlash = false;
+                m_bIsAnimating = false;
+
+                /*if (m_fDistToPlayer < m_fSlamRangeMax)
                 {
-                    m_sAnimations.m_pASprGolemSlash->SetX(golemX);
-                    m_sAnimations.m_pASprGolemSlash->SetY(golemY);
-                    m_sAnimations.m_pASprGolemSlash->Draw(renderer, m_bFlipHorizontally, false);
+                    m_iAttackType = 1;
+                    growSize = 0.0f;
+                }*/
+                /*else if (m_fDistToPlayer >= m_fSlamRangeMax)
+                {
+                    m_iAttackType = 2;
+                }*/
+
+                m_iAttackType = 1;
+            }
+        }
+        else if (m_bSlam)
+        {
+            if (m_sAnimations.m_pASprGolemJump->IsAnimating())
+            {
+                m_sAnimations.m_pASprGolemJump->SetX(golemX);
+                m_sAnimations.m_pASprGolemJump->SetY(golemY);
+                m_sAnimations.m_pASprGolemJump->Draw(renderer, m_bFlipHorizontally, false);
+
+            }
+            else
+            {
+                if (m_bJumping)
+                {
+
+                    m_sAnimations.m_pASprGolemSlam->SetX(golemX);
+                    m_sAnimations.m_pASprGolemSlam->SetY(golemY);
+
+                    if (!m_sAnimations.m_pASprGolemSlam->IsAnimating())
+                    {
+                        m_bJumping = false;
+                        m_sAnimations.m_pASprGolemSlam->Animate();
+                    }
+                }
+                else if (m_sAnimations.m_pASprGolemSlam->IsAnimating())
+                {
+
+                    m_sAnimations.m_pASprGolemSlam->SetX(golemX);
+                    m_sAnimations.m_pASprGolemSlam->SetY(golemY + 100);
+                    m_sAnimations.m_pASprGolemSlam->Draw(renderer, m_bFlipHorizontally, false);
+
+                    m_pSprSpriteBody->SetX(golemX);
+                    m_pSprSpriteBody->SetY(golemY);
+                    m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, true);
+
                 }
                 else
                 {
-                    m_bSlash = false;
+
+                    m_bSlam = false;
                     m_bIsAnimating = false;
 
                     /*if (m_fDistToPlayer < m_fSlamRangeMax)
                     {
-                        m_iAttackType = 1;
-                        growSize = 0.0f;
-                    }*/
-                    /*else if (m_fDistToPlayer >= m_fSlamRangeMax)
+                        m_iAttackType = 0;
+                    }
+                    else if (m_fDistToPlayer >= m_fSlamRangeMax)
                     {
                         m_iAttackType = 2;
                     }*/
 
-                    m_iAttackType = 1;
+                    m_iAttackType = 0;
                 }
             }
-            else if (m_bSlam)
+        }
+        else if (m_bProjectile)
+        {
+            if (m_sAnimations.m_pASprGolemThrow->IsAnimating())
             {
-                if (m_sAnimations.m_pASprGolemJump->IsAnimating())
-                {
-                    m_sAnimations.m_pASprGolemJump->SetX(golemX);
-                    m_sAnimations.m_pASprGolemJump->SetY(golemY);
-                    m_sAnimations.m_pASprGolemJump->Draw(renderer, m_bFlipHorizontally, false);
-
-                }
-                else
-                {
-                    if (m_bJumping)
-                    {
-
-                        m_sAnimations.m_pASprGolemSlam->SetX(golemX);
-                        m_sAnimations.m_pASprGolemSlam->SetY(golemY);
-
-                        if (!m_sAnimations.m_pASprGolemSlam->IsAnimating())
-                        {
-                            m_bJumping = false;
-                            m_sAnimations.m_pASprGolemSlam->Animate();
-                        }
-                    }
-                    else if (m_sAnimations.m_pASprGolemSlam->IsAnimating())
-                    {
-
-                        m_sAnimations.m_pASprGolemSlam->SetX(golemX);
-                        m_sAnimations.m_pASprGolemSlam->SetY(golemY + 100);
-                        m_sAnimations.m_pASprGolemSlam->Draw(renderer, m_bFlipHorizontally, false);
-
-                        m_pSprSpriteBody->SetX(golemX);
-                        m_pSprSpriteBody->SetY(golemY);
-                        m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, true);
-
-                    }
-                    else
-                    {
-
-                        m_bSlam = false;
-                        m_bIsAnimating = false;
-
-                        /*if (m_fDistToPlayer < m_fSlamRangeMax)
-                        {
-                            m_iAttackType = 0;
-                        }
-                        else if (m_fDistToPlayer >= m_fSlamRangeMax)
-                        {
-                            m_iAttackType = 2;
-                        }*/
-
-                        m_iAttackType = 0;
-                    }
-                }
-            }
-            else if (m_bProjectile)
-            {
-                if (m_sAnimations.m_pASprGolemThrow->IsAnimating())
-                {
-                    m_sAnimations.m_pASprGolemThrow->Draw(renderer, m_bFlipHorizontally, false);
-                }
-                else
-                {
-                    m_pEntProjectile->SetStartPos(m_vPosition.x, m_vPosition.y);
-                    m_pEntProjectile->SetTargetPos(m_pEntCharacter->GetPosition().x, m_pEntCharacter->GetPosition().y);
-                    m_pEntProjectile->SetGroundY(m_pEntCharacter->GetPosition().y);
-                    m_pEntProjectile->Shoot();
-                    m_bShoot = false;
-                    m_bProjectile = false;
-                    m_bIsAnimating = false;
-
-                    if (m_fDistToPlayer < m_fSlashRangeMax)
-                    {
-                        m_iAttackType = 0;
-                    }
-                    else if (m_fDistToPlayer < m_fSlamRangeMax && m_fDistToPlayer >= m_fSlashRangeMax || m_iAttackType == 2)
-                    {
-                        m_iAttackType = 1;
-                    }
-                }
+                m_sAnimations.m_pASprGolemThrow->Draw(renderer, m_bFlipHorizontally, false);
             }
             else
             {
-                m_pSprSpriteBody->SetX(golemX);
-                m_pSprSpriteBody->SetY(golemY);
-                m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, true);
+                m_pEntProjectile->SetStartPos(m_vPosition.x, m_vPosition.y);
+                m_pEntProjectile->SetTargetPos(m_pEntCharacter->GetPosition().x, m_pEntCharacter->GetPosition().y);
+                m_pEntProjectile->SetGroundY(m_pEntCharacter->GetPosition().y);
+                m_pEntProjectile->Shoot();
+                m_bShoot = false;
+                m_bProjectile = false;
+                m_bIsAnimating = false;
+
+                if (m_fDistToPlayer < m_fSlashRangeMax)
+                {
+                    m_iAttackType = 0;
+                }
+                else if (m_fDistToPlayer < m_fSlamRangeMax && m_fDistToPlayer >= m_fSlashRangeMax || m_iAttackType == 2)
+                {
+                    m_iAttackType = 1;
+                }
             }
         }
         else
@@ -374,14 +369,20 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
             m_pSprSpriteBody->SetY(golemY);
             m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, true);
         }
-
-        if (!m_bShoot && m_bProjectile && m_iAttackType == 2)
-        {
-            m_iAttackType = 1;
-        }
-
-        m_pEntProjectile->Draw(renderer, camera);
     }
+    else
+    {
+        m_pSprSpriteBody->SetX(golemX);
+        m_pSprSpriteBody->SetY(golemY);
+        m_pSprSpriteBody->Draw(renderer, m_bFlipHorizontally, true);
+    }
+
+    if (!m_bShoot && m_bProjectile && m_iAttackType == 2)
+    {
+        m_iAttackType = 1;
+    }
+
+    m_pEntProjectile->Draw(renderer, camera);
 }
 
 
@@ -864,6 +865,15 @@ void Golem::SetCamera(Camera* camera)
     IsCameraSet = true;
 }
 
+Healthbar* Golem::getEnemyHealth()
+{
+    return healthBar;
+}
+
+bool Golem::getIsAlive()
+{
+    return m_bAlive;
+}
 
 //void
 //Golem::DebugDraw()
