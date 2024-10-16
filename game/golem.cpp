@@ -115,7 +115,7 @@ Golem::Initialise(Renderer& renderer)
         m_pEntProjectile->SetTimeToTarget(1.5f);
     }
 
-    healthBar = new Healthbar(renderer, 300.0f);//Changes made by kyle
+    healthBar = new Healthbar(renderer, 100.0f);//Changes made by kyle
     //Changes made by Rauen
 
     // Create the Box2D body for the Golem
@@ -165,11 +165,6 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         return;
     }
 
-    if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
-    {
-        DeleteBody();
-        m_bAlive = false;
-    }
     if (IsCameraSet) {
         b2Vec2 golemPosition = m_pBody->GetPosition();
 
@@ -241,6 +236,11 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         m_sAnimations.m_pASprGolemSlash->Process(deltaTime);
         m_sAnimations.m_pASprGolemThrow->Process(deltaTime);
         m_pEntProjectile->Process(deltaTime, inputSystem);
+    }
+    if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
+    {
+        DeleteBody();
+        m_bAlive = false;
     }
 }
 
