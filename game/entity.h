@@ -108,6 +108,8 @@ protected:
 	bool m_bSlash;
 	bool m_bShoot;
 	bool m_bProjectile;
+	bool m_bHurt; // Changes made by Karl
+	bool m_bBlock;
 	bool m_bAlive;
 
 	static int sm_iNumSegments;

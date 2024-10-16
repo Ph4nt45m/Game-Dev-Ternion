@@ -41,7 +41,7 @@ Mage::Mage(b2World* world)
     , m_pBody(nullptr)
     , m_pSPAttackBody(nullptr) // Changes made by Karl
     , m_jumpTimer(0.0f)
-    , m_sActions{ 0, 0, 0, 0 }
+    , m_sActions{ 0, 0, 0, 0, 0, 0, 0 } // Changes made by Karl
     , m_fOffset(0.0f)
     , m_fPlayerWidth(0.0f) // Changes made by Karl
     , m_fPlayerHeight(0.0f)
@@ -225,59 +225,6 @@ void Mage::DrawWithCam(Renderer& renderer, Camera& camera)
         m_pHealthbar->Draw(renderer);
     }
 }
-
-void
-Mage::GetInputs(InputSystem& inputSystem)
-{
-    // Gets movement keys' states
-    m_sMotionKeyStates.MoveForward = inputSystem.GetKeyState(SDL_SCANCODE_D);
-    m_sMotionKeyStates.MoveBackward = inputSystem.GetKeyState(SDL_SCANCODE_A);
-    m_sMotionKeyStates.MoveUp = inputSystem.GetKeyState(SDL_SCANCODE_W); // For future updates
-    m_sMotionKeyStates.MoveDown = inputSystem.GetKeyState(SDL_SCANCODE_S); // For future updates
-    m_sMotionKeyStates.Jump = inputSystem.GetKeyState(SDL_SCANCODE_SPACE);
-    m_sMotionKeyStates.LeftClickAttack = inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT);
-
-    if (m_sMotionKeyStates.Jump == BS_PRESSED)
-    {
-        m_sKeyboardMotions.Heave = MOTION_JUMP;
-    }
-
-    if (m_sMotionKeyStates.LeftClickAttack == BS_PRESSED)
-    {
-        m_sKeyboardMotions.Attack = MOTION_ATTACK;
-    }
-    else
-    {
-        m_sKeyboardMotions.Attack = MOTION_NONE;
-    }
-
-    if (m_sMotionKeyStates.MoveForward == BS_PRESSED || m_sMotionKeyStates.MoveForward == BS_HELD)
-    {
-        m_sKeyboardMotions.Surge = MOTION_FORWARD;
-    }
-    else if (m_sMotionKeyStates.MoveBackward == BS_PRESSED || m_sMotionKeyStates.MoveBackward == BS_HELD)
-    {
-        m_sKeyboardMotions.Surge = MOTION_BACKWARD;
-    }
-    else
-    {
-        m_sKeyboardMotions.Surge = MOTION_NONE;
-    }
-
-    if (m_sMotionKeyStates.MoveUp == BS_PRESSED || m_sMotionKeyStates.MoveUp == BS_HELD)
-    {
-        m_sKeyboardMotions.Sway = MOTION_UP;
-    }
-    else if (m_sMotionKeyStates.MoveDown == BS_PRESSED || m_sMotionKeyStates.MoveDown == BS_HELD)
-    {
-        m_sKeyboardMotions.Sway = MOTION_DOWN;
-    }
-    else
-    {
-        m_sKeyboardMotions.Sway = MOTION_NONE;
-    }
-}
-
 
 void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
 {
@@ -532,6 +479,45 @@ Mage::SetBodySprites(Renderer& renderer)
         m_sActions.m_pASpriteAttack->SetFrameDuration(0.07f);
         m_fAttackWidth = 515 / SCALE;
         m_fAttackHeight = 286 / SCALE;
+    }
+
+    m_sActions.m_pASpriteBlock = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8mageblock.png");
+
+    if (!m_sActions.m_pASpriteBlock)
+    {
+        LogManager::GetInstance().Log("Player block failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_sActions.m_pASpriteBlock->SetupFrames(515, 286);
+        m_sActions.m_pASpriteBlock->SetFrameDuration(0.03f);
+    }
+
+    m_sActions.m_pASpriteHurt = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8magehurt.png");
+
+    if (!m_sActions.m_pASpriteHurt)
+    {
+        LogManager::GetInstance().Log("Player hurt failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_sActions.m_pASpriteHurt->SetupFrames(515, 286);
+        m_sActions.m_pASpriteHurt->SetFrameDuration(0.03f);
+    }
+
+    m_sActions.m_pASpriteDeath = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\mage\\anim8magedeath.png");
+
+    if (!m_sActions.m_pASpriteDeath)
+    {
+        LogManager::GetInstance().Log("Player death failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_sActions.m_pASpriteDeath->SetupFrames(515, 286);
+        m_sActions.m_pASpriteDeath->SetFrameDuration(0.03f);
     }
 
     return true;

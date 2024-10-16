@@ -42,7 +42,7 @@ Warrior::Warrior(b2World* world)
     , m_pWorld(world)
     , m_pSPAttackBody(nullptr) // Changes made by Karl
     , m_jumpTimer(0.0f)
-    , m_sActions{ 0, 0, 0, 0 }
+    , m_sActions{ 0, 0, 0, 0, 0, 0, 0 } // Changes made by Karl
     , m_fOffset(0.0f)
     , m_fPlayerWidth(0.0f) // Changes made by Karl
     , m_fPlayerHeight(0.0f)
@@ -503,6 +503,45 @@ Warrior::SetBodySprites(Renderer& renderer)
         m_sActions.m_pASpriteAttack->SetFrameDuration(0.07f);
         m_fAttackWidth = 515 / SCALE;
         m_fAttackHeight = 286 / SCALE;
+    }
+
+    m_sActions.m_pASpriteBlock = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8warblock.png");
+
+    if (!m_sActions.m_pASpriteBlock)
+    {
+        LogManager::GetInstance().Log("Player block failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_sActions.m_pASpriteBlock->SetupFrames(515, 286);
+        m_sActions.m_pASpriteBlock->SetFrameDuration(0.03f);
+    }
+
+    m_sActions.m_pASpriteHurt = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8warhurt.png");
+
+    if (!m_sActions.m_pASpriteHurt)
+    {
+        LogManager::GetInstance().Log("Player hurt failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_sActions.m_pASpriteHurt->SetupFrames(515, 286);
+        m_sActions.m_pASpriteHurt->SetFrameDuration(0.03f);
+    }
+
+    m_sActions.m_pASpriteDeath = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8wardeath.png");
+
+    if (!m_sActions.m_pASpriteDeath)
+    {
+        LogManager::GetInstance().Log("Player death failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_sActions.m_pASpriteDeath->SetupFrames(515, 286);
+        m_sActions.m_pASpriteDeath->SetFrameDuration(0.03f);
     }
 
     return true;

@@ -20,6 +20,9 @@ typedef struct
 	AnimatedSprite* m_pASpriteRun;
 	AnimatedSprite* m_pASpriteJump;
 	AnimatedSprite* m_pASpriteAttack;
+	AnimatedSprite* m_pASpriteBlock; // Changes made by Karl - Start
+	AnimatedSprite* m_pASpriteHurt;
+	AnimatedSprite* m_pASpriteDeath; // Changes made by Karl - End
 } Actions;
 
 // Class declaration: 

@@ -32,8 +32,7 @@ public:
     void Process(float deltaTime, InputSystem& inputSystem) override;
     void DrawWithCam(Renderer& renderer, Camera& camera) override;
     void Draw(Renderer& renderer, Camera& camera) override;
-    bool SetBodySprites(Renderer& renderer) override;
-    void GetInputs(InputSystem& inputSystem);
+    bool SetBodySprites(Renderer& renderer) override; // Changes made by Karl - removed GetInputs (no longer needed)
     void HandleInput(float deltaTime, InputSystem& inputSystem);
     void ProcessActions(float deltaTime); // Changes made by Karl
 

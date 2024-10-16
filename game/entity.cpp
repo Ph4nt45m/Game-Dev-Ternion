@@ -27,6 +27,8 @@ Entity::Entity()
     , m_bSlash(false)
     , m_bShoot(false)
     , m_bProjectile(false)
+    , m_bHurt(false) // Changes made by Karl
+    , m_bBlock(false)
     , m_bAlive(false)
     , m_iFacingDirection(0)
     , m_fScale(1.0f)
