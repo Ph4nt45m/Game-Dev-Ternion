@@ -12,9 +12,10 @@
 #include "forestscene.h"
 #include "AUTSplashScene.h"
 #include "TernionMenu.h"
-#include "CharacterSelect.h" // Changes made by Karl
-#include "foresttest.h" // Changes made by Karl
+#include "CharacterSelect.h"
+#include "foresttest.h"
 #include "SettingsMenu.h"
+#include "deathScene.h"
 
 // includes
 #include <cassert>
@@ -194,6 +195,10 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 		break;
 	case 5:
 		newScene = new SettingScene();
+		break;
+	case 6:
+		m_pRenderer->SetClearColour(0, 0, 0);
+		newScene = new DeathScene();
 		break;
 	default:
 		// Handle invalid scene ID
