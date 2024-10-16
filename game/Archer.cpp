@@ -573,7 +573,9 @@ Archer::DefineCharacter(Renderer& renderer)
     m_pBody->CreateFixture(&fixtureDef);
 
     // Set user data for collision detection
-    m_pBody->SetUserData((void*)PLAYER);
+    userData* archerData = new userData{ PLAYER, static_cast<void*>(this) };
+    m_pBody->SetUserData(static_cast<void*>(archerData));
+   
 }
 
 bool
@@ -625,7 +627,8 @@ Archer::CreateSPAttack()
     m_pSPAttackBody->SetActive(true);
 
     // Set user data to identify this body as a Golem
-    m_pSPAttackBody->SetUserData((void*)PLAYER_SP_ATTACK);
+    userData* attackData = new userData{ PLAYER_SP_ATTACK, static_cast<void*>(this) };
+    m_pSPAttackBody->SetUserData(static_cast<void*>(attackData));
 }
 
 void

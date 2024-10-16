@@ -3,6 +3,11 @@
 
 #include <Box2D.h>
 
+typedef struct {
+    int type;  // Object type identifier
+    void* object;  // Pointer to the game object (e.g., Golem*, Character*)
+}userData;
+
 // Define identifiers for game objects
 enum GameObjectType {
     PLAYER = 1,

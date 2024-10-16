@@ -44,7 +44,9 @@ bool Terrain::Initialise(Renderer& renderer)
     m_pBody->CreateFixture(&fixtureDef);
 
     // set user data to recognize the terrain
-    m_pBody->SetUserData((void*)TERRAIN);
+    userData* terrData = new userData{ TERRAIN, static_cast<void*>(this) };
+    m_pBody->SetUserData(static_cast<void*>(terrData));
+
     m_sprite->SetWidth((int)(m_fwidth * 2 * SCALE));
     m_sprite->SetHeight((int)(m_fheight * 2  * SCALE));
 

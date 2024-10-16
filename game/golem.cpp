@@ -147,7 +147,8 @@ Golem::Initialise(Renderer& renderer)
         m_pBody->CreateFixture(&fixtureDef);
 
         // Set user data to identify this body as a Golem
-        m_pBody->SetUserData((void*)GOLEM);
+        userData* golemData = new userData{ GOLEM, static_cast<void*>(this) };
+        m_pBody->SetUserData(static_cast<void*>(golemData));
         m_pSprSpriteBody->SetX((int)m_pBody->GetPosition().x * SCALE);
         m_pSprSpriteBody->SetY((int)m_pBody->GetPosition().y * SCALE);
 
@@ -776,9 +777,8 @@ void Golem::CreateSlashBody()
     // Attach the fixture to the body
     m_pSlashBody->CreateFixture(&SlashfixtureDef);
 
-    // Set user data to identify this body as a Golem
-    m_pSlashBody->SetUserData((void*)GOLEM_SLASH);
-
+    userData* slashData = new userData{ GOLEM_SLASH, static_cast<void*>(this) };
+    m_pSlashBody->SetUserData(static_cast<void*>(slashData));
 }
 
 void Golem::DeleteSlash()
@@ -818,9 +818,9 @@ void Golem::CreateSlamBody()
     // Attach the fixture to the body
     m_pSlamBody->CreateFixture(&SlamfixtureDef);
 
-    // Set user data to identify this body as a Golem
-    m_pSlamBody->SetUserData((void*)GOLEM_SLAM);
 
+    userData* SlamData = new userData{ GOLEM_SLAM, static_cast<void*>(this) };
+    m_pSlamBody->SetUserData(static_cast<void*>(SlamData));
 }
 
 

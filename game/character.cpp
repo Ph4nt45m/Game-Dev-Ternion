@@ -159,30 +159,30 @@ bool Character::Initialise(Renderer& renderer)
     // Box2D Body Initialization (Changes made by Rauen)
 
     // Create the Box2D body definition
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(m_vPosition.x / SCALE, m_vPosition.y / SCALE);  // Convert from pixels to meters
+    //b2BodyDef bodyDef;
+    //bodyDef.type = b2_dynamicBody;
+    //bodyDef.position.Set(m_vPosition.x / SCALE, m_vPosition.y / SCALE);  // Convert from pixels to meters
 
-    // Create the Box2D body in the world
-    m_pBody = m_pWorld->CreateBody(&bodyDef);
+    //// Create the Box2D body in the world
+    //m_pBody = m_pWorld->CreateBody(&bodyDef);
 
-    // Define the character's shape as a box (in meters)
-    b2PolygonShape characterBox;
-    float boxWidth = (m_pSprSpriteBody->GetWidth() / 2.0f) / SCALE;   // Convert pixel width to meters (half-width for Box2D)
-    float boxHeight = (m_pSprSpriteBody->GetHeight() / 2.0f) / SCALE; // Convert pixel height to meters (half-height for Box2D)
-    characterBox.SetAsBox(boxWidth, boxHeight);
+    //// Define the character's shape as a box (in meters)
+    //b2PolygonShape characterBox;
+    //float boxWidth = (m_pSprSpriteBody->GetWidth() / 2.0f) / SCALE;   // Convert pixel width to meters (half-width for Box2D)
+    //float boxHeight = (m_pSprSpriteBody->GetHeight() / 2.0f) / SCALE; // Convert pixel height to meters (half-height for Box2D)
+    //characterBox.SetAsBox(boxWidth, boxHeight);
 
-    // Create a fixture for the body (set density, friction, etc.)
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &characterBox;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
+    //// Create a fixture for the body (set density, friction, etc.)
+    //b2FixtureDef fixtureDef;
+    //fixtureDef.shape = &characterBox;
+    //fixtureDef.density = 1.0f;
+    //fixtureDef.friction = 0.3f;
 
-    // Attach the fixture to the body
-    m_pBody->CreateFixture(&fixtureDef);
+    //// Attach the fixture to the body
+    //m_pBody->CreateFixture(&fixtureDef);
 
-    // Set user data for collision detection
-    m_pBody->SetUserData((void*)PLAYER);
+    //// Set user data for collision detection
+    //m_pBody->SetUserData((void*)PLAYER);
 
     return true;
 }

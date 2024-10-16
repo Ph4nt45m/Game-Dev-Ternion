@@ -95,10 +95,11 @@ Mushroom::Initialise(Renderer& renderer)
         m_pBody->CreateFixture(&fixtureDef);
 
         // Set user data to identify this body as a Golem
-        m_pBody->SetUserData((void*)MUSHROOM);
+        userData* mushData = new userData{ MUSHROOM, static_cast<void*>(this) };
+        m_pBody->SetUserData(static_cast<void*>(mushData));
+
         m_sAnimations.m_pASprMushIdle->SetX((int)m_pBody->GetPosition().x * SCALE);
         m_sAnimations.m_pASprMushIdle->SetY((int)m_pBody->GetPosition().y * SCALE);
-        printf("Mush: %f\n", m_pBody->GetPosition().x);
 
     }
 
@@ -398,8 +399,9 @@ void Mushroom::CreateHeadButt()
     // Attach the fixture to the body
     m_pHeadButt->CreateFixture(&HeadfixtureDef);
 
-    // Set user data to identify this body as a Golem
-    m_pHeadButt->SetUserData((void*)MUSHROOM);
+    userData* headData = new userData{ MUSHROOM, static_cast<void*>(this) };
+    m_pHeadButt->SetUserData(static_cast<void*>(headData));
+
 }
 
 void Mushroom::DeleteHeadButt()
