@@ -14,6 +14,8 @@
 #include "player.h"
 #include "golem.h"
 #include "mushroom.h"
+#include "skeleton.h" // Changes made by Karl
+#include "spider.h"
 
 // Library includes:
 #include <iostream>
@@ -26,6 +28,9 @@
 ForestTest::ForestTest(b2World* world, Player* character)
 	: m_pBackground(nullptr)
 	, m_pGolem(0)
+	, m_pMushroom(0)
+	, m_pSkeleton(0) // Changes made by Karl
+	, m_pSpider(0)
 	, m_pWorld(world)
 	, camera()
 	, m_pCharacter(character)
@@ -41,6 +46,19 @@ ForestTest::~ForestTest()
 {
 	delete m_pBackground;
 	m_pBackground = nullptr;
+	// Changes made by Karl - Start
+	delete m_pGolem;
+	m_pGolem = 0;
+
+	delete m_pMushroom;
+	m_pMushroom = 0;
+
+	delete m_pSkeleton;
+	m_pSkeleton = 0;
+
+	delete m_pSpider;
+	m_pSpider = 0;
+	// Changes made by Karl - End
 }
 
 bool
@@ -107,7 +125,9 @@ ForestTest::Process(float deltaTime, InputSystem& inputSystem)
 	//}
 	m_pCharacter->Process(deltaTime, inputSystem);
 	m_pGolem->Process(deltaTime, inputSystem);
-//	m_pMushroom->Process(deltaTime, inputSystem);
+	//m_pMushroom->Process(deltaTime, inputSystem);
+	//m_pSkeleton->Process(deltaTime, inputSystem); // Changes made by Karl
+	//m_pSpider->Process(deltaTime, inputSystem);
 	camera.Update(*m_pCharacter);
 	//printf("char: %f\n", m_pCharacter->GetPosition().x - platform->GetPosition().x);
 }
@@ -125,6 +145,8 @@ ForestTest::Draw(Renderer& renderer)
 
 	m_pGolem->Draw(renderer, camera);
 	//m_pMushroom->Draw(renderer, camera);
+	//m_pSkeleton->Draw(renderer, camera); // Changes made by Karl
+	//m_pSpider->Draw(renderer, camera);
 }
 
 //Testing stuff with enemies for later
@@ -140,7 +162,8 @@ ForestTest::SetEnemies(Renderer& renderer)
 		LogManager::GetInstance().Log("Golem failed to initialise!");
 		return false;
 	}
-	m_pMushroom = new Mushroom(m_pWorld);
+
+	/*m_pMushroom = new Mushroom(m_pWorld);
 	m_pMushroom->SetCamera(&camera);
 	m_pMushroom->SetPlayer(m_pCharacter);
 
@@ -150,6 +173,25 @@ ForestTest::SetEnemies(Renderer& renderer)
 		return false;
 	}
 	
+	m_pSkeleton = new Skeleton(m_pWorld);
+	m_pSkeleton->SetCamera(&camera);
+	m_pSkeleton->SetPlayer(m_pCharacter);
+
+	if (!(m_pSkeleton->Initialise(renderer)))
+	{
+		LogManager::GetInstance().Log("Skeleton failed to initialise!");
+		return false;
+	}
+
+	m_pSpider = new Spider(m_pWorld);
+	m_pSpider->SetCamera(&camera);
+	m_pSpider->SetPlayer(m_pCharacter);
+
+	if (!(m_pSpider->Initialise(renderer)))
+	{
+		LogManager::GetInstance().Log("Spider failed to initialise!");
+		return false;
+	}*/
 
 	return true;
 }

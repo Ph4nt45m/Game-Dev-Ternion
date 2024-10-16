@@ -420,10 +420,10 @@ Mushroom::CheckPlayerDist()
     b2Vec2 playerPosition = m_pEntCharacter->GetPosition();
 
     // Get Golem's current position - in meters
-    b2Vec2 golemPosition = m_pBody->GetPosition();
+    b2Vec2 mushPosition = m_pBody->GetPosition();
 
     // Calculate the differences in the x and y coordinates
-    m_fDistToPlayer = abs(playerPosition.x - golemPosition.x);
+    m_fDistToPlayer = abs(playerPosition.x - mushPosition.x);
 }
 
 int

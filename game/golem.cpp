@@ -848,6 +848,17 @@ void Golem::CheckPlayerDist()
 
     // Get Golem's current position - in meters
     b2Vec2 golemPosition = m_pBody->GetPosition();
+
+    if (playerPosition.x < golemPosition.x)
+    {
+        m_iFacingDirection = -1;
+        m_bFlipHorizontally = true;
+    }
+    else
+    {
+        m_iFacingDirection = 1;
+        m_bFlipHorizontally = false;
+    }
     
     // Calculate the differences in the x and y coordinates
     m_fDistToPlayer = abs(playerPosition.x - golemPosition.x);
