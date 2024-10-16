@@ -200,7 +200,7 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
             //potentiol
             if (!m_bWalk && (((int)m_fExecutionTime % 5) == 0))
             {
-                //Action(deltaTime);
+                Action(deltaTime);
 
             }
             if (m_bWalk)

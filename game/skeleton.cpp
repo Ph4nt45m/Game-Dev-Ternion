@@ -82,7 +82,7 @@ Skeleton::Initialise(Renderer& renderer)
 
         // Define the shape of the body (box shape in this example)
         b2PolygonShape dynamicBox;
-        dynamicBox.SetAsBox(96 / SCALE, 64 / SCALE);
+        dynamicBox.SetAsBox(30 / SCALE, 32 / SCALE);
 
         // Define the fixture (physical properties)
         b2FixtureDef fixtureDef;
@@ -246,7 +246,7 @@ Skeleton::SetBodySprites(Renderer& renderer)
     }
     else
     {
-        m_sAnimations.m_pASprSkelIdle->SetupFrames(80, 64);
+        m_sAnimations.m_pASprSkelIdle->SetupFrames(96, 64);
         m_sAnimations.m_pASprSkelIdle->SetFrameDuration(0.07f);
         m_sAnimations.m_pASprSkelIdle->SetScale(2.5f);
     }
@@ -260,7 +260,7 @@ Skeleton::SetBodySprites(Renderer& renderer)
     }
     else
     {
-        m_sAnimations.m_pASprSkelAttack->SetupFrames(80, 64);
+        m_sAnimations.m_pASprSkelAttack->SetupFrames(96, 64);
         m_sAnimations.m_pASprSkelAttack->SetFrameDuration(0.15f);
         m_sAnimations.m_pASprSkelAttack->SetScale(2.5f);
     }
@@ -274,7 +274,7 @@ Skeleton::SetBodySprites(Renderer& renderer)
     }
     else
     {
-        m_sAnimations.m_pASprSkelWalk->SetupFrames(80, 64);
+        m_sAnimations.m_pASprSkelWalk->SetupFrames(96, 64);
         m_sAnimations.m_pASprSkelWalk->SetFrameDuration(0.1f);
         m_sAnimations.m_pASprSkelWalk->SetScale(2.5f);
     }
@@ -292,16 +292,16 @@ Skeleton::Move(void)
         if (m_pEntCharacter->GetPosition().x < (m_pBody->GetPosition().x - m_fAttackRangeMax) &&
             m_pEntCharacter->GetPosition().x < m_pBody->GetPosition().x)
         {
-            m_iFacingDirection = 1;
-            m_bFlipHorizontally = false;
+            m_iFacingDirection = -1;
+            m_bFlipHorizontally = true;
             m_bIsAnimating = true;
             velocity.x = -0.1f;
         }
         else if (m_pEntCharacter->GetPosition().x > (m_pBody->GetPosition().x + m_fAttackRangeMax) &&
             m_pEntCharacter->GetPosition().x > m_pBody->GetPosition().x)
         {
-            m_iFacingDirection = -1;
-            m_bFlipHorizontally = true;
+            m_iFacingDirection = 1;
+            m_bFlipHorizontally = false;
             m_bIsAnimating = true;
             velocity.x = 0.1f;
         }
@@ -368,19 +368,19 @@ Skeleton::ProcessAction()
 void Skeleton::CreateSlash()
 {
     // Define the body
-    b2BodyDef HeadbodyDef;
-    HeadbodyDef.type = b2_staticBody;
+    b2BodyDef SlashbodyDef;
+    SlashbodyDef.type = b2_staticBody;
     if (m_iFacingDirection == -1)
     {
-        HeadbodyDef.position.Set((m_pBody->GetPosition().x - 0.5f), m_pBody->GetPosition().y);
+        SlashbodyDef.position.Set((m_pBody->GetPosition().x - 0.5f), m_pBody->GetPosition().y);
     }
     else
     {
-        HeadbodyDef.position.Set((m_pBody->GetPosition().x + 0.5f), m_pBody->GetPosition().y);
+        SlashbodyDef.position.Set((m_pBody->GetPosition().x + 0.5f), m_pBody->GetPosition().y);
     }
 
     // Create the body in the world
-    m_pSlash = m_pWorld->CreateBody(&HeadbodyDef);
+    m_pSlash = m_pWorld->CreateBody(&SlashbodyDef);
 
     // Define the shape of the body (box shape in this example)
     b2PolygonShape staticBox;
@@ -388,14 +388,14 @@ void Skeleton::CreateSlash()
     staticBox.SetAsBox(48 / SCALE, 32 / SCALE);
 
     // Define the fixture (physical properties)
-    b2FixtureDef HeadfixtureDef;
-    HeadfixtureDef.shape = &staticBox;
-    HeadfixtureDef.density = 0.0f;
-    HeadfixtureDef.friction = 0.0f;
-    HeadfixtureDef.isSensor = true;
+    b2FixtureDef SlashfixtureDef;
+    SlashfixtureDef.shape = &staticBox;
+    SlashfixtureDef.density = 0.0f;
+    SlashfixtureDef.friction = 0.0f;
+    SlashfixtureDef.isSensor = true;
 
     // Attach the fixture to the body
-    m_pSlash->CreateFixture(&HeadfixtureDef);
+    m_pSlash->CreateFixture(&SlashfixtureDef);
 
     // Set user data to identify this body as a Golem
     m_pSlash->SetUserData((void*)MUSHROOM);
@@ -441,7 +441,7 @@ void Skeleton::SetPlayer(Player* player)
 }
 
 //void
-//Mushroom::DebugDraw()
+//Skeleton::DebugDraw()
 //{
 //
 //}

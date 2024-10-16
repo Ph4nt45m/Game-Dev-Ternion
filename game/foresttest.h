@@ -19,6 +19,8 @@ class Forest;
 class Player;
 class Golem;
 class Mushroom;
+class Skeleton; // Changes made by Karl
+class Spider;
 class Sprite;
 
 // Class declarations:
@@ -51,6 +53,8 @@ protected:
 	Sprite* m_pBackground;
 	Golem* m_pGolem;
 	Mushroom* m_pMushroom;
+	Skeleton* m_pSkeleton; // Changes made by Karl
+	Spider* m_pSpider;
 	Player* m_pCharacter;
 	Camera camera;
 	Terrain* ground;
