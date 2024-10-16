@@ -543,7 +543,7 @@ Warrior::DefineCharacter(Renderer& renderer)
     }
 
     // Initialize healthbar
-    m_pHealthbar = new Healthbar(renderer);
+    m_pHealthbar = new Healthbar(renderer, 200.0f);
 
     // Box2D Body Initialization (Changes made by Rauen)
 
@@ -670,6 +670,11 @@ Warrior::SetProjAlive(bool alive)
 
 void Warrior::Draw(Renderer& renderer, Camera& camera)
 {}
+
+Healthbar* Warrior::getPlayerHealthbar()
+{
+    return m_pHealthbar;
+}
 
 //void
 //Warriorr::DebugDraw()

@@ -51,6 +51,9 @@ public:
     bool IsProjAlive();
     void SetProjAlive(bool alive);
 
+    //Kyle changes
+    Healthbar* getPlayerHealthbar() override;
+
     //void DebugDraw() override;
 
 protected:

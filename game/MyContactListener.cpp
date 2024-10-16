@@ -1,5 +1,7 @@
 #include "MyContactListener.h"
 #include <stdio.h>
+#include "player.h"
+#include "healthbar.h"
 #include "golem.h"
 #include "character.h"  
 #include "terrain.h"
@@ -55,10 +57,19 @@ void MyContactListener::BeginContact(b2Contact* contact)
     if (fixtureAIsSensor && userDataA->type == GOLEM_SLASH && userDataB->type == PLAYER)
     {
         printf("Player hit with slash\n");
+        //Changes made by Kyle
+        //Just to test
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(100);
+        //Changes ended
     }
     else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == GOLEM_SLASH)
     {
         printf("Player hit with slash (reverse)\n");
+        //Changes made by Kyle
+//Just to test
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(100);
+        //Changes ended
+
     }
 
     if (fixtureAIsSensor && userDataA->type == GOLEM_SLAM && userDataB->type == PLAYER)

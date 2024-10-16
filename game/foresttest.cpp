@@ -107,7 +107,7 @@ ForestTest::Process(float deltaTime, InputSystem& inputSystem)
 	//}
 	m_pCharacter->Process(deltaTime, inputSystem);
 	m_pGolem->Process(deltaTime, inputSystem);
-	m_pMushroom->Process(deltaTime, inputSystem);
+//	m_pMushroom->Process(deltaTime, inputSystem);
 	camera.Update(*m_pCharacter);
 	//printf("char: %f\n", m_pCharacter->GetPosition().x - platform->GetPosition().x);
 }
@@ -124,7 +124,7 @@ ForestTest::Draw(Renderer& renderer)
 	}
 
 	m_pGolem->Draw(renderer, camera);
-	m_pMushroom->Draw(renderer, camera);
+	//m_pMushroom->Draw(renderer, camera);
 }
 
 //Testing stuff with enemies for later

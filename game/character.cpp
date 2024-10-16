@@ -154,7 +154,7 @@ bool Character::Initialise(Renderer& renderer)
     }
 
     // Initialize healthbar
-    m_pHealthbar = new Healthbar(renderer);
+    m_pHealthbar = new Healthbar(renderer, 100.0f);
 
     // Box2D Body Initialization (Changes made by Rauen)
 
