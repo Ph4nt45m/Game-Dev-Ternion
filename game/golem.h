@@ -58,6 +58,8 @@ public:
     //Kyle Changes
     Healthbar* getEnemyHealth();//Changes made by Kyle
     bool getIsAlive();
+    void DeleteBody();
+
 
     //void DebugDraw() override;
 

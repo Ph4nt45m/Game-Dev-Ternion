@@ -110,6 +110,11 @@ Mushroom::Initialise(Renderer& renderer)
 void
 Mushroom::Process(float deltaTime, InputSystem& inputSystem)
 {
+    if (!m_bAlive)
+    {
+        return;
+    }
+
     if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
     {
         m_bAlive = false;
@@ -195,6 +200,11 @@ Mushroom::Process(float deltaTime, InputSystem& inputSystem)
 void
 Mushroom::Draw(Renderer& renderer, Camera& camera)
 {
+    if (!m_bAlive)
+    {
+        return;
+    }
+
     Vector2* cameraOffset = camera.GetOffset();
 
     int mushX = (int)(m_pBody->GetPosition().x * SCALE - cameraOffset->x);
@@ -365,6 +375,15 @@ Mushroom::ProcessAction()
         {
             DeleteHeadButt();
         }
+    }
+}
+
+void Mushroom::DeleteBody()
+{
+    if (m_pBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pBody);
+        m_pBody = nullptr;
     }
 }
 

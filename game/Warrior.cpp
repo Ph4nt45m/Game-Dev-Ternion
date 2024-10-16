@@ -675,6 +675,14 @@ Healthbar* Warrior::getPlayerHealthbar()
 {
     return m_pHealthbar;
 }
+void Warrior::DeleteBody()
+{
+    if (m_pBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pBody);
+        m_pBody = nullptr;
+    }
+}
 
 //void
 //Warriorr::DebugDraw()

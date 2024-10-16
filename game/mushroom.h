@@ -43,6 +43,7 @@ public:
     void SetPlayer(Player* player);
     void CreateHeadButt();
     void DeleteHeadButt();
+    void DeleteBody();
 
 
     void Move(void);

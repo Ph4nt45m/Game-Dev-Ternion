@@ -160,6 +160,11 @@ Golem::Initialise(Renderer& renderer)
 void
 Golem::Process(float deltaTime, InputSystem& inputSystem)
 {
+    if (!m_bAlive)
+    {
+        return;
+    }
+
     if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
     {
         m_bAlive = false;
@@ -240,6 +245,10 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
 
 void Golem::Draw(Renderer& renderer, Camera& camera)
 {
+    if (!m_bAlive)
+    {
+        return;
+    }
     // Get the camera offset
     Vector2* cameraOffset = camera.GetOffset();
 
@@ -706,9 +715,18 @@ Golem::Action(float deltaTime)
         }
     }
 }
+void Golem::DeleteBody()
+{
+    if (m_pBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pBody);
+        m_pBody = nullptr;
+    }
+}
 
 void Golem::ProcessAction()
 {
+
     //slash
     if (m_bSlash)
     {
