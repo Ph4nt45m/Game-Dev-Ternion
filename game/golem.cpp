@@ -232,8 +232,6 @@ Golem::Process(float deltaTime, InputSystem& inputSystem)
         m_sAnimations.m_pASprGolemThrow->Process(deltaTime);
         m_pEntProjectile->Process(deltaTime, inputSystem);
     }
-
-
 }
 
 void Golem::Draw(Renderer& renderer, Camera& camera)
