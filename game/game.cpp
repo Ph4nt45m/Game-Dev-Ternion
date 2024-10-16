@@ -185,7 +185,7 @@ bool Game::Initialise()
 	soundManager->loadMusic("newBackground", "..\\Sprites\\sounds\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
 
 	// Play the background music (loop infinitely)
-//	soundManager->playMusic("background", -1);	//Kyle end
+	soundManager->playMusic("background", -1);	//Kyle end
 	soundManager->setMusicVolume(80);
 	setsoundEffectsVolume(80);	//Kyle code end
 
@@ -236,13 +236,13 @@ Game::Process(float deltaTime)
 {
 	ProcessFrameCounting(deltaTime);
 	m_elapsedTime += deltaTime;
-	// TODO: Add game objects to process here!
+/*	// TODO: Add game objects to process here!
 	if (m_elapsedTime > 3.0f)
 	{
 		soundManager->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
 		soundManager->playSound("bounce", 0, getsoundEffectsVolume());
 		m_elapsedTime = 0;
-	}
+	}*/
 	// Box2D time step
 	const float32 timeStep = 1.0f / 60.0f;  // 60Hz update rate
 	const int32 velocityIterations = 6;     // Box2D velocity solver iterations

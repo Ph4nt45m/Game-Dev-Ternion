@@ -115,11 +115,6 @@ Mushroom::Process(float deltaTime, InputSystem& inputSystem)
         return;
     }
 
-    if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
-    {
-        DeleteBody();
-        m_bAlive = false;
-    }
     CheckPlayerDist();
     ProcessAction();
 
@@ -196,6 +191,12 @@ Mushroom::Process(float deltaTime, InputSystem& inputSystem)
 
     m_sAnimations.m_pASprMushIdle->SetX(m_pBody->GetPosition().x * SCALE);
     m_sAnimations.m_pASprMushIdle->SetY(m_pBody->GetPosition().y * SCALE);
+    if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
+    {
+        DeleteBody();
+        m_bAlive = false;
+    }
+
 }
 
 void
@@ -427,7 +428,7 @@ void Mushroom::CreateHeadButt()
 
 void Mushroom::DeleteHeadButt()
 {
-    if (m_pHeadButt)
+    if (m_pHeadButt != nullptr)
     {
         m_pWorld->DestroyBody(m_pHeadButt);
         m_pHeadButt = nullptr;
