@@ -400,7 +400,7 @@ void Mushroom::CreateHeadButt()
     // Attach the fixture to the body
     m_pHeadButt->CreateFixture(&HeadfixtureDef);
 
-    userData* headData = new userData{ MUSHROOM, static_cast<void*>(this) };
+    userData* headData = new userData{ MUSHROOM_HEAD, static_cast<void*>(this) };
     m_pHeadButt->SetUserData(static_cast<void*>(headData));
 
 }
