@@ -4,6 +4,7 @@
 // Local includes:
 #include "renderer.h"
 #include "vector2.h"
+#include "healthbar.h"
 #include "inputsystem.h"
 #include "entity.h"
 
@@ -35,6 +36,8 @@ public:
 	virtual int GetCharactertype() = 0;
 	virtual void SetCharacterType(Renderer& renderer, int type) = 0;
 
+	//Kyle
+	virtual Healthbar* getPlayerHealthbar() = 0;
 	//virtual void DebugDraw() = 0;
 
 protected:

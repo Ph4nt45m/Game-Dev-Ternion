@@ -147,7 +147,7 @@ bool Game::Initialise()
 		return false;
 	}
 	// Optionally, load the first scene if not using transitions right away
-	sceneManager.ChangeScene(6); // Load initial scene (e.g., splash screen, menu)
+	sceneManager.ChangeScene(0); // Load initial scene (e.g., splash screen, menu)
 	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
 
@@ -185,7 +185,7 @@ bool Game::Initialise()
 	soundManager->loadMusic("newBackground", "..\\Sprites\\sounds\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
 
 	// Play the background music (loop infinitely)
-//	soundManager->playMusic("background", -1);	//Kyle end
+	soundManager->playMusic("background", -1);	//Kyle end
 	soundManager->setMusicVolume(80);
 	setsoundEffectsVolume(80);	//Kyle code end
 
@@ -236,13 +236,13 @@ Game::Process(float deltaTime)
 {
 	ProcessFrameCounting(deltaTime);
 	m_elapsedTime += deltaTime;
-	// TODO: Add game objects to process here!
+/*	// TODO: Add game objects to process here!
 	if (m_elapsedTime > 3.0f)
 	{
 		soundManager->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
 		soundManager->playSound("bounce", 0, getsoundEffectsVolume());
 		m_elapsedTime = 0;
-	}
+	}*/
 	// Box2D time step
 	const float32 timeStep = 1.0f / 60.0f;  // 60Hz update rate
 	const int32 velocityIterations = 6;     // Box2D velocity solver iterations
@@ -346,37 +346,37 @@ Game::DebugDraw()
 	
 	//ImGui::End();
 
-	ImGui::Begin("Debug Window - Cursor", &open, ImGuiWindowFlags_MenuBar);
-	//ImGui::Text("COMP710 GP Framework (%s)", "2022, S2");
+	//ImGui::Begin("Debug Window - Cursor", &open, ImGuiWindowFlags_MenuBar);
+	////ImGui::Text("COMP710 GP Framework (%s)", "2022, S2");
 
-	if (ImGui::Button("Quit"))
-	{
-		Quit();
-	}
+	//if (ImGui::Button("Quit"))
+	//{
+	//	Quit();
+	//}
 
-	float colourBorder[4] = {  };
-	colourBorder[0] = m_sprCursorBorderSprite->GetRedTint();
-	colourBorder[1] = m_sprCursorBorderSprite->GetGreenTint();
-	colourBorder[2] = m_sprCursorBorderSprite->GetBlueTint();
-	colourBorder[3] = m_sprCursorBorderSprite->GetAlpha();
-	ImGui::ColorEdit4("Border colour", colourBorder);
-	m_sprCursorBorderSprite->SetRedTint(colourBorder[0]);
-	m_sprCursorBorderSprite->SetGreenTint(colourBorder[1]);
-	m_sprCursorBorderSprite->SetBlueTint(colourBorder[2]);
-	m_sprCursorBorderSprite->SetAlpha(colourBorder[3]);
+	//float colourBorder[4] = {  };
+	//colourBorder[0] = m_sprCursorBorderSprite->GetRedTint();
+	//colourBorder[1] = m_sprCursorBorderSprite->GetGreenTint();
+	//colourBorder[2] = m_sprCursorBorderSprite->GetBlueTint();
+	//colourBorder[3] = m_sprCursorBorderSprite->GetAlpha();
+	//ImGui::ColorEdit4("Border colour", colourBorder);
+	//m_sprCursorBorderSprite->SetRedTint(colourBorder[0]);
+	//m_sprCursorBorderSprite->SetGreenTint(colourBorder[1]);
+	//m_sprCursorBorderSprite->SetBlueTint(colourBorder[2]);
+	//m_sprCursorBorderSprite->SetAlpha(colourBorder[3]);
 
-	float colourBody[4] = {  };
-	colourBody[0] = m_sprCursorBodySprite->GetRedTint();
-	colourBody[1] = m_sprCursorBodySprite->GetGreenTint();
-	colourBody[2] = m_sprCursorBodySprite->GetBlueTint();
-	colourBody[3] = m_sprCursorBodySprite->GetAlpha();
-	ImGui::ColorEdit4("Body colour", colourBody);
-	m_sprCursorBodySprite->SetRedTint(colourBody[0]);
-	m_sprCursorBodySprite->SetGreenTint(colourBody[1]);
-	m_sprCursorBodySprite->SetBlueTint(colourBody[2]);
-	m_sprCursorBodySprite->SetAlpha(colourBody[3]);
+	//float colourBody[4] = {  };
+	//colourBody[0] = m_sprCursorBodySprite->GetRedTint();
+	//colourBody[1] = m_sprCursorBodySprite->GetGreenTint();
+	//colourBody[2] = m_sprCursorBodySprite->GetBlueTint();
+	//colourBody[3] = m_sprCursorBodySprite->GetAlpha();
+	//ImGui::ColorEdit4("Body colour", colourBody);
+	//m_sprCursorBodySprite->SetRedTint(colourBody[0]);
+	//m_sprCursorBodySprite->SetGreenTint(colourBody[1]);
+	//m_sprCursorBodySprite->SetBlueTint(colourBody[2]);
+	//m_sprCursorBodySprite->SetAlpha(colourBody[3]);
 
-	ImGui::End();
+	//ImGui::End();
 }
 
 void

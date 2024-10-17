@@ -1,6 +1,11 @@
 #include "MyContactListener.h"
 #include <stdio.h>
+#include "player.h"
+
+//Enemies
 #include "golem.h"
+#include "mushroom.h"
+
 #include "character.h"  
 #include "terrain.h"
 
@@ -9,173 +14,145 @@ void MyContactListener::BeginContact(b2Contact* contact)
     b2Fixture* fixtureA = contact->GetFixtureA();
     b2Fixture* fixtureB = contact->GetFixtureB();
 
+    if (!fixtureA || !fixtureB) {
+        printf("No fixture\n");
+        return;
+    }
+
     b2Body* bodyA = fixtureA->GetBody();
     b2Body* bodyB = fixtureB->GetBody();
+    
+    if (!bodyA || !bodyB) {
+        printf("No body\n");
+        return;
+    }
 
     // Retrieve user data
-    void* userDataA = bodyA->GetUserData();
-    void* userDataB = bodyB->GetUserData();
+    userData* userDataA = static_cast<userData*>(fixtureA->GetBody()->GetUserData());
+    userData* userDataB = static_cast<userData*>(fixtureB->GetBody()->GetUserData());
 
     if (!userDataA || !userDataB) {
-        return;  // If user data is missing, just return early
+        printf("No userData\n");
+        return; 
     }
 
     bool fixtureAIsSensor = fixtureA->IsSensor();
     bool fixtureBIsSensor = fixtureB->IsSensor();
 
-    if (fixtureBIsSensor && (int)userDataA == GOLEM && (int)userDataB == PLAYER_SP_ATTACK)
+    if (!fixtureAIsSensor && !fixtureBIsSensor)
+    {
+        printf("No sensor %d, %d\n", fixtureAIsSensor, fixtureBIsSensor);
+        return;
+    }
+
+    printf("Check contact\n");
+
+    //Player Attacking enemies.
+    if (fixtureBIsSensor && userDataA->type == GOLEM && userDataB->type == PLAYER_SP_ATTACK)
     {
         printf("Golem hit with special\n");
+        static_cast<Golem*>(userDataA->object)->getEnemyHealth()->Damage(20.0f);
     }
-    else if (fixtureAIsSensor && (int)userDataA == PLAYER_SP_ATTACK && (int)userDataB == GOLEM)
+    else if (fixtureAIsSensor && userDataA->type == PLAYER_SP_ATTACK && userDataB->type == GOLEM)
     {
         printf("Golem hit with special (reverse)\n");
+        static_cast<Golem*>(userDataB->object)->getEnemyHealth()->Damage(20.0f);
+    }
+    if (fixtureBIsSensor && userDataA->type == MUSHROOM && userDataB->type == PLAYER_SP_ATTACK)
+    {
+        printf("Golem hit with special\n");
+        static_cast<Mushroom*>(userDataA->object)->getEnemyHealth()->Damage(20.0f);
+    }
+    else if (fixtureAIsSensor && userDataA->type == PLAYER_SP_ATTACK && userDataB->type == MUSHROOM)
+    {
+        printf("Golem hit with special (reverse)\n");
+        static_cast<Mushroom*>(userDataB->object)->getEnemyHealth()->Damage(20.0f);
     }
 
-    if (fixtureAIsSensor && (int)userDataA == GOLEM_SLASH && (int)userDataB == PLAYER)
+
+
+
+    if (fixtureAIsSensor && userDataA->type == GOLEM_SLASH && userDataB->type == PLAYER)
     {
         printf("Player hit with slash\n");
+        //Changes made by Kyle
+        //Just to test
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(10);
+        //Changes ended
     }
-    else if (fixtureBIsSensor && (int)userDataA == PLAYER && (int)userDataB == GOLEM_SLASH)
+    else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == GOLEM_SLASH)
     {
         printf("Player hit with slash (reverse)\n");
+        //Changes made by Kyle
+//Just to test
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(10);
+        //Changes ended
+
     }
 
-    if (fixtureAIsSensor && (int)userDataA == GOLEM_SLAM && (int)userDataB == PLAYER)
+    if (fixtureAIsSensor && userDataA->type == GOLEM_SLAM && userDataB->type == PLAYER)
     {
         printf("Player hit with slam\n");
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(10);
     }
-    else if (fixtureBIsSensor && (int)userDataA == PLAYER && (int)userDataB == GOLEM_SLAM)
+    else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == GOLEM_SLAM)
     {
         printf("Player hit with slam (reverse)\n");
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(10);
     }
 
     //mushroom Body
-    if (fixtureAIsSensor && (int)userDataA == MUSHROOM && (int)userDataB == PLAYER)
+    if (fixtureAIsSensor && userDataA->type == MUSHROOM && userDataB->type == PLAYER)
     {
         printf("Player hit with mushroom\n");
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(5);
     }
-    else if (fixtureBIsSensor && (int)userDataA == PLAYER && (int)userDataB == MUSHROOM)
+    else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == MUSHROOM)
     {
         printf("Player hit with mushroom (reverse)\n");
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(5);
     }
-
-    if ((int)userDataA == MUSHROOM && (int)userDataB == PLAYER)
+    
+    if (userDataA->type == MUSHROOM && userDataB->type == PLAYER)
     {
         printf("Player hit with mushroom\n");
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(5);
     }
-    else if ((int)userDataA == PLAYER && (int)userDataB == MUSHROOM)
+    else if (userDataA->type == PLAYER && userDataB->type == MUSHROOM)
     {
         printf("Player hit with mushroom (reverse)\n");
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(5);
     }
 
     // Check for terrain collisions
-    if ((int)userDataA == PLAYER && (int)userDataB == TERRAIN) {
+    if (userDataA->type == PLAYER && userDataB->type == TERRAIN) {
         // Player collided with terrain
         //printf("Player collided with terrain!\n");
     }
-    else if ((int)userDataA == TERRAIN && (int)userDataB == PLAYER) {
+    else if (userDataA->type == TERRAIN && userDataB->type == PLAYER) {
         // Reverse case: terrain collided with player
         //printf("Player collided with terrain (reverse case)!\n");
         
     }
-    if ((int)userDataA == PLAYER && (int)userDataB == GOLEM) {
+    if (userDataA->type == PLAYER && userDataB->type == GOLEM) {
         //if we want contact damage
         printf("Touch\n");
     }
-    else if ((int)userDataA == GOLEM && (int)userDataB == PLAYER) {
+    else if (userDataA->type == GOLEM && userDataB->type == PLAYER) {
         //if we want contact damage
         printf("Touch\n");
     }
     // Check for terrain collisions
-    if ((int)userDataA == GOLEM && (int)userDataB == TERRAIN) {
+    if (userDataA->type == GOLEM && userDataB->type == TERRAIN) {
         // Player collided with terrain
     }
-    else if ((int)userDataA == TERRAIN && (int)userDataB == GOLEM) {
+    else if (userDataA->type == TERRAIN && userDataB->type == GOLEM) {
         // Reverse case: terrain collided with player
     }
-    //// Golem's slash attack collision with player
-    //if ((int)userDataA == PLAYER && (int)userDataB == GOLEM_SLASH) {
-    //    printf("Player hit by golem's slash!\n");
-    //}
-    //else if ((int)userDataA == GOLEM_SLASH && (int)userDataB == PLAYER) {
-    //    ("Player hit by golem's slash (reverse case)!\n");
-    //}
-    ////Slam
-    //if ((int)userDataA == PLAYER && (int)userDataB == GOLEM_SLAM) {
-    //    printf("Player hit by golem's slam!\n");
-    //}
-    //else if ((int)userDataA == GOLEM_SLAM && (int)userDataB == PLAYER) {
-    //    ("Player hit by golem's slam (reverse case)!\n");
-    //}
-    // Player's special attack collision with golem - // Changes made by Karl
-    /*if ((int)userDataA == PLAYER_SP_ATTACK && (int)userDataB == GOLEM) {
-        printf("Golem hit by player's special!\n");
-    }
-    else if ((int)userDataA == GOLEM && (int)userDataB == PLAYER_SP_ATTACK) {
-        printf("Golem hit by player's special (reverse case)!\n");
-    }*/
-
-    // Golem's slash attack collision with player
-    /*if (fixtureA->IsSensor() || fixtureB->IsSensor())
-    {
-        bool fixtureAIsSensor = fixtureA->IsSensor();
-        bool fixtureBIsSensor = fixtureB->IsSensor();
-
-        if (fixtureBIsSensor && (int)userDataA == PLAYER && (int)userDataB == GOLEM_SLASH) {
-
-            printf("Player hit with slash\n");
-        }
-        else if (fixtureAIsSensor && (int)userDataB == PLAYER && (int)userDataA == GOLEM_SLASH) {
-
-            printf("Player hit with slash\n");
-        }
-
-    }*/
-    //Slam
-    /*if (fixtureA->IsSensor() || fixtureB->IsSensor())
-    {
-        bool fixtureAIsSensor = fixtureA->IsSensor();
-        bool fixtureBIsSensor = fixtureB->IsSensor();
-
-        if (fixtureBIsSensor && (int)userDataA == PLAYER && (int)userDataB == GOLEM_SLAM) {
-
-            printf("Player hit with slam\n");
-        }
-        else if (fixtureAIsSensor && (int)userDataB == PLAYER && (int)userDataA == GOLEM_SLAM)
-        {
-            printf("Player hit with slam\n");
-        }
-    }*/
 }
 
 void MyContactListener::EndContact(b2Contact* contact)
 {
-    b2Fixture* fixtureA = contact->GetFixtureA();
-    b2Fixture* fixtureB = contact->GetFixtureB();
-
-    b2Body* bodyA = fixtureA->GetBody();
-    b2Body* bodyB = fixtureB->GetBody();
-
-    // Retrieve user data
-    void* userDataA = bodyA->GetUserData();
-    void* userDataB = bodyB->GetUserData();
-
-    if (userDataA && userDataB) {
-        // Check for end of player and terrain collision
-        if ((int)userDataA == PLAYER && (int)userDataB == TERRAIN) {
-            //printf("Player no longer colliding with terrain!\n");
-        }
-        else if ((int)userDataA == TERRAIN && (int)userDataB == PLAYER) {
-            //printf("Player no longer colliding with terrain (reverse case)!\n");
-        }
-
-        // Handle golem's slash ending
-        if ((int)userDataA == PLAYER && (int)userDataB == GOLEM_SLASH) {
-         //   printf("Player no longer hit by golem's slash!\n");
-        }
-        else if ((int)userDataA == GOLEM_SLASH && (int)userDataB == PLAYER) {
-            //printf("Player no longer hit by golem's slash (reverse case)!\n");
-        }
-    }
+    
+   
 }

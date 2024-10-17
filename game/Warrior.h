@@ -50,6 +50,10 @@ public:
     float GetProjHeight();
     bool IsProjAlive();
     void SetProjAlive(bool alive);
+    void DeleteBody();
+
+    //Kyle changes
+    Healthbar* getPlayerHealthbar() override;
 
     //void DebugDraw() override;
 

@@ -1,81 +1,89 @@
-//#ifndef SPIDER_H
-//#define SPIDER_H
-//
-//// Local includes:
-//#include "entity.h"
-//#include "enemy.h"
-//#include "vector2.h"
-//#include "inputsystem.h"
-//
-//// Forward declarations:
-//class Renderer;
-//class Sprite;
-//class AnimatedSprite;
-//class Character;
-//
-//// Golem animations:
-//typedef struct {
-//    AnimatedSprite* m_pASprSpdrSleep;
-//    AnimatedSprite* m_pASprSpdrWalk;
-//    AnimatedSprite* m_pASprSpdrAttack;
-//} Animations;
-//
-//// Class declaration:
-//class Spider : public Enemy
-//{
-//    // Member methods:
-//public:
-//    Spider();
-//    ~Spider();
-//
-//    bool Initialise(Renderer& renderer) override;
-//    void Process(float deltaTime, InputSystem& inputSystem) override;
-//    void Draw(Renderer& renderer) override;
-//    bool SetBodySprites(Renderer& renderer) override;
-//
-//    Vector2& GetPosition();
-//    void SetCharacter(Character& character);
-//    void CheckPlayerDist();
-//    int GetBodyWidth();
-//    void ShiftX(float amount);
-//    void SetNumWalkableSegs(int amount);
-//
-//    void Move(void);
-//    void Action();
-//    void ProcessAction();
-//
-//    //void DebugDraw() override;
-//
-//protected:
-//    void ComputeBounds(float width, float height);
-//
-//private:
-//    Spider(const Spider& spider);
-//    Spider& operator=(const Spider& spider);
-//
-//    // Member data:
-//protected:
-//    Character* m_pEntCharacter;
-//    Sprite* m_pSprSpriteBody;
-//    Vector2 m_vStartingPos;
-//    Animations m_sAnimations;
-//    int m_iNumSegments;
-//    int m_iNumWalkableSegs;
-//    float m_fAnimateScale;
-//    float m_fExecutionTime;
-//    float m_fDistToPlayer;
-//    float m_fHitBoxRange;
-//    float m_fAttackRangeMax;
-//    float m_fGroundY;
-//    bool m_bPlayerInRange;
-//    bool m_bSpotted;
-//    bool m_bEngage;
-//    bool m_bIsAnimating;
-//    bool m_bAttack;
-//    bool m_bRun;
-//
-//private:
-//
-//};
-//
-//#endif // !SPIDER_H
+#ifndef SPIDER_H
+#define SPIDER_H
+
+// Local includes:
+#include "entity.h"
+#include "enemy.h"
+#include "vector2.h"
+#include "inputsystem.h"
+
+#include <Box2D.h>
+
+// Forward declarations:
+class Renderer;
+class Sprite;
+class AnimatedSprite;
+class Player;
+
+// Golem animations:
+typedef struct {
+    AnimatedSprite* m_pASprSpiderIdle;
+    AnimatedSprite* m_pASprSpiderWalk;
+    AnimatedSprite* m_pASprSpiderAttack;
+} SpiderAnimations;
+
+// Class declaration:
+class Spider : public Enemy
+{
+    // Member methods:
+public:
+    Spider(b2World* world);
+    ~Spider();
+
+    bool Initialise(Renderer& renderer) override;
+    void Process(float deltaTime, InputSystem& inputSystem) override;
+    void Draw(Renderer& renderer, Camera& camera) override;
+    bool SetBodySprites(Renderer& renderer) override;
+
+    void CheckPlayerDist();
+    int GetBodyWidth();
+
+    void SetCamera(Camera* camera);
+    void SetPlayer(Player* player);
+    void CreateSlash();
+    void DeleteSlash();
+
+
+    void Move(void);
+    void Action();
+    void ProcessAction();
+
+    //void DebugDraw() override;
+
+protected:
+
+private:
+    Spider(const Spider& spider);
+    Spider& operator=(const Spider& spider);
+
+    // Member data:
+protected:
+    Player* m_pEntCharacter;
+    Sprite* m_pSprSpriteBody;
+    Vector2 m_vStartingPos;
+    SpiderAnimations m_sAnimations;
+    int m_iNumSegments;
+    int m_iNumWalkableSegs;
+    float m_fAnimateScale;
+    float m_fExecutionTime;
+    float m_fDistToPlayer;
+    float m_fHitBoxRange;
+    float m_fAttackRangeMax;
+    float m_fGroundY;
+    bool m_bPlayerInRange;
+    bool m_bSpotted;
+    bool m_bEngage;
+    bool m_bIsAnimating;
+    bool m_bAttack;
+    bool m_bRun;
+
+    b2World* m_pWorld;
+    b2Body* m_pBody;
+    b2Body* m_pBite;
+    Camera* m_pCamera;
+
+private:
+
+};
+
+#endif // !SPIDER_H

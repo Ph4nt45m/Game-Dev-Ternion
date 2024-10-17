@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "vector2.h"
 #include "inputsystem.h"
+#include "golem.h"
 #include "Camera.h"
 #include "player.h"
 #include "enemy.h"
@@ -54,6 +55,12 @@ public:
     void DeleteSlash();
     void DeleteSlam();
 
+    //Kyle Changes
+    Healthbar* getEnemyHealth();//Changes made by Kyle
+    bool getIsAlive();
+    void DeleteBody();
+
+
     //void DebugDraw() override;
 
 protected:
@@ -70,7 +77,6 @@ public:
     b2Body* m_pSlamBody;
 
     //attacks
-    b2Body* slashBody;
     float slashWidth;
     float slashHeight;
     float m_fSlamWidth;
@@ -86,6 +92,7 @@ protected:
     Projectile* m_pEntProjectile;
     Vector2 m_vStartingPos;
     Animations m_sAnimations;
+    Healthbar* healthBar;//Changes made by kyle
     float m_fAnimateScale;
     float m_fExecutionTime;
     int m_iAttackType;

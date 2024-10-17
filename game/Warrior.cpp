@@ -543,7 +543,7 @@ Warrior::DefineCharacter(Renderer& renderer)
     }
 
     // Initialize healthbar
-    m_pHealthbar = new Healthbar(renderer);
+    m_pHealthbar = new Healthbar(renderer, 200.0f);
 
     // Box2D Body Initialization (Changes made by Rauen)
 
@@ -566,14 +566,13 @@ Warrior::DefineCharacter(Renderer& renderer)
     fixtureDef.shape = &characterBox;
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.0f;
-    fixtureDef.filter.categoryBits = PLAYER;
-    fixtureDef.filter.maskBits = GOLEM | GOLEM_SLASH | GOLEM_SLAM;
 
     // Attach the fixture to the body
     m_pBody->CreateFixture(&fixtureDef);
 
     // Set user data for collision detection
-    m_pBody->SetUserData((void*)PLAYER);
+    userData* warriorData = new userData{ PLAYER, static_cast<void*>(this) };
+    m_pBody->SetUserData(static_cast<void*>(warriorData));
 }
 
 bool
@@ -625,7 +624,8 @@ Warrior::CreateSPAttack()
     m_pSPAttackBody->SetActive(true);
 
     // Set user data to identify this body as a Golem
-    m_pSPAttackBody->SetUserData((void*)PLAYER_SP_ATTACK);
+    userData* attackData = new userData{ PLAYER_SP_ATTACK, static_cast<void*>(this) };
+    m_pSPAttackBody->SetUserData(static_cast<void*>(attackData));
 }
 
 void
@@ -670,6 +670,19 @@ Warrior::SetProjAlive(bool alive)
 
 void Warrior::Draw(Renderer& renderer, Camera& camera)
 {}
+
+Healthbar* Warrior::getPlayerHealthbar()
+{
+    return m_pHealthbar;
+}
+void Warrior::DeleteBody()
+{
+    if (m_pBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pBody);
+        m_pBody = nullptr;
+    }
+}
 
 //void
 //Warriorr::DebugDraw()

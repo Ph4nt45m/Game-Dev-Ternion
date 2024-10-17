@@ -95,12 +95,14 @@ Mushroom::Initialise(Renderer& renderer)
         m_pBody->CreateFixture(&fixtureDef);
 
         // Set user data to identify this body as a Golem
-        m_pBody->SetUserData((void*)MUSHROOM);
+        userData* mushData = new userData{ MUSHROOM, static_cast<void*>(this) };
+        m_pBody->SetUserData(static_cast<void*>(mushData));
+
         m_sAnimations.m_pASprMushIdle->SetX((int)m_pBody->GetPosition().x * SCALE);
         m_sAnimations.m_pASprMushIdle->SetY((int)m_pBody->GetPosition().y * SCALE);
-        printf("Mush: %f\n", m_pBody->GetPosition().x);
 
     }
+    healthBar = new Healthbar(renderer, 20.0f);//Changes made by kyle
 
     return true;
 }
@@ -108,6 +110,11 @@ Mushroom::Initialise(Renderer& renderer)
 void
 Mushroom::Process(float deltaTime, InputSystem& inputSystem)
 {
+    if (!m_bAlive)
+    {
+        return;
+    }
+
     CheckPlayerDist();
     ProcessAction();
 
@@ -184,46 +191,47 @@ Mushroom::Process(float deltaTime, InputSystem& inputSystem)
 
     m_sAnimations.m_pASprMushIdle->SetX(m_pBody->GetPosition().x * SCALE);
     m_sAnimations.m_pASprMushIdle->SetY(m_pBody->GetPosition().y * SCALE);
+    if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
+    {
+        DeleteBody();
+        m_bAlive = false;
+    }
+
 }
 
 void
 Mushroom::Draw(Renderer& renderer, Camera& camera)
 {
-    if (m_bAlive)
+    if (!m_bAlive)
     {
+        return;
+    }
 
-        Vector2* cameraOffset = camera.GetOffset();
+    Vector2* cameraOffset = camera.GetOffset();
 
-        int mushX = (int)(m_pBody->GetPosition().x * SCALE - cameraOffset->x);
-        int mushY = (int)(m_pBody->GetPosition().y * SCALE - cameraOffset->y);
+    int mushX = (int)(m_pBody->GetPosition().x * SCALE - cameraOffset->x);
+    int mushY = (int)(m_pBody->GetPosition().y * SCALE - cameraOffset->y);
 
-        if (m_bPlayerInRange)
+    if (m_bPlayerInRange)
+    {
+        if (m_bRun)
         {
-            if (m_bRun)
+            m_sAnimations.m_pASprMushWalk->SetX(mushX);
+            m_sAnimations.m_pASprMushWalk->SetY(mushY);
+            m_sAnimations.m_pASprMushWalk->Draw(renderer, m_bFlipHorizontally, false);
+        }
+        else if (m_bAttack)
+        {
+            if (m_sAnimations.m_pASprMushAttack->IsAnimating())
             {
-                m_sAnimations.m_pASprMushWalk->SetX(mushX);
-                m_sAnimations.m_pASprMushWalk->SetY(mushY);
-                m_sAnimations.m_pASprMushWalk->Draw(renderer, m_bFlipHorizontally, false);
-            }
-            else if (m_bAttack)
-            {
-                if (m_sAnimations.m_pASprMushAttack->IsAnimating())
-                {
-                    m_sAnimations.m_pASprMushAttack->SetX(mushX);
-                    m_sAnimations.m_pASprMushAttack->SetY(mushY);
-                    m_sAnimations.m_pASprMushAttack->Draw(renderer, m_bFlipHorizontally, false);
-                }
-                else
-                {
-                    m_bAttack = false;
-                    m_bIsAnimating = false;
-                }
+                m_sAnimations.m_pASprMushAttack->SetX(mushX);
+                m_sAnimations.m_pASprMushAttack->SetY(mushY);
+                m_sAnimations.m_pASprMushAttack->Draw(renderer, m_bFlipHorizontally, false);
             }
             else
             {
-                m_sAnimations.m_pASprMushIdle->SetX(mushX);
-                m_sAnimations.m_pASprMushIdle->SetY(mushY);
-                m_sAnimations.m_pASprMushIdle->Draw(renderer, m_bFlipHorizontally, false);
+                m_bAttack = false;
+                m_bIsAnimating = false;
             }
         }
         else
@@ -232,6 +240,12 @@ Mushroom::Draw(Renderer& renderer, Camera& camera)
             m_sAnimations.m_pASprMushIdle->SetY(mushY);
             m_sAnimations.m_pASprMushIdle->Draw(renderer, m_bFlipHorizontally, false);
         }
+    }
+    else
+    {
+        m_sAnimations.m_pASprMushIdle->SetX(mushX);
+        m_sAnimations.m_pASprMushIdle->SetY(mushY);
+        m_sAnimations.m_pASprMushIdle->Draw(renderer, m_bFlipHorizontally, false);
     }
 }
 
@@ -366,6 +380,15 @@ Mushroom::ProcessAction()
     }
 }
 
+void Mushroom::DeleteBody()
+{
+    if (m_pBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pBody);
+        m_pBody = nullptr;
+    }
+}
+
 void Mushroom::CreateHeadButt()
 {
     // Define the body
@@ -398,13 +421,14 @@ void Mushroom::CreateHeadButt()
     // Attach the fixture to the body
     m_pHeadButt->CreateFixture(&HeadfixtureDef);
 
-    // Set user data to identify this body as a Golem
-    m_pHeadButt->SetUserData((void*)MUSHROOM);
+    userData* headData = new userData{ MUSHROOM, static_cast<void*>(this) };
+    m_pHeadButt->SetUserData(static_cast<void*>(headData));
+
 }
 
 void Mushroom::DeleteHeadButt()
 {
-    if (m_pHeadButt)
+    if (m_pHeadButt != nullptr)
     {
         m_pWorld->DestroyBody(m_pHeadButt);
         m_pHeadButt = nullptr;
@@ -418,10 +442,10 @@ Mushroom::CheckPlayerDist()
     b2Vec2 playerPosition = m_pEntCharacter->GetPosition();
 
     // Get Golem's current position - in meters
-    b2Vec2 golemPosition = m_pBody->GetPosition();
+    b2Vec2 mushPosition = m_pBody->GetPosition();
 
     // Calculate the differences in the x and y coordinates
-    m_fDistToPlayer = abs(playerPosition.x - golemPosition.x);
+    m_fDistToPlayer = abs(playerPosition.x - mushPosition.x);
 }
 
 int
@@ -439,6 +463,12 @@ void Mushroom::SetCamera(Camera* camera)
 void Mushroom::SetPlayer(Player* player)
 {
     m_pEntCharacter = player;
+}
+
+//Changes made by Kyle
+Healthbar* Mushroom::getEnemyHealth()
+{
+    return healthBar;
 }
 
 //void

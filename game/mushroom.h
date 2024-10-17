@@ -6,6 +6,7 @@
 #include "enemy.h" // Changes made by Karl
 #include "vector2.h"
 #include "inputsystem.h"
+#include "healthbar.h"
 
 #include <Box2D.h>
 
@@ -42,11 +43,15 @@ public:
     void SetPlayer(Player* player);
     void CreateHeadButt();
     void DeleteHeadButt();
+    void DeleteBody();
 
 
     void Move(void);
     void Action();
     void ProcessAction();
+
+    //Kyle Changes
+    Healthbar* getEnemyHealth();//Changes made by Kyle
 
     //void DebugDraw() override;
 
@@ -62,6 +67,7 @@ protected:
     Sprite* m_pSprSpriteBody;
     Vector2 m_vStartingPos;
     MushAnimations m_sAnimations;
+    Healthbar* healthBar;//Changes made by kyle
     int m_iNumSegments;
     int m_iNumWalkableSegs;
     float m_fAnimateScale;
