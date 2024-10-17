@@ -15,5 +15,4 @@ Player::Player()
 
 Player::~Player()
 {
-
 }

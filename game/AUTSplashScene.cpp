@@ -22,7 +22,6 @@ SplashScene::SplashScene()
 }//destruct
 SplashScene::~SplashScene()
 {
-    LogManager::GetInstance().Log("Splash destructor called");
 
     delete m_splashScene;
     m_splashScene = nullptr;

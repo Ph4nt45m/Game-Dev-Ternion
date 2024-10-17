@@ -86,6 +86,11 @@ void MenuButton::Update(float deltaTime, InputSystem& inputSystem)
     Button::Update(deltaTime, inputSystem);
     if (m_isReleased)
     {
+        if (Game::GetInstance().GetCharacter())
+        {
+            Game::GetInstance().DeleteCharacter();
+        }
+
         if (SceneManager::GetInstance().getpauseBool())
         {
             SceneManager::GetInstance().setpauseBool(!SceneManager::GetInstance().getpauseBool());

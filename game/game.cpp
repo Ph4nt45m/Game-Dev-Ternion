@@ -423,6 +423,12 @@ Player* Game::GetCharacter() const
 	return m_pEntCharacter;
 }
 
+void Game::DeleteCharacter()
+{
+	delete m_pEntCharacter;
+	m_pEntCharacter = nullptr;
+}
+
 b2World* Game::GetWorld() const
 {
 	return world;
