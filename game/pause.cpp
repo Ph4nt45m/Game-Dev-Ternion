@@ -67,16 +67,16 @@ bool PauseScene::Initialise(Renderer& renderer)
     float ResumeButtonY = windowHeight * 0.3f;
     float restartButtonX = windowWidth * 0.5f;
     float restartButtonY = windowHeight * 0.5f;
-    float MenuButtonX = windowWidth * 0.65f; // 20% of the window width
+    float MenuButtonX = windowWidth * 0.35f; // 20% of the window width
     float MenuButtonY = windowHeight * 0.8f; // 70% of the window height // Changes made by Karl
-    float exitButtonX = windowWidth * 0.35f; // 20% of the window width
+    float exitButtonX = windowWidth * 0.65f; // 20% of the window width
     float exitButtonY = windowHeight * 0.8f; // 70% of the window height // Changes made by Karl
 
 
     resumeButton = new ResumeButton(ResumeButtonX, ResumeButtonY);
     resumeButton->Initialise(renderer);
-//    restartButton = new RestartButton(restartButtonX, restartButtonY);
-//    restartButton->Initialise(renderer);
+    restartButton = new RestartButton(restartButtonX, restartButtonY);
+    restartButton->Initialise(renderer);
     MainMenu = new MenuButton(MenuButtonX, MenuButtonY);
     MainMenu->Initialise(renderer);
     m_pExitButton = new ExitButton(exitButtonX, exitButtonY);
@@ -100,10 +100,10 @@ void PauseScene::Process(float deltaTime, InputSystem& inputSystem)
     {
         resumeButton->Update(deltaTime, inputSystem);
     }
-/*    if (restartButton)
+    if (restartButton)
     {
         restartButton->Update(deltaTime, inputSystem);
-    }*/
+    }
 }
 
 void PauseScene::Draw(Renderer& renderer)
@@ -125,10 +125,10 @@ void PauseScene::Draw(Renderer& renderer)
     {
         resumeButton->Draw(renderer);
     }
-/*    if (restartButton)
+    if (restartButton)
     {
         restartButton->Draw(renderer);
-    }*/
+    }
 }
 
 void PauseScene::DebugDraw()

@@ -192,6 +192,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="projectile.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="restartButton.cpp" />
     <ClCompile Include="resumeButton.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scenebouncingballs.cpp" />
@@ -263,6 +264,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="restartButton.h" />
     <ClInclude Include="resumeButton.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scenebouncingballs.h" />
