@@ -89,9 +89,10 @@ void RestartButton::Update(float deltaTime, InputSystem& inputSystem)
         if (SceneManager::GetInstance().getpauseBool())
         {
             SceneManager::GetInstance().setpauseBool(!SceneManager::GetInstance().getpauseBool());
+            Game::GetInstance().DeleteCharacter();
         }
 
-        SceneManager::GetInstance().ChangeScene(4);
+        SceneManager::GetInstance().ChangeScene(2);
     }
     if (m_isHovered) // Changes made by Karl
     {

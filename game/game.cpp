@@ -147,7 +147,7 @@ bool Game::Initialise()
 		return false;
 	}
 	// Optionally, load the first scene if not using transitions right away
-	sceneManager.ChangeScene(0); // Load initial scene (e.g., splash screen, menu)
+	sceneManager.ChangeScene(6); // Load initial scene (e.g., splash screen, menu)
 	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
 
@@ -421,6 +421,12 @@ Game::CreateCharacter(int type)
 Player* Game::GetCharacter() const
 {
 	return m_pEntCharacter;
+}
+
+void Game::DeleteCharacter()
+{
+	delete m_pEntCharacter;
+	m_pEntCharacter = nullptr;
 }
 
 b2World* Game::GetWorld() const

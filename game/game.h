@@ -39,6 +39,7 @@ public:
 	void SetGravity(float x, float y);
 
 	void CreateCharacter(int type); // Changes made by Karl
+	void DeleteCharacter();
 	//Character* GetCharacter() const; // Changes made by Karl
 	Player* GetCharacter() const;
 	b2World* GetWorld() const;

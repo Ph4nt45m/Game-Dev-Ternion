@@ -164,6 +164,7 @@
     <ClCompile Include="CharacterSelect.cpp" />
     <ClCompile Include="CharacterThree.cpp" />
     <ClCompile Include="CharacterTwo.cpp" />
+    <ClCompile Include="deathScene.cpp" />
     <ClCompile Include="DecreaseButton.cpp" />
     <ClCompile Include="DecreaseSoundEffectButton.cpp" />
     <ClCompile Include="enemy.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="projectile.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="restartButton.cpp" />
     <ClCompile Include="resumeButton.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scenebouncingballs.cpp" />
@@ -234,6 +236,7 @@
     <ClInclude Include="CharacterSelect.h" />
     <ClInclude Include="CharacterThree.h" />
     <ClInclude Include="CharacterTwo.h" />
+    <ClInclude Include="deathScene.h" />
     <ClInclude Include="decreaseButton.h" />
     <ClInclude Include="DecreaseSoundEffectButton.h" />
     <ClInclude Include="enemy.h" />
@@ -261,6 +264,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="restartButton.h" />
     <ClInclude Include="resumeButton.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scenebouncingballs.h" />
