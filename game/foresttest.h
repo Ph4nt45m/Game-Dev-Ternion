@@ -35,7 +35,7 @@ class ForestTest : public Scene
 {
 	// Member methods:
 public:
-	ForestTest(b2World* world, Player* charcter);
+	ForestTest(b2World* world, Player* character);
 	virtual ~ForestTest();
 	virtual bool Initialise(Renderer& renderer);
 	virtual void Process(float deltaTime, InputSystem& inputSystem);

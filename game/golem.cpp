@@ -277,6 +277,7 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
             {
                 m_bSlash = false;
                 m_bIsAnimating = false;
+                m_sAnimations.m_pASprGolemSlash->Restart();
 
                 /*if (m_fDistToPlayer < m_fSlamRangeMax)
                 {
@@ -302,9 +303,10 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
             }
             else
             {
+                m_sAnimations.m_pASprGolemJump->Restart();
+
                 if (m_bJumping)
                 {
-
                     m_sAnimations.m_pASprGolemSlam->SetX(golemX);
                     m_sAnimations.m_pASprGolemSlam->SetY(golemY);
 
@@ -328,9 +330,9 @@ void Golem::Draw(Renderer& renderer, Camera& camera)
                 }
                 else
                 {
-
                     m_bSlam = false;
                     m_bIsAnimating = false;
+                    m_sAnimations.m_pASprGolemSlam->Restart();
 
                     /*if (m_fDistToPlayer < m_fSlamRangeMax)
                     {

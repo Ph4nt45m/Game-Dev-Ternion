@@ -21,6 +21,7 @@ typedef struct
 	AnimatedSprite* m_pASpriteRun;
 	AnimatedSprite* m_pASpriteJump;
 	AnimatedSprite* m_pASpriteAttack;
+	AnimatedSprite* m_pASpriteDeath;
 } Actions;
 
 // Class declaration: 
@@ -53,7 +54,9 @@ public:
 
 
 protected:
+	Sprite* m_pStaticDeath;
 	bool m_bDoubleJump;
+	bool m_bAnimateDeath;
 	bool m_bGodmode; // Changes made by Karl
 
 private:

@@ -8,6 +8,8 @@
 #include "../imgui/imgui.h"
 #include "logmanager.h"
 #include "scene.h"
+#include "player.h"
+#include "Camera.h"
 
 //Buttons
 #include "MenuButton.h"
@@ -22,8 +24,11 @@
 #include <string>
 
 //construct
-DeathScene::DeathScene()
-    : m_splashScene(nullptr)
+DeathScene::DeathScene(b2World* world, Player* character)
+    : m_pWorld(world)
+    , m_pCharacter(character)
+    , m_camera()
+    , m_splashScene(nullptr)
     , m_MenuButton(nullptr)
     , m_RollCredits(nullptr)
     , m_RestartButton(nullptr)
@@ -51,6 +56,8 @@ DeathScene::~DeathScene()
 
 bool DeathScene::Initialise(Renderer& renderer)
 {
+    Game::GetInstance().SetGravity(0.0f, 0.0f);
+    m_pWorld->SetGravity(Game::GetInstance().GetGravity());
     SceneManager::GetInstance().LoadImage(renderer, m_splashScene, "..\\Sprites\\Menus\\DeathMenu\\deathMenu.png");
     int windowWidth = renderer.GetWidth();
     int windowHeight = renderer.GetHeight();
@@ -80,6 +87,12 @@ bool DeathScene::Initialise(Renderer& renderer)
 void DeathScene::Process(float deltaTime, InputSystem& inputSystem)
 {
     m_fElapsedTime += deltaTime;
+
+    if (m_pCharacter)
+    {
+        m_pCharacter->Process(deltaTime, inputSystem);
+    }
+
     if (m_RestartButton)
     {
         m_RestartButton->Update(deltaTime, inputSystem);
@@ -104,6 +117,10 @@ void DeathScene::Draw(Renderer& renderer)
     {
         m_splashScene->Draw(renderer, true, false);
     }
+    if (m_pCharacter)
+    {
+        m_pCharacter->DrawWithCam(renderer, m_camera);
+    }
     if (m_RollCredits)
     {
         m_RollCredits->Draw(renderer);
@@ -120,7 +137,6 @@ void DeathScene::Draw(Renderer& renderer)
     {
         m_ExitButton->Draw(renderer);
     }
-
 }
 
 void DeathScene::DebugDraw()

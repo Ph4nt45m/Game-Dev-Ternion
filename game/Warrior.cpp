@@ -42,7 +42,7 @@ Warrior::Warrior(b2World* world)
     , m_pWorld(world)
     , m_pSPAttackBody(nullptr) // Changes made by Karl
     , m_jumpTimer(0.0f)
-    , m_sActions{ 0, 0, 0, 0 }
+    , m_sActions{ 0, 0, 0, 0, 0 }
     , m_fOffset(0.0f)
     , m_fPlayerWidth(0.0f) // Changes made by Karl
     , m_fPlayerHeight(0.0f)
@@ -92,6 +92,12 @@ Warrior::~Warrior()
 
     delete m_sActions.m_pASpriteAttack;
     m_sActions.m_pASpriteAttack = 0;
+
+    delete m_sActions.m_pASpriteDeath;
+    m_sActions.m_pASpriteDeath = nullptr;
+
+    delete m_pStaticDeath;
+    m_pStaticDeath = nullptr;
     // Changes made by Karl
     m_pWorld->DestroyBody(m_pBody);
     m_pBody = nullptr;
@@ -124,9 +130,20 @@ void Warrior::Process(float deltaTime, InputSystem& inputSystem)
 {
     if (!m_bAlive)
     {
-        SceneManager::GetInstance().ChangeScene(6);
+        if (!m_bAnimateDeath)
+        {
+            m_sActions.m_pASpriteDeath->Animate();
+            m_bAnimateDeath = true;
+            SceneManager::GetInstance().ChangeScene(6);
+        }
+        else if (m_sActions.m_pASpriteDeath->IsAnimating())
+        {
+            m_sActions.m_pASpriteDeath->Process(deltaTime);
+        }
+        
         return;
     }
+
     // Handle user input for movement
     HandleInput(deltaTime, inputSystem);
     ProcessActions(deltaTime); // Changes made by Karl
@@ -183,57 +200,68 @@ void Warrior::Process(float deltaTime, InputSystem& inputSystem)
 
 void Warrior::DrawWithCam(Renderer& renderer, Camera& camera)
 {
-    // Get the camera offset
-    Vector2* cameraOffset = camera.GetOffset();
-
-    // Adjust the character position based on the camera offset
-    int adjustedX = m_sActions.m_pASpriteIdle->GetX() - cameraOffset->x;
-
-    // Update sprite position
-    m_sActions.m_pASpriteIdle->SetX(adjustedX);
-    m_sActions.m_pASpriteRun->SetX(adjustedX);
-    m_sActions.m_pASpriteJump->SetX(adjustedX);
-    m_sActions.m_pASpriteAttack->SetX(adjustedX); // Changes made by Karl
-
-    // Draw character sprite with adjusted position
-    if (m_bMovingX || !m_bJumping || !m_bDoubleJump || m_bSlash) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
+    if (m_bAlive)
     {
-        if (!m_bJumping || !m_bDoubleJump) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
+        // Get the camera offset
+        Vector2* cameraOffset = camera.GetOffset();
+
+        // Adjust the character position based on the camera offset
+        int adjustedX = m_sActions.m_pASpriteIdle->GetX() - cameraOffset->x;
+
+        // Update sprite position
+        m_sActions.m_pASpriteIdle->SetX(adjustedX);
+        m_sActions.m_pASpriteRun->SetX(adjustedX);
+        m_sActions.m_pASpriteJump->SetX(adjustedX);
+        m_sActions.m_pASpriteAttack->SetX(adjustedX); // Changes made by Karl
+
+        // Draw character sprite with adjusted position
+        if (m_bMovingX || !m_bJumping || !m_bDoubleJump || m_bSlash) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
         {
-            m_sActions.m_pASpriteJump->Draw(renderer, m_bFlipHorizontally, false);
+            if (!m_bJumping || !m_bDoubleJump) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
+            {
+                m_sActions.m_pASpriteJump->Draw(renderer, m_bFlipHorizontally, false);
+            }
+            else if (m_bSlash)
+            {
+                m_sActions.m_pASpriteAttack->Draw(renderer, m_bFlipHorizontally, false);
+            }
+            else if (m_bMovingX)
+            {
+                m_sActions.m_pASpriteRun->Draw(renderer, m_bFlipHorizontally, false);
+            }
         }
-        else if (m_bSlash)
+        else
         {
-            m_sActions.m_pASpriteAttack->Draw(renderer, m_bFlipHorizontally, false);
+            m_sActions.m_pASpriteIdle->Draw(renderer, m_bFlipHorizontally, false);
         }
-        else if (m_bMovingX)
+
+        //// Draw weapon
+        //if (m_pASprWeapAttack->IsAnimating())
+        //{
+        //    m_pASprWeapAttack->SetX(adjustedX);
+        //    m_pASprWeapAttack->SetY(adjustedY - 15);
+        //    m_pASprWeapAttack->Draw(renderer, m_bFlipHorizontally, false);
+        //}
+        //else
+        //{
+        //    m_pSprWeapon->SetX(adjustedX);
+        //    m_pSprWeapon->SetY(adjustedY - 15);
+        //    m_pSprWeapon->Draw(renderer, m_bFlipHorizontally, true);
+        //}
+
+        // If the character has a health bar, draw it adjusted as well
+        if (m_pHealthbar)
         {
-            m_sActions.m_pASpriteRun->Draw(renderer, m_bFlipHorizontally, false);
+            m_pHealthbar->Draw(renderer);
         }
+    }
+    else if (m_sActions.m_pASpriteDeath->IsAnimating())
+    {
+        m_sActions.m_pASpriteDeath->Draw(renderer, false, false);
     }
     else
     {
-        m_sActions.m_pASpriteIdle->Draw(renderer, m_bFlipHorizontally, false);
-    }
-
-    //// Draw weapon
-    //if (m_pASprWeapAttack->IsAnimating())
-    //{
-    //    m_pASprWeapAttack->SetX(adjustedX);
-    //    m_pASprWeapAttack->SetY(adjustedY - 15);
-    //    m_pASprWeapAttack->Draw(renderer, m_bFlipHorizontally, false);
-    //}
-    //else
-    //{
-    //    m_pSprWeapon->SetX(adjustedX);
-    //    m_pSprWeapon->SetY(adjustedY - 15);
-    //    m_pSprWeapon->Draw(renderer, m_bFlipHorizontally, true);
-    //}
-
-    // If the character has a health bar, draw it adjusted as well
-    if (m_pHealthbar)
-    {
-        m_pHealthbar->Draw(renderer);
+        m_pStaticDeath->Draw(renderer, false, true);
     }
 }
 // Changes made by Karl
@@ -519,6 +547,34 @@ Warrior::SetBodySprites(Renderer& renderer)
         m_sActions.m_pASpriteAttack->SetFrameDuration(0.07f);
         m_fAttackWidth = 515 / SCALE;
         m_fAttackHeight = 286 / SCALE;
+    }
+
+    m_sActions.m_pASpriteDeath = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\warrior\\anim8wardeath.png");
+
+    if (!m_sActions.m_pASpriteDeath)
+    {
+        LogManager::GetInstance().Log("Player death failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_sActions.m_pASpriteDeath->SetupFrames(515, 286);
+        m_sActions.m_pASpriteDeath->SetFrameDuration(0.15f);
+        m_sActions.m_pASpriteDeath->SetX(sm_fBoundaryWidth * 0.5f);
+        m_sActions.m_pASpriteDeath->SetY(sm_fBoundaryHeight * 0.59f);
+    }
+
+    m_pStaticDeath = renderer.CreateSprite("..\\Sprites\\characters\\warrior\\staticdeath.png");
+
+    if (!m_pStaticDeath)
+    {
+        LogManager::GetInstance().Log("Player static death failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_pStaticDeath->SetX(sm_fBoundaryWidth * 0.5f);
+        m_pStaticDeath->SetY(sm_fBoundaryHeight * 0.59f);
     }
 
     return true;

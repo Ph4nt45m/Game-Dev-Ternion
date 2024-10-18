@@ -199,7 +199,7 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 		break;
 	case 6:
 		m_pRenderer->SetClearColour(0, 0, 0);
-		newScene = new DeathScene();
+		newScene = new DeathScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
 		break;
 	case 7:
 		m_pRenderer->SetClearColour(0, 0, 0);
