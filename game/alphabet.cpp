@@ -2,6 +2,9 @@
 #include <iostream>
 
 #include "logmanager.h"
+#include <vector>
+#include <sstream>     // For std::stringstream
+#include <string>      // For std::string and std::getline
 
 Alphabet::Alphabet()
 {
@@ -57,7 +60,7 @@ void Alphabet::Process(const std::string& text, float red, float green, float bl
         }
     }
 }
-
+/*
 void Alphabet::DrawTextW(Renderer& renderer, const std::string& text, float x, float y, float size)
 {
     // Set letter dimensions (adjust based on your image sizes)
@@ -115,5 +118,72 @@ void Alphabet::DrawTextW(Renderer& renderer, const std::string& text, float x, f
 
             xOffset += letterWidth;  // Move the x position for the next letter
         }
+    }
+}
+*/
+void Alphabet::DrawTextW(Renderer& renderer, const std::string& text, float x, float y, float size)
+{
+    // Set letter dimensions
+    letterWidth = 10 * size;
+    letterHeight = 10 * size;
+
+    int windowWidth = renderer.GetWidth();
+    int windowHeight = renderer.GetHeight();
+    float posY = windowHeight * y;
+
+    // Split the text into lines by '\n'
+    std::vector<std::string> lines;
+    std::stringstream ss(text);
+    std::string line;
+
+    while (std::getline(ss, line, '\n')) {
+        lines.push_back(line);
+    }
+
+    // Loop through each line
+    for (const std::string& line : lines) {
+        // Calculate total width for this line
+        int totalLineWidth = 0;
+        for (char c : line) {
+            if (c == ' ') {
+                totalLineWidth += letterWidth;
+            }
+            else if (c >= 'A' && c <= 'Z') {
+                c = c - 'A' + 'a';  // Convert uppercase to lowercase
+            }
+
+            if (letterMap.find(c) != letterMap.end()) {
+                totalLineWidth += letterWidth;
+            }
+        }
+
+        // Calculate the starting x position to center this line
+        float posX = windowWidth * x;
+        float startX = posX - (totalLineWidth / 2.0f);
+
+        // Draw the characters for this line
+        int xOffset = 0;
+        for (char c : line) {
+            if (c == ' ') {
+                xOffset += letterWidth;  // Move the xOffset for spaces
+                continue;
+            }
+            if (c >= 'A' && c <= 'Z') {
+                c = c - 'A' + 'a';  // Convert uppercase to lowercase
+            }
+            if (letterMap.find(c) != letterMap.end()) {
+                // Draw the letter at the specified position with the xOffset
+                letterMap[c]->SetX(startX + xOffset);
+                letterMap[c]->SetY(posY);
+                letterMap[c]->SetScale(size);
+
+                letterMap[c]->Draw(renderer, false, true);
+
+                xOffset += letterWidth;  // Move the x position for the next letter
+            }
+        }
+
+        // Move to the next line (adjust y position)
+        posY += letterHeight;
     }
 }

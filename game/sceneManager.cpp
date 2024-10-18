@@ -16,6 +16,7 @@
 #include "foresttest.h"
 #include "SettingsMenu.h"
 #include "deathScene.h"
+#include "CreditScene.h"
 
 // includes
 #include <cassert>
@@ -199,6 +200,10 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 	case 6:
 		m_pRenderer->SetClearColour(0, 0, 0);
 		newScene = new DeathScene();
+		break;
+	case 7:
+		m_pRenderer->SetClearColour(0, 0, 0);
+		newScene = new CreditScene();
 		break;
 	default:
 		// Handle invalid scene ID

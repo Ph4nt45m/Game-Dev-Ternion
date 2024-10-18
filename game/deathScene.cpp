@@ -13,7 +13,8 @@
 #include "MenuButton.h"
 #include "restartButton.h"
 #include "exitButton.h"
-
+#include "restartButton.h"
+#include "CreditsButton.h"
 
 // Library includes:
 #include <cassert>
@@ -24,6 +25,7 @@
 DeathScene::DeathScene()
     : m_splashScene(nullptr)
     , m_MenuButton(nullptr)
+    , m_RollCredits(nullptr)
     , m_RestartButton(nullptr)
     , m_ExitButton(nullptr)
     , m_fElapsedTime(0.0f)
@@ -36,6 +38,9 @@ DeathScene::~DeathScene()
 
     delete m_MenuButton;
     m_MenuButton = nullptr;
+
+    delete m_RollCredits;
+    m_RollCredits = nullptr;
 
     delete m_RestartButton;
     m_RestartButton = nullptr;
@@ -52,12 +57,15 @@ bool DeathScene::Initialise(Renderer& renderer)
     // Calculate button position as a percentage of window size
     float restartButtonX = windowWidth * 0.2f;
     float restartButtonY = windowHeight * 0.8f;
+    float creditsButtonX = windowWidth * 0.4f;
+    float creditsButtonY = windowHeight * 0.8f;
     float MenuButtonX = windowWidth * 0.6f; // 20% of the window width
     float MenuButtonY = windowHeight * 0.8f; // 70% of the window height // Changes made by Karl
     float exitButtonX = windowWidth * 0.8f; // 20% of the window width
     float exitButtonY = windowHeight * 0.8f; // 70% of the window height // Changes made by Karl
 
-
+    m_RollCredits = new CreditsButton(creditsButtonX, creditsButtonY);
+    m_RollCredits->Initialise(renderer);
     m_RestartButton = new RestartButton(restartButtonX, restartButtonY);
     m_RestartButton->Initialise(renderer);
     m_MenuButton = new MenuButton(MenuButtonX, MenuButtonY);
@@ -76,6 +84,10 @@ void DeathScene::Process(float deltaTime, InputSystem& inputSystem)
     {
         m_RestartButton->Update(deltaTime, inputSystem);
     }
+    if (m_RollCredits)
+    {
+        m_RollCredits->Update(deltaTime, inputSystem);
+    }
     if (m_MenuButton)
     {
         m_MenuButton->Update(deltaTime, inputSystem);
@@ -91,6 +103,10 @@ void DeathScene::Draw(Renderer& renderer)
     if (m_splashScene)
     {
         m_splashScene->Draw(renderer, true, false);
+    }
+    if (m_RollCredits)
+    {
+        m_RollCredits->Draw(renderer);
     }
     if (m_RestartButton)
     {
