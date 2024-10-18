@@ -26,12 +26,10 @@
 //int ForestTest::sm_iSegmentWidth = 0;
 
 ForestTest::ForestTest(b2World* world, Player* character)
-	: m_pSkyFrameOne(nullptr) // Changes made by Karl
-	, m_pSkyFrameTwo(nullptr)
-	, m_pTreesFrameOne(nullptr)
-	, m_pTreesFrameTwo(nullptr)
-	, m_pGroundFrameOne(nullptr)
-	, m_pGroundFrameTwo(nullptr)
+	: m_sDayFrameOne{ 0, 0, 0 } // Changes made by Karl - Start
+	, m_sDayFrameTwo{ 0, 0, 0 }
+	, m_sFogFrameOne{ 0, 0, 0 }
+	, m_sFogFrameTwo{ 0, 0, 0 } // Changes made by Karl - End
 	, m_pGolem(0)
 	, m_pMushroom(0)
 	, m_pSkeleton(0) // Changes made by Karl
@@ -45,29 +43,49 @@ ForestTest::ForestTest(b2World* world, Player* character)
 	, platform(nullptr)
 	, m_fWindowWidth(0.0f) // Changes made by Karl
 	, m_fWindowHeight(0.0f)
+	, m_iBackground(0)
+	, m_fLoopRange(0.0f)
 {
 
 }
 
 ForestTest::~ForestTest()
 {	// Changes made by Karl - Start
-	delete m_pSkyFrameOne;
-	m_pSkyFrameOne = nullptr;
-	
-	delete m_pSkyFrameTwo;
-	m_pSkyFrameTwo = nullptr;
+	delete m_sDayFrameOne.m_pBackground;
+	m_sDayFrameOne.m_pBackground = nullptr;
 
-	delete m_pTreesFrameOne;
-	m_pTreesFrameOne = nullptr;
+	delete m_sDayFrameOne.m_pForeground;
+	m_sDayFrameOne.m_pForeground = nullptr;
 
-	delete m_pTreesFrameTwo;
-	m_pTreesFrameTwo = nullptr;
+	delete m_sDayFrameOne.m_pGround;
+	m_sDayFrameOne.m_pGround = nullptr;
 
-	delete m_pGroundFrameOne;
-	m_pGroundFrameOne = nullptr;
+	delete m_sDayFrameTwo.m_pBackground;
+	m_sDayFrameTwo.m_pBackground = nullptr;
 
-	delete m_pGroundFrameTwo;
-	m_pGroundFrameTwo = nullptr;
+	delete m_sDayFrameTwo.m_pForeground;
+	m_sDayFrameTwo.m_pForeground = nullptr;
+
+	delete m_sDayFrameTwo.m_pGround;
+	m_sDayFrameTwo.m_pGround = nullptr;
+
+	delete m_sFogFrameOne.m_pBackground;
+	m_sFogFrameOne.m_pBackground = nullptr;
+
+	delete m_sFogFrameOne.m_pForeground;
+	m_sFogFrameOne.m_pForeground = nullptr;
+
+	delete m_sFogFrameOne.m_pGround;
+	m_sFogFrameOne.m_pGround = nullptr;
+
+	delete m_sFogFrameTwo.m_pBackground;
+	m_sFogFrameTwo.m_pBackground = nullptr;
+
+	delete m_sFogFrameTwo.m_pForeground;
+	m_sFogFrameTwo.m_pForeground = nullptr;
+
+	delete m_sFogFrameTwo.m_pGround;
+	m_sFogFrameTwo.m_pGround = nullptr;
 	// Changes made by Karl - End
 	delete m_pGolem;
 	m_pGolem = 0;
@@ -108,6 +126,7 @@ ForestTest::Initialise(Renderer& renderer)
 	float worldHeight = 10000.0f / SCALE;  // World height converted to meters
 	m_fWindowHeight = renderer.GetHeight(); // Changes made by Karl - made width and height class variables
 	m_fWindowWidth = renderer.GetWidth();
+	m_fLoopRange = m_sDayFrameOne.m_pBackground->GetWidth() * 2.0f;
 
 	// Set the Y position to the bottom of the window and convert to meters
 	//float groundY = (windowHeight - terrainHeight) / SCALE;  // Convert to meters
@@ -142,63 +161,10 @@ ForestTest::Initialise(Renderer& renderer)
 
 void
 ForestTest::Process(float deltaTime, InputSystem& inputSystem)
-{
-	//if (m_pCharacter->IsDefined()) // Changes made by Karl
-	//{
-	//	m_pCharacter->Process(deltaTime, inputSystem);
-	//}
-	// Changes made by Karl - Start - Background looping functionality added
-	// Get camera vector
-	Vector2* camoffset = camera.GetOffset();
+{	// Changes made by Karl - Deleted old unused character process call
+	// Update background sprite positions
+	UpdateBackground();
 	
-	// Range of loop
-	float range = m_pSkyFrameOne->GetWidth() * 2.0f;
-	
-	// Update frame one sprites x-coordinate
-	m_pSkyFrameOne->SetX(((m_fWindowWidth / 2.0f) - (fmod((camoffset->x / 10.0f), range))));
-	m_pTreesFrameOne->SetX(((m_fWindowWidth / 2.0f) - (fmod((camoffset->x / 2.0f), range))));
-	m_pGroundFrameOne->SetX(((m_fWindowWidth / 2.0f) - (fmod(camoffset->x, range))));
-
-	// Update frame two sprites x-coordinate
-	m_pSkyFrameTwo->SetX((m_pSkyFrameOne->GetX() + m_pSkyFrameOne->GetWidth()));
-	m_pTreesFrameTwo->SetX((m_pTreesFrameOne->GetX() + m_pTreesFrameOne->GetWidth()));
-	m_pGroundFrameTwo->SetX((m_pGroundFrameOne->GetX() + m_pGroundFrameOne->GetWidth()));
-
-	// Loop sky frame one sprite
-	if (m_pSkyFrameOne->GetX() < -(m_pSkyFrameOne->GetWidth() / 2.0f))
-	{
-		m_pSkyFrameOne->SetX((m_pSkyFrameTwo->GetX() + m_pSkyFrameTwo->GetWidth()));
-	}
-
-	// Loop trees frame one sprite
-	if (m_pTreesFrameOne->GetX() < -(m_pTreesFrameOne->GetWidth() / 2.0f))
-	{
-		m_pTreesFrameOne->SetX((m_pTreesFrameTwo->GetX() + m_pTreesFrameTwo->GetWidth()));
-	}
-
-	// Loop ground frame one sprite
-	if (m_pGroundFrameOne->GetX() < -(m_pGroundFrameOne->GetWidth() / 2.0f))
-	{
-		m_pGroundFrameOne->SetX((m_pGroundFrameTwo->GetX() + m_pGroundFrameTwo->GetWidth()));
-	}
-
-	// Loop sky frame two sprite
-	if (m_pGroundFrameTwo->GetX() < -(m_pGroundFrameTwo->GetWidth() / 2.0f))
-	{
-		m_pSkyFrameTwo->SetX((m_pSkyFrameOne->GetX() + m_pSkyFrameOne->GetWidth()));
-	}
-
-	// Loop trees frame two sprite
-	if (m_pTreesFrameTwo->GetX() < -(m_pTreesFrameTwo->GetWidth() / 2.0f))
-	{
-		m_pTreesFrameTwo->SetX((m_pTreesFrameOne->GetX() + m_pTreesFrameOne->GetWidth()));
-	}
-
-	// Loop ground frame two sprite
-	if (m_pGroundFrameTwo->GetX() < -(m_pGroundFrameTwo->GetWidth() / 2.0f))
-	{
-		m_pGroundFrameTwo->SetX((m_pGroundFrameOne->GetX() + m_pGroundFrameOne->GetWidth()));
-	}
 	// Changes made by Karl - End
 	m_pCharacter->Process(deltaTime, inputSystem);
 	m_pGolem->Process(deltaTime, inputSystem);
@@ -213,17 +179,35 @@ ForestTest::Process(float deltaTime, InputSystem& inputSystem)
 void
 ForestTest::Draw(Renderer& renderer)
 {	// Changes made by Karl - Start - Draw layered background sprites
-	// Sky frames
-	m_pSkyFrameOne->Draw(renderer, false, true);
-	m_pSkyFrameTwo->Draw(renderer, false, true);
+	switch (m_iBackground)
+	{
+	case 0: // Day scene
+		// Background frames
+		m_sDayFrameOne.m_pBackground->Draw(renderer, false, true);
+		m_sDayFrameTwo.m_pBackground->Draw(renderer, false, true);
 
-	// Trees frames
-	m_pTreesFrameOne->Draw(renderer, false, true);
-	m_pTreesFrameTwo->Draw(renderer, false, true);
+		// Foreground frames
+		m_sDayFrameOne.m_pForeground->Draw(renderer, false, true);
+		m_sDayFrameTwo.m_pForeground->Draw(renderer, false, true);
 
-	// Ground frames
-	m_pGroundFrameOne->Draw(renderer, false, true);
-	m_pGroundFrameTwo->Draw(renderer, false, true);
+		// Ground frames
+		m_sDayFrameOne.m_pGround->Draw(renderer, false, true);
+		m_sDayFrameTwo.m_pGround->Draw(renderer, false, true);
+		break;
+	case 1: // Fog scene
+		// Background frames
+		m_sFogFrameOne.m_pBackground->Draw(renderer, false, true);
+		m_sFogFrameTwo.m_pBackground->Draw(renderer, false, true);
+
+		// Foreground frames
+		m_sFogFrameOne.m_pForeground->Draw(renderer, false, true);
+		m_sFogFrameTwo.m_pForeground->Draw(renderer, false, true);
+
+		// Ground frames
+		m_sFogFrameOne.m_pGround->Draw(renderer, false, true);
+		m_sFogFrameTwo.m_pGround->Draw(renderer, false, true);
+		break;
+	}
 	// Changes made by Karl - End
 	m_pCharacter->DrawWithCam(renderer, camera);
 	//printf("Char: %f\n", m_pCharacter->GetPosition().x);
@@ -284,91 +268,279 @@ ForestTest::SetEnemies(Renderer& renderer)
 
 	return true;
 }
-// Changes made by Karl - Start - Function to set all background sprites for layering
+// Changes made by Karl - Start
+// Function to set all background sprites for layering
 bool
 ForestTest::SetBGSprites(Renderer& renderer)
-{
+{	
+	// Day scene
 	// Frame one
-	m_pSkyFrameOne = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\sky.png");
+	m_sDayFrameOne.m_pBackground = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\backgroundday.png");
 
-	if (!(m_pSkyFrameOne))
+	if (!(m_sDayFrameOne.m_pBackground))
 	{
-		LogManager::GetInstance().Log("Sky frame one failed to initialise!");
+		LogManager::GetInstance().Log("Background day frame one failed to initialise!");
 		return false;
 	}
 	else
 	{
-		m_pSkyFrameOne->SetX(renderer.GetWidth() / 2.0f);
-		m_pSkyFrameOne->SetY(renderer.GetHeight() / 2.0f);
+		m_sDayFrameOne.m_pBackground->SetX(renderer.GetWidth() / 2.0f);
+		m_sDayFrameOne.m_pBackground->SetY(renderer.GetHeight() / 2.0f);
 	}
 
-	m_pTreesFrameOne = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\trees.png");
+	m_sDayFrameOne.m_pForeground = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\foregroundday.png");
 
-	if (!(m_pTreesFrameOne))
+	if (!(m_sDayFrameOne.m_pForeground))
 	{
-		LogManager::GetInstance().Log("Trees frame one failed to initialise!");
+		LogManager::GetInstance().Log("Foreground day frame one failed to initialise!");
 		return false;
 	}
 	else
 	{
-		m_pTreesFrameOne->SetX(renderer.GetWidth() / 2.0f);
-		m_pTreesFrameOne->SetY(renderer.GetHeight() / 2.0f);
+		m_sDayFrameOne.m_pForeground->SetX(renderer.GetWidth() / 2.0f);
+		m_sDayFrameOne.m_pForeground->SetY(renderer.GetHeight() / 2.0f);
 	}
 
-	m_pGroundFrameOne = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\ground.png");
+	m_sDayFrameOne.m_pGround = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\groundday.png");
 
-	if (!(m_pGroundFrameOne))
+	if (!(m_sDayFrameOne.m_pGround))
 	{
-		LogManager::GetInstance().Log("Ground frame one failed to initialise!");
+		LogManager::GetInstance().Log("Ground day frame one failed to initialise!");
 		return false;
 	}
 	else
 	{
-		m_pGroundFrameOne->SetX(renderer.GetWidth() / 2.0f);
-		m_pGroundFrameOne->SetY(renderer.GetHeight() / 2.0f);
+		m_sDayFrameOne.m_pGround->SetX(renderer.GetWidth() / 2.0f);
+		m_sDayFrameOne.m_pGround->SetY(renderer.GetHeight() / 2.0f);
 	}
 
 	// Frame two
-	m_pSkyFrameTwo = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\sky.png");
+	m_sDayFrameTwo.m_pBackground = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\backgroundday.png");
 
-	if (!(m_pSkyFrameTwo))
+	if (!(m_sDayFrameTwo.m_pBackground))
 	{
-		LogManager::GetInstance().Log("Sky frame two failed to initialise!");
+		LogManager::GetInstance().Log("Background day frame two failed to initialise!");
 		return false;
 	}
 	else
 	{
-		m_pSkyFrameTwo->SetX((renderer.GetWidth() + (m_pSkyFrameTwo->GetWidth() / 2.0f)));
-		m_pSkyFrameTwo->SetY(renderer.GetHeight() / 2.0f);
+		m_sDayFrameTwo.m_pBackground->SetX((renderer.GetWidth() + (m_sDayFrameTwo.m_pBackground->GetWidth() / 2.0f)));
+		m_sDayFrameTwo.m_pBackground->SetY(renderer.GetHeight() / 2.0f);
 	}
 
-	m_pTreesFrameTwo = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\trees.png");
+	m_sDayFrameTwo.m_pForeground = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\foregroundday.png");
 
-	if (!(m_pTreesFrameTwo))
+	if (!(m_sDayFrameTwo.m_pForeground))
 	{
-		LogManager::GetInstance().Log("Trees frame two failed to initialise!");
+		LogManager::GetInstance().Log("Foreground day frame two failed to initialise!");
 		return false;
 	}
 	else
 	{
-		m_pTreesFrameTwo->SetX((renderer.GetWidth() + (m_pTreesFrameTwo->GetWidth() / 2.0f)));
-		m_pTreesFrameTwo->SetY(renderer.GetHeight() / 2.0f);
+		m_sDayFrameTwo.m_pForeground->SetX((renderer.GetWidth() + (m_sDayFrameTwo.m_pForeground->GetWidth() / 2.0f)));
+		m_sDayFrameTwo.m_pForeground->SetY(renderer.GetHeight() / 2.0f);
 	}
 
-	m_pGroundFrameTwo = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\ground.png");
+	m_sDayFrameTwo.m_pGround = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\groundday.png");
 
-	if (!(m_pGroundFrameTwo))
+	if (!(m_sDayFrameTwo.m_pGround))
 	{
-		LogManager::GetInstance().Log("Ground frame two failed to initialise!");
+		LogManager::GetInstance().Log("Ground day frame two failed to initialise!");
 		return false;
 	}
 	else
 	{
-		m_pGroundFrameTwo->SetX((renderer.GetWidth() + (m_pGroundFrameTwo->GetWidth() / 2.0f)));
-		m_pGroundFrameTwo->SetY(renderer.GetHeight() / 2.0f);
+		m_sDayFrameTwo.m_pGround->SetX((renderer.GetWidth() + (m_sDayFrameTwo.m_pGround->GetWidth() / 2.0f)));
+		m_sDayFrameTwo.m_pGround->SetY(renderer.GetHeight() / 2.0f);
+	}
+
+	// Fog scene
+	// Frame one
+	m_sFogFrameOne.m_pBackground = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\backgroundfog.png");
+
+	if (!(m_sFogFrameOne.m_pBackground))
+	{
+		LogManager::GetInstance().Log("Background fog frame one failed to initialise!");
+		return false;
+	}
+	else
+	{
+		m_sFogFrameOne.m_pBackground->SetX(renderer.GetWidth() / 2.0f);
+		m_sFogFrameOne.m_pBackground->SetY(renderer.GetHeight() / 2.0f);
+	}
+
+	m_sFogFrameOne.m_pForeground = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\foregroundfog.png");
+
+	if (!(m_sFogFrameOne.m_pForeground))
+	{
+		LogManager::GetInstance().Log("Foreground fog frame one failed to initialise!");
+		return false;
+	}
+	else
+	{
+		m_sFogFrameOne.m_pForeground->SetX(renderer.GetWidth() / 2.0f);
+		m_sFogFrameOne.m_pForeground->SetY(renderer.GetHeight() / 2.0f);
+	}
+
+	m_sFogFrameOne.m_pGround = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\groundfog.png");
+
+	if (!(m_sFogFrameOne.m_pGround))
+	{
+		LogManager::GetInstance().Log("Ground fog frame one failed to initialise!");
+		return false;
+	}
+	else
+	{
+		m_sFogFrameOne.m_pGround->SetX(renderer.GetWidth() / 2.0f);
+		m_sFogFrameOne.m_pGround->SetY(renderer.GetHeight() / 2.0f);
+	}
+
+	// Frame two
+	m_sFogFrameTwo.m_pBackground = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\backgroundfog.png");
+
+	if (!(m_sFogFrameTwo.m_pBackground))
+	{
+		LogManager::GetInstance().Log("Background fog frame two failed to initialise!");
+		return false;
+	}
+	else
+	{
+		m_sFogFrameTwo.m_pBackground->SetX((renderer.GetWidth() + (m_sFogFrameTwo.m_pBackground->GetWidth() / 2.0f)));
+		m_sFogFrameTwo.m_pBackground->SetY(renderer.GetHeight() / 2.0f);
+	}
+
+	m_sFogFrameTwo.m_pForeground = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\foregroundfog.png");
+
+	if (!(m_sFogFrameTwo.m_pForeground))
+	{
+		LogManager::GetInstance().Log("Foreground fog frame two failed to initialise!");
+		return false;
+	}
+	else
+	{
+		m_sFogFrameTwo.m_pForeground->SetX((renderer.GetWidth() + (m_sFogFrameTwo.m_pForeground->GetWidth() / 2.0f)));
+		m_sFogFrameTwo.m_pForeground->SetY(renderer.GetHeight() / 2.0f);
+	}
+
+	m_sFogFrameTwo.m_pGround = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\groundfog.png");
+
+	if (!(m_sFogFrameTwo.m_pGround))
+	{
+		LogManager::GetInstance().Log("Ground fog frame two failed to initialise!");
+		return false;
+	}
+	else
+	{
+		m_sFogFrameTwo.m_pGround->SetX((renderer.GetWidth() + (m_sFogFrameTwo.m_pGround->GetWidth() / 2.0f)));
+		m_sFogFrameTwo.m_pGround->SetY(renderer.GetHeight() / 2.0f);
 	}
 
 	return true;
+}
+
+void
+ForestTest::UpdateBackground()
+{
+	// Get camera vector
+	Vector2* camoffset = camera.GetOffset();
+
+	switch (m_iBackground)
+	{
+	case 0: // Day scene
+		// Update frame one sprites x-coordinate
+		m_sDayFrameOne.m_pBackground->SetX(((m_fWindowWidth / 2.0f) - (fmod((camoffset->x / 10.0f), m_fLoopRange))));
+		m_sDayFrameOne.m_pForeground->SetX(((m_fWindowWidth / 2.0f) - (fmod((camoffset->x / 2.0f), m_fLoopRange))));
+		m_sDayFrameOne.m_pGround->SetX(((m_fWindowWidth / 2.0f) - (fmod(camoffset->x, m_fLoopRange))));
+
+		// Update frame two sprites x-coordinate
+		m_sDayFrameTwo.m_pBackground->SetX((m_sDayFrameOne.m_pBackground->GetX() + m_sDayFrameOne.m_pBackground->GetWidth()));
+		m_sDayFrameTwo.m_pForeground->SetX((m_sDayFrameOne.m_pForeground->GetX() + m_sDayFrameOne.m_pForeground->GetWidth()));
+		m_sDayFrameTwo.m_pGround->SetX((m_sDayFrameOne.m_pGround->GetX() + m_sDayFrameOne.m_pGround->GetWidth()));
+
+		// Loop background frame one sprite
+		if (m_sDayFrameOne.m_pBackground->GetX() < -(m_sDayFrameOne.m_pBackground->GetWidth() / 2.0f))
+		{
+			m_sDayFrameOne.m_pBackground->SetX((m_sDayFrameTwo.m_pBackground->GetX() + m_sDayFrameTwo.m_pBackground->GetWidth()));
+		}
+
+		// Loop foreground frame one sprite
+		if (m_sDayFrameOne.m_pForeground->GetX() < -(m_sDayFrameOne.m_pForeground->GetWidth() / 2.0f))
+		{
+			m_sDayFrameOne.m_pForeground->SetX((m_sDayFrameTwo.m_pForeground->GetX() + m_sDayFrameTwo.m_pForeground->GetWidth()));
+		}
+
+		// Loop ground frame one sprite
+		if (m_sDayFrameOne.m_pGround->GetX() < -(m_sDayFrameOne.m_pGround->GetWidth() / 2.0f))
+		{
+			m_sDayFrameOne.m_pGround->SetX((m_sDayFrameTwo.m_pGround->GetX() + m_sDayFrameTwo.m_pGround->GetWidth()));
+		}
+
+		// Loop background frame two sprite
+		if (m_sDayFrameTwo.m_pBackground->GetX() < -(m_sDayFrameTwo.m_pBackground->GetWidth() / 2.0f))
+		{
+			m_sDayFrameTwo.m_pBackground->SetX((m_sDayFrameOne.m_pBackground->GetX() + m_sDayFrameOne.m_pBackground->GetWidth()));
+		}
+
+		// Loop foreground frame two sprite
+		if (m_sDayFrameTwo.m_pForeground->GetX() < -(m_sDayFrameTwo.m_pForeground->GetWidth() / 2.0f))
+		{
+			m_sDayFrameTwo.m_pForeground->SetX((m_sDayFrameOne.m_pForeground->GetX() + m_sDayFrameOne.m_pForeground->GetWidth()));
+		}
+
+		// Loop ground frame two sprite
+		if (m_sDayFrameTwo.m_pGround->GetX() < -(m_sDayFrameTwo.m_pGround->GetWidth() / 2.0f))
+		{
+			m_sDayFrameTwo.m_pGround->SetX((m_sDayFrameOne.m_pGround->GetX() + m_sDayFrameOne.m_pGround->GetWidth()));
+		}
+		break;
+	case 1: // Fog scene
+		// Update frame one sprites x-coordinate
+		m_sFogFrameOne.m_pBackground->SetX(((m_fWindowWidth / 2.0f) - (fmod((camoffset->x / 10.0f), m_fLoopRange))));
+		m_sFogFrameOne.m_pForeground->SetX(((m_fWindowWidth / 2.0f) - (fmod((camoffset->x / 2.0f), m_fLoopRange))));
+		m_sFogFrameOne.m_pGround->SetX(((m_fWindowWidth / 2.0f) - (fmod(camoffset->x, m_fLoopRange))));
+
+		// Update frame two sprites x-coordinate
+		m_sFogFrameTwo.m_pBackground->SetX((m_sFogFrameOne.m_pBackground->GetX() + m_sFogFrameOne.m_pBackground->GetWidth()));
+		m_sFogFrameTwo.m_pForeground->SetX((m_sFogFrameOne.m_pForeground->GetX() + m_sFogFrameOne.m_pForeground->GetWidth()));
+		m_sFogFrameTwo.m_pGround->SetX((m_sFogFrameOne.m_pGround->GetX() + m_sFogFrameOne.m_pGround->GetWidth()));
+
+		// Loop background frame one sprite
+		if (m_sFogFrameOne.m_pBackground->GetX() < -(m_sFogFrameOne.m_pBackground->GetWidth() / 2.0f))
+		{
+			m_sFogFrameOne.m_pBackground->SetX((m_sFogFrameTwo.m_pBackground->GetX() + m_sFogFrameTwo.m_pBackground->GetWidth()));
+		}
+
+		// Loop foreground frame one sprite
+		if (m_sFogFrameOne.m_pForeground->GetX() < -(m_sFogFrameOne.m_pForeground->GetWidth() / 2.0f))
+		{
+			m_sFogFrameOne.m_pForeground->SetX((m_sFogFrameTwo.m_pForeground->GetX() + m_sFogFrameTwo.m_pForeground->GetWidth()));
+		}
+
+		// Loop ground frame one sprite
+		if (m_sFogFrameOne.m_pGround->GetX() < -(m_sFogFrameOne.m_pGround->GetWidth() / 2.0f))
+		{
+			m_sFogFrameOne.m_pGround->SetX((m_sFogFrameTwo.m_pGround->GetX() + m_sFogFrameTwo.m_pGround->GetWidth()));
+		}
+
+		// Loop background frame two sprite
+		if (m_sFogFrameTwo.m_pBackground->GetX() < -(m_sFogFrameTwo.m_pBackground->GetWidth() / 2.0f))
+		{
+			m_sFogFrameTwo.m_pBackground->SetX((m_sFogFrameOne.m_pBackground->GetX() + m_sFogFrameOne.m_pBackground->GetWidth()));
+		}
+
+		// Loop foreground frame two sprite
+		if (m_sFogFrameTwo.m_pForeground->GetX() < -(m_sFogFrameTwo.m_pForeground->GetWidth() / 2.0f))
+		{
+			m_sFogFrameTwo.m_pForeground->SetX((m_sFogFrameOne.m_pForeground->GetX() + m_sFogFrameOne.m_pForeground->GetWidth()));
+		}
+
+		// Loop ground frame two sprite
+		if (m_sFogFrameTwo.m_pGround->GetX() < -(m_sFogFrameTwo.m_pGround->GetWidth() / 2.0f))
+		{
+			m_sFogFrameTwo.m_pGround->SetX((m_sFogFrameOne.m_pGround->GetX() + m_sFogFrameOne.m_pGround->GetWidth()));
+		}
+		break;
+	}
 }
 // Changes made by Karl - End
 void
