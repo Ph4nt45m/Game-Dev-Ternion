@@ -756,6 +756,12 @@ void Warrior::DeleteBody()
     }
 }
 
+void
+Warrior::SetAlive(bool alive)
+{
+    m_bAlive = alive;
+}
+
 bool
 Warrior::IsGodmode()
 {

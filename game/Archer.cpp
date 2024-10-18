@@ -747,6 +747,12 @@ Healthbar* Archer::getPlayerHealthbar()
     return m_pHealthbar;
 }
 
+void
+Archer::SetAlive(bool alive)
+{
+    m_bAlive = alive;
+}
+
 bool
 Archer::IsGodmode()
 {

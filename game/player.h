@@ -40,6 +40,7 @@ public:
 	//Kyle
 	virtual Healthbar* getPlayerHealthbar() = 0;
 	// Changes made by Karl
+	virtual void SetAlive(bool alive) = 0;
 	virtual bool IsGodmode() = 0;
 	//virtual void DebugDraw() = 0;
 

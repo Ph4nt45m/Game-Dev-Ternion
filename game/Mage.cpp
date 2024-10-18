@@ -774,6 +774,12 @@ Healthbar* Mage::getPlayerHealthbar()
     return m_pHealthbar;
 }
 
+void
+Mage::SetAlive(bool alive)
+{
+    m_bAlive = alive;
+}
+
 bool
 Mage::IsGodmode()
 {
