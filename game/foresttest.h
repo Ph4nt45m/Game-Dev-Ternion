@@ -23,6 +23,13 @@ class Skeleton; // Changes made by Karl
 class Spider;
 class Sprite;
 
+typedef struct
+{
+	Sprite* m_pBackground;
+	Sprite* m_pForeground;
+	Sprite* m_pGround;
+} Background;
+
 // Class declarations:
 class ForestTest : public Scene
 {
@@ -37,6 +44,7 @@ public:
 
 	bool SetEnemies(Renderer& renderer);
 	bool SetBGSprites(Renderer& renderer); // Changes made by Karl - Function for setting background sprites
+	void UpdateBackground();
 
 protected:
 
@@ -51,12 +59,10 @@ public:
 	b2World* m_pWorld;
 
 protected:
-	Sprite* m_pSkyFrameOne; // Changes made by Karl - Start - Split background to layered sprites
-	Sprite* m_pSkyFrameTwo;
-	Sprite* m_pTreesFrameOne;
-	Sprite* m_pTreesFrameTwo;
-	Sprite* m_pGroundFrameOne;
-	Sprite* m_pGroundFrameTwo; // Changes made by Karl - End
+	Background m_sDayFrameOne; // Changes made by Karl - Start - Structs for background frames instead of singular sprite variables
+	Background m_sDayFrameTwo;
+	Background m_sFogFrameOne;
+	Background m_sFogFrameTwo; // Changes made by Karl - End
 	Golem* m_pGolem;
 	Mushroom* m_pMushroom;
 	Skeleton* m_pSkeleton; // Changes made by Karl
@@ -70,6 +76,8 @@ protected:
 
 	float m_fWindowWidth;
 	float m_fWindowHeight;
+	int m_iBackground;
+	float m_fLoopRange;
 private:
 	std::vector<Terrain*> m_terrainSegments;
 };
