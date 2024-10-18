@@ -20,7 +20,12 @@ enum GameObjectType {
     ENEMY_PROJECTILE = 8,
     PLAYER_SP_ATTACK = 9, 
     PLAYER_PROJECTILE = 10,
-    MUSHROOM = 11
+    MUSHROOM = 11,
+    MUSHROOM_HEAD = 12,
+    SPIDER = 13,
+    SPIDER_BITE = 14,
+    SKELETON = 15,
+    SKELETON_ATTACK = 16
 };
 
 // MyContactListener class inheriting from b2ContactListener

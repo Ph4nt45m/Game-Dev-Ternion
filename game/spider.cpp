@@ -94,8 +94,11 @@ Spider::Initialise(Renderer& renderer)
         // Attach the fixture to the body
         m_pBody->CreateFixture(&fixtureDef);
 
-        // Set user data to identify this body as a Golem
-        m_pBody->SetUserData((void*)MUSHROOM);
+        // Set user data to identify this body as a Spider
+
+        userData* spiderData = new userData{ SPIDER, static_cast<void*>(this) };
+        m_pBody->SetUserData(static_cast<void*>(spiderData));
+
         m_sAnimations.m_pASprSpiderIdle->SetX((int)m_pBody->GetPosition().x * SCALE);
         m_sAnimations.m_pASprSpiderIdle->SetY((int)m_pBody->GetPosition().y * SCALE);
 
@@ -397,8 +400,12 @@ void Spider::CreateSlash()
     // Attach the fixture to the body
     m_pBite->CreateFixture(&BitefixtureDef);
 
-    // Set user data to identify this body as a Golem
-    m_pBite->SetUserData((void*)MUSHROOM);
+    // Set user data to identify this body as a spider
+
+    userData* biteData = new userData{ SPIDER_BITE, static_cast<void*>(this) };
+    m_pBite->SetUserData(static_cast<void*>(biteData));
+
+
 }
 
 void Spider::DeleteSlash()

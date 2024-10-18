@@ -95,7 +95,10 @@ Skeleton::Initialise(Renderer& renderer)
         m_pBody->CreateFixture(&fixtureDef);
 
         // Set user data to identify this body as a Golem
-        m_pBody->SetUserData((void*)MUSHROOM);
+
+        userData* skeletonData = new userData{ SKELETON, static_cast<void*>(this) };
+        m_pBody->SetUserData(static_cast<void*>(skeletonData));
+
         m_sAnimations.m_pASprSkelIdle->SetX((int)m_pBody->GetPosition().x * SCALE);
         m_sAnimations.m_pASprSkelIdle->SetY((int)m_pBody->GetPosition().y * SCALE);
 
@@ -398,7 +401,10 @@ void Skeleton::CreateSlash()
     m_pSlash->CreateFixture(&SlashfixtureDef);
 
     // Set user data to identify this body as a Golem
-    m_pSlash->SetUserData((void*)MUSHROOM);
+
+    userData* attackData = new userData{ SKELETON_ATTACK, static_cast<void*>(this) };
+    m_pSlash->SetUserData(static_cast<void*>(attackData));
+
 }
 
 void Skeleton::DeleteSlash()
