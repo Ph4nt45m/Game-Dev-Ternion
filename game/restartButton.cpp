@@ -93,9 +93,6 @@ void RestartButton::Update(float deltaTime, InputSystem& inputSystem)
             Game::GetInstance().DeleteCharacter();
         }
 
-        float maxHealth = Game::GetInstance().GetCharacter()->getPlayerHealthbar()->GetMaxHealth();
-        Game::GetInstance().GetCharacter()->SetAlive(true);
-        Game::GetInstance().GetCharacter()->getPlayerHealthbar()->SetCurrentHealth(maxHealth);
         SceneManager::GetInstance().ChangeScene(2);
     }
     if (m_isHovered) // Changes made by Karl

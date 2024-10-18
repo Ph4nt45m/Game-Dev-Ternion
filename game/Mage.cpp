@@ -645,7 +645,7 @@ Mage::DefineCharacter(Renderer& renderer)
     }
 
     // Initialize healthbar
-    m_pHealthbar = new Healthbar(renderer, 100.0f);
+    m_pHealthbar = new Healthbar(renderer, 200.0f);
 
     // Box2D Body Initialization (Changes made by Rauen)
 
