@@ -38,6 +38,8 @@ public:
 
 	//Kyle
 	virtual Healthbar* getPlayerHealthbar() = 0;
+	// Changes made by Karl
+	virtual bool IsGodmode() = 0;
 	//virtual void DebugDraw() = 0;
 
 protected:
@@ -52,7 +54,7 @@ public:
 
 protected:
 	bool m_bDoubleJump;
-
+	bool m_bGodmode; // Changes made by Karl
 
 private:
 

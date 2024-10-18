@@ -231,6 +231,12 @@ Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
 {
     b2Vec2 velocity = m_pBody->GetLinearVelocity();
 
+    // Toggle godmode
+    if (inputSystem.GetKeyState(SDL_SCANCODE_L) == BS_PRESSED)
+    {
+        m_bGodmode = !m_bGodmode;
+    }
+
     // Move right when pressing D
     if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD)
     {
@@ -673,6 +679,12 @@ Archer::SetProjAlive(bool alive)
 Healthbar* Archer::getPlayerHealthbar()
 {
     return m_pHealthbar;
+}
+
+bool
+Archer::IsGodmode()
+{
+    return m_bGodmode;
 }
 
 

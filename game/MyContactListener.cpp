@@ -1,6 +1,7 @@
 #include "MyContactListener.h"
 #include <stdio.h>
 #include "player.h"
+#include "game.h"
 
 //Enemies
 #include "golem.h"
@@ -74,6 +75,7 @@ void MyContactListener::BeginContact(b2Contact* contact)
 
     if (fixtureAIsSensor && userDataA->type == GOLEM_SLASH && userDataB->type == PLAYER)
     {
+        //Game::GetInstance().GetCharacter()->IsGodmode(); // Changes made by Karl - Check for godmode
         printf("Player hit with slash\n");
         //Changes made by Kyle
         //Just to test

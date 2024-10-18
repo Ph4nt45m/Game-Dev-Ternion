@@ -54,6 +54,8 @@ public:
 
     //Kyle changes
     Healthbar* getPlayerHealthbar() override;
+    // Changes made by Karl
+    virtual bool IsGodmode() override;
 
     //void DebugDraw() override;
 
