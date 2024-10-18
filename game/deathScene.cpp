@@ -56,13 +56,13 @@ bool DeathScene::Initialise(Renderer& renderer)
     int windowHeight = renderer.GetHeight();
     // Calculate button position as a percentage of window size
     float restartButtonX = windowWidth * 0.2f;
-    float restartButtonY = windowHeight * 0.8f;
+    float restartButtonY = windowHeight * 0.85f;
     float creditsButtonX = windowWidth * 0.4f;
-    float creditsButtonY = windowHeight * 0.8f;
+    float creditsButtonY = windowHeight * 0.85f;
     float MenuButtonX = windowWidth * 0.6f; // 20% of the window width
-    float MenuButtonY = windowHeight * 0.8f; // 70% of the window height // Changes made by Karl
+    float MenuButtonY = windowHeight * 0.85f; // 70% of the window height // Changes made by Karl
     float exitButtonX = windowWidth * 0.8f; // 20% of the window width
-    float exitButtonY = windowHeight * 0.8f; // 70% of the window height // Changes made by Karl
+    float exitButtonY = windowHeight * 0.85f; // 70% of the window height // Changes made by Karl
 
     m_RollCredits = new CreditsButton(creditsButtonX, creditsButtonY);
     m_RollCredits->Initialise(renderer);

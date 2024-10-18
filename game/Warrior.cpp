@@ -12,6 +12,7 @@
 #include "healthbar.h"
 #include "game.h"
 #include "MyContactListener.h"
+#include "sceneManager.h"
 
 // Library includes:
 #include <cassert>
@@ -121,6 +122,11 @@ bool Warrior::Initialise(Renderer& renderer)
 
 void Warrior::Process(float deltaTime, InputSystem& inputSystem)
 {
+    if (!m_bAlive)
+    {
+        SceneManager::GetInstance().ChangeScene(6);
+        return;
+    }
     // Handle user input for movement
     HandleInput(deltaTime, inputSystem);
     ProcessActions(deltaTime); // Changes made by Karl
@@ -167,6 +173,11 @@ void Warrior::Process(float deltaTime, InputSystem& inputSystem)
     if (m_pHealthbar)
     {
         m_pHealthbar->Process(deltaTime, inputSystem);
+    }
+
+    if (getPlayerHealthbar()->GetCurrentHealth() <= 0)
+    {
+        m_bAlive = false;
     }
 }
 

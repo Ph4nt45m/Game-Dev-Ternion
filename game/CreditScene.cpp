@@ -70,7 +70,7 @@ void CreditScene::Draw(Renderer& renderer)
     }
     if (alphabet)
     {
-        std::string sentence = "Development Team\n\nKyle Le Grange\nRauen Le Grange\nEthan Smith\nKarl Francisco\n\n\n\nMusic From\n\nBlakeJ\nJosh Woodward\n\n\n\nSounds From\n\nsoundbible\n\n\n\n\nSprites from\n\nchierit\nMonoPixelArt\nrecursion corp\nPedrodis\nFoozle";
+        std::string sentence = "Development Team\n\nKyle Le Grange\nRauen Le Grange\nEthan Smith\nKarl Francisco\n\n\n\nMusic From\n\nBlakeJ\nJosh Woodward\n\n\n\nSounds From\n\nsoundbible\n\n\n\n\nSprites from\n\nchierit\nMonoPixelArt\nrecursion corp\nPedrodis\nFoozle\ncraftpix.com";
         alphabet->DrawTextW(renderer, sentence, 0.5f, m_fmoveUp, 3.0f);
     }
 }

@@ -79,7 +79,7 @@ void MyContactListener::BeginContact(b2Contact* contact)
         printf("Player hit with slash\n");
         //Changes made by Kyle
         //Just to test
-        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(10);
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(100);
         //Changes ended
     }
     else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == GOLEM_SLASH)
@@ -87,7 +87,7 @@ void MyContactListener::BeginContact(b2Contact* contact)
         printf("Player hit with slash (reverse)\n");
         //Changes made by Kyle
 //Just to test
-        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(10);
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(100);
         //Changes ended
 
     }
@@ -95,12 +95,12 @@ void MyContactListener::BeginContact(b2Contact* contact)
     if (fixtureAIsSensor && userDataA->type == GOLEM_SLAM && userDataB->type == PLAYER)
     {
         printf("Player hit with slam\n");
-        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(10);
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(100);
     }
     else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == GOLEM_SLAM)
     {
         printf("Player hit with slam (reverse)\n");
-        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(10);
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(100);
     }
 
     //mushroom Body
