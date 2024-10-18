@@ -75,15 +75,13 @@ bool SettingScene::Initialise(Renderer& renderer)
     float MenuButtonX = windowWidth * 0.8f;
     float MenuButtonY = windowHeight * 0.9f;
     float IncreaseX = windowWidth * 0.7f;
-    float IncreaseY = windowHeight * 0.3f;
+    float IncreaseY = windowHeight * 0.35f;
     float DecreaseX = windowWidth * 0.3f;
-    float DecreaseY = windowHeight * 0.3f;
-    float MusicBarX = windowWidth * 0.5f;
-    float MusicBarY = windowWidth * 0.3f;
+    float DecreaseY = windowHeight * 0.35f;
     float IncreaseSoundX = windowWidth * 0.7f;
-    float IncreaseSoundY = windowHeight * 0.45f;
+    float IncreaseSoundY = windowHeight * 0.65f;
     float DecreaseSoundX = windowWidth * 0.3f;
-    float DecreaseSoundY = windowHeight * 0.45f;
+    float DecreaseSoundY = windowHeight * 0.65f;
 
     MainMenu = new MenuButton(MenuButtonX, MenuButtonY);
     MainMenu->Initialise(renderer);
@@ -165,9 +163,13 @@ void SettingScene::Draw(Renderer& renderer)
     }
     std::string MusicSentence = std::to_string(Game::GetInstance().GetSounds()->getMusicVolume());
     std::string SoundSentence = std::to_string(Game::GetInstance().GetSounds()->getSoundVolume("bounce"));
+    std::string Music = "Music";
+    std::string Sound = "Sound";
 
-    alphabet->DrawTextW(renderer, MusicSentence, 0.5f, 0.3f, 5.0f);
-    alphabet->DrawTextW(renderer, SoundSentence, 0.5f, 0.45f, 5.0f);
+    alphabet->DrawTextW(renderer, Music, 0.5f, 0.2f, 5.0f);
+    alphabet->DrawTextW(renderer, MusicSentence, 0.5f, 0.35f, 5.0f);
+    alphabet->DrawTextW(renderer, Sound, 0.5f, 0.5f, 5.0f);
+    alphabet->DrawTextW(renderer, SoundSentence, 0.5f, 0.65f, 5.0f);
 }
 
 void SettingScene::DebugDraw()
