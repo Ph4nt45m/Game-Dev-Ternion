@@ -77,7 +77,6 @@ protected:
     Healthbar* m_pHealthbar;
     int m_iCharacterType;
     float m_fAngleOfAttack;
-    bool m_bDoubleJump;
     bool m_bDefined;
 
     //Box2D verables

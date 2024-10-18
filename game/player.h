@@ -51,6 +51,7 @@ public:
 
 
 protected:
+	bool m_bDoubleJump;
 
 
 private:
