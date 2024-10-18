@@ -184,6 +184,7 @@
     <ClCompile Include="IncreaseButton.cpp" />
     <ClCompile Include="IncreaseSoundEffectButton.cpp" />
     <ClCompile Include="inputsystem.cpp" />
+    <ClCompile Include="LevelBulder.cpp" />
     <ClCompile Include="logmanager.cpp" />
     <ClCompile Include="Mage.cpp" />
     <ClCompile Include="main.cpp" />
@@ -258,6 +259,7 @@
     <ClInclude Include="IncreaseSoundEffectButton.h" />
     <ClInclude Include="inlinehelpers.h" />
     <ClInclude Include="inputsystem.h" />
+    <ClInclude Include="LevelBuilder.h" />
     <ClInclude Include="logmanager.h" />
     <ClInclude Include="Mage.h" />
     <ClInclude Include="matrix4.h" />

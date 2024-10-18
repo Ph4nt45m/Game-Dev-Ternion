@@ -9,6 +9,8 @@
 #include <cassert>
 
 Player::Player()
+	: m_bDoubleJump(true)
+	, m_bGodmode(false)
 {
 
 }

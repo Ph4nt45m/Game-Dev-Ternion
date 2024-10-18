@@ -30,7 +30,6 @@ Warrior::Warrior(b2World* world)
     , m_iCharacterType(0)
     , m_pHealthbar(0)
     , m_fAngleOfAttack(0.0f)
-    , m_bDoubleJump(false)
     , m_bDefined(false)
     , m_fHeadBodyOffset(0.0f)
     , m_fLengthFootToBody(0.0f)
@@ -186,9 +185,9 @@ void Warrior::DrawWithCam(Renderer& renderer, Camera& camera)
     m_sActions.m_pASpriteAttack->SetX(adjustedX); // Changes made by Karl
 
     // Draw character sprite with adjusted position
-    if (m_bMovingX || m_bJumping || m_bDoubleJump || m_bSlash)
+    if (m_bMovingX || !m_bJumping || !m_bDoubleJump || m_bSlash) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
     {
-        if (m_bJumping || m_bDoubleJump)
+        if (!m_bJumping || !m_bDoubleJump) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
         {
             m_sActions.m_pASpriteJump->Draw(renderer, m_bFlipHorizontally, false);
         }
@@ -231,6 +230,12 @@ void
 Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
 {
     b2Vec2 velocity = m_pBody->GetLinearVelocity();
+
+    // Toggle godmode
+    if (inputSystem.GetKeyState(SDL_SCANCODE_L) == BS_PRESSED)
+    {
+        m_bGodmode = !m_bGodmode;
+    }
 
     // Move right when pressing D
     if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD)
@@ -310,7 +315,7 @@ Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
     // Attack logic
     if (inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT) == BS_PRESSED)
     {   // Allow attack only when on the ground
-        if (!m_bJumping && !m_bDoubleJump && !m_bSlash)
+        if (m_bJumping && m_bDoubleJump && !m_bSlash) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
         {   // Changes made by Karl
             m_bSlash = true;
 
@@ -343,11 +348,11 @@ Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
     // Jumping logic
     if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED)
     {
-        if (!m_bJumping && !m_bSlash)
+        if (m_bJumping && !m_bSlash) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
         {
             // First jump
-            velocity.y = -3.0f;  // Apply upward force
-            m_bJumping = true;        // Character is now jumping
+            velocity.y = -2.0f;  // Apply upward force
+            m_bJumping = false;   // Character is now jumping // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
             
             if (m_sActions.m_pASpriteIdle->IsAnimating())
             {
@@ -366,21 +371,21 @@ Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
                 m_sActions.m_pASpriteJump->Animate();
             }
         }
-        else if (m_bJumping && !m_bDoubleJump) {
+        else if (!m_bJumping && m_bDoubleJump) {
             // Double jump
-            velocity.y = -3.0f;  // Apply upward force
-            m_bDoubleJump = true;     // Double jump has been used
+            velocity.y = -2.0f;  // Apply upward force
+            m_bDoubleJump = false;     // Double jump has been used // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
             m_sActions.m_pASpriteJump->Restart();
             m_sActions.m_pASpriteJump->Animate();
         }
     }
 
     // If the player is jumping, update the jump timer
-    if (m_bJumping || m_bDoubleJump) { // Changes made by Karl
+    if (!m_bJumping || !m_bDoubleJump) { // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
         m_jumpTimer += deltaTime;
-        if (m_jumpTimer >= (m_bDoubleJump ? 1.2f : 0.8f)) {
-            m_bJumping = false;  // Reset jump
-            m_bDoubleJump = false;
+        if (m_jumpTimer >= (!m_bDoubleJump ? 1.2f : 0.8f)) {
+            m_bJumping = true;  // Reset jump
+            m_bDoubleJump = true;
             m_jumpTimer = 0.0f;  // Reset the timer
             // Changes made by Karl - Disable jump animation, enable animation based on current input
             if (m_sActions.m_pASpriteJump->IsAnimating())
@@ -682,6 +687,12 @@ void Warrior::DeleteBody()
         m_pWorld->DestroyBody(m_pBody);
         m_pBody = nullptr;
     }
+}
+
+bool
+Warrior::IsGodmode()
+{
+    return m_bGodmode;
 }
 
 //void
