@@ -121,6 +121,12 @@ bool Archer::Initialise(Renderer& renderer)
 
 void Archer::Process(float deltaTime, InputSystem& inputSystem)
 {
+    if (!m_bAlive)
+    {
+        SceneManager::GetInstance().ChangeScene(6);
+        return;
+    }
+
     // Handle user input for movement
     HandleInput(deltaTime, inputSystem);
     ProcessActions(deltaTime); // Changes made by Karl
@@ -167,6 +173,10 @@ void Archer::Process(float deltaTime, InputSystem& inputSystem)
     if (m_pHealthbar)
     {
         m_pHealthbar->Process(deltaTime, inputSystem);
+    }
+    if (getPlayerHealthbar()->GetCurrentHealth() <= 0)
+    {
+        m_bAlive = false;
     }
 }
 
