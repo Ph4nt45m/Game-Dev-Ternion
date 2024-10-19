@@ -91,6 +91,9 @@ Skeleton::Initialise(Renderer& renderer)
         fixtureDef.friction = 0.3f;
         //fixtureDef.isSensor = true;
 
+        fixtureDef.filter.categoryBits = SKELETON;
+        fixtureDef.filter.maskBits = PLAYER;
+
         // Attach the fixture to the body
         m_pBody->CreateFixture(&fixtureDef);
 

@@ -24,7 +24,6 @@ void MyContactListener::BeginContact(b2Contact* contact)
     b2Body* bodyB = fixtureB->GetBody();
     
     if (!bodyA || !bodyB) {
-        printf("No body\n");
         return;
     }
 
@@ -33,7 +32,6 @@ void MyContactListener::BeginContact(b2Contact* contact)
     userData* userDataB = static_cast<userData*>(fixtureB->GetBody()->GetUserData());
 
     if (!userDataA || !userDataB) {
-        printf("No userData\n");
         return; 
     }
 
@@ -42,11 +40,9 @@ void MyContactListener::BeginContact(b2Contact* contact)
 
     if (!fixtureAIsSensor && !fixtureBIsSensor)
     {
-        printf("No sensor %d, %d\n", fixtureAIsSensor, fixtureBIsSensor);
         return;
     }
 
-    printf("Check contact\n");
 
     //Player Attacking enemies.
     if (fixtureBIsSensor && userDataA->type == GOLEM && userDataB->type == PLAYER_SP_ATTACK)

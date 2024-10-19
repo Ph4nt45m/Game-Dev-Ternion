@@ -33,6 +33,9 @@ public:
     b2Vec2 GetPosition() const { return m_pBody->GetPosition(); }
 
     void SetSprite(Renderer& renderer, TerrainType m_type);
+    
+    float GetWidth() { return m_fwidth; }
+    float GetHeight() { return m_fheight; }
 
 private:
     b2Body* m_pBody; 

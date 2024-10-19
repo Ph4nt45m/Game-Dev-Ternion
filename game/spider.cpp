@@ -91,6 +91,8 @@ Spider::Initialise(Renderer& renderer)
         fixtureDef.friction = 0.3f;
         //fixtureDef.isSensor = true;
 
+        fixtureDef.filter.categoryBits = SPIDER;
+        fixtureDef.filter.maskBits = PLAYER;
         // Attach the fixture to the body
         m_pBody->CreateFixture(&fixtureDef);
 
