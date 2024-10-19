@@ -29,7 +29,7 @@ class Skeleton : public Enemy
     // Member methods:
 public:
     Skeleton(b2World* world);
-    ~Skeleton();
+    ~Skeleton() override;
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;

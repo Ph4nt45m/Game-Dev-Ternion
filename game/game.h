@@ -40,6 +40,7 @@ public:
 
 	void CreateCharacter(int type); // Changes made by Karl
 	void DeleteCharacter();
+	void incrementDiffeculty();
 	//Character* GetCharacter() const; // Changes made by Karl
 	Player* GetCharacter() const;
 	b2World* GetWorld() const;
@@ -71,6 +72,7 @@ public:
 	
 	b2World* world;
 	b2Vec2 m_gravity;
+	int difficulty;
 
 	//Box2D stuff
 	

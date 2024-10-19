@@ -24,6 +24,7 @@ public:
 	virtual void Process(float deltaTime, InputSystem& inputSystem) = 0;
 	virtual void Draw(Renderer& renderer, Camera& camera) = 0;
 	virtual bool SetBodySprites(Renderer& renderer) = 0;
+	bool GetAlive();
 
 	//virtual void DebugDraw() = 0;
 

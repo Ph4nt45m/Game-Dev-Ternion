@@ -8,6 +8,7 @@
 #include "animatedsprite.h"
 #include "../imgui/imgui.h"
 #include "player.h"
+#include "game.h"
 #include "MyContactListener.h"
 
 // Library includes:
@@ -82,7 +83,6 @@ Spider::Initialise(Renderer& renderer)
     m_fAttackRangeMax = 80 / SCALE;
     m_bAlive = true;
 
-    healthBar = new Healthbar(renderer, 30.0f);
     if (m_pWorld)
     {
         m_vPosition.x = 2000.0f;
@@ -112,7 +112,6 @@ Spider::Initialise(Renderer& renderer)
         m_pBody->CreateFixture(&fixtureDef);
 
         // Set user data to identify this body as a Spider
-
         userData* spiderData = new userData{ SPIDER, static_cast<void*>(this) };
         m_pBody->SetUserData(static_cast<void*>(spiderData));
 
@@ -120,6 +119,7 @@ Spider::Initialise(Renderer& renderer)
         m_sAnimations.m_pASprSpiderIdle->SetY((int)m_pBody->GetPosition().y * SCALE);
 
     }
+    healthBar = new Healthbar(renderer, 30.0f * Game::GetInstance().difficulty);
 
     return true;
 }
@@ -203,46 +203,46 @@ Spider::Process(float deltaTime, InputSystem& inputSystem)
 
     m_sAnimations.m_pASprSpiderIdle->SetX(m_pBody->GetPosition().x * SCALE);
     m_sAnimations.m_pASprSpiderIdle->SetY(m_pBody->GetPosition().y * SCALE);
+    if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
+    {
+        m_bAlive = false;
+    }
+
 }
 
 void
 Spider::Draw(Renderer& renderer, Camera& camera)
 {
-    if (m_bAlive)
+    if (!m_bAlive)
     {
+        return;
+    }
 
-        Vector2* cameraOffset = camera.GetOffset();
+    Vector2* cameraOffset = camera.GetOffset();
 
-        int spiderX = (int)(m_pBody->GetPosition().x * SCALE - cameraOffset->x);
-        int spiderY = (int)(m_pBody->GetPosition().y * SCALE - cameraOffset->y);
+    int spiderX = (int)(m_pBody->GetPosition().x * SCALE - cameraOffset->x);
+    int spiderY = (int)(m_pBody->GetPosition().y * SCALE - cameraOffset->y);
 
-        if (m_bPlayerInRange)
+    if (m_bPlayerInRange)
+    {
+        if (m_bRun)
         {
-            if (m_bRun)
+            m_sAnimations.m_pASprSpiderWalk->SetX(spiderX);
+            m_sAnimations.m_pASprSpiderWalk->SetY(spiderY);
+            m_sAnimations.m_pASprSpiderWalk->Draw(renderer, m_bFlipHorizontally, false);
+        }
+        else if (m_bAttack)
+        {
+            if (m_sAnimations.m_pASprSpiderAttack->IsAnimating())
             {
-                m_sAnimations.m_pASprSpiderWalk->SetX(spiderX);
-                m_sAnimations.m_pASprSpiderWalk->SetY(spiderY);
-                m_sAnimations.m_pASprSpiderWalk->Draw(renderer, m_bFlipHorizontally, false);
-            }
-            else if (m_bAttack)
-            {
-                if (m_sAnimations.m_pASprSpiderAttack->IsAnimating())
-                {
-                    m_sAnimations.m_pASprSpiderAttack->SetX(spiderX);
-                    m_sAnimations.m_pASprSpiderAttack->SetY(spiderY);
-                    m_sAnimations.m_pASprSpiderAttack->Draw(renderer, m_bFlipHorizontally, false);
-                }
-                else
-                {
-                    m_bAttack = false;
-                    m_bIsAnimating = false;
-                }
+                m_sAnimations.m_pASprSpiderAttack->SetX(spiderX);
+                m_sAnimations.m_pASprSpiderAttack->SetY(spiderY);
+                m_sAnimations.m_pASprSpiderAttack->Draw(renderer, m_bFlipHorizontally, false);
             }
             else
             {
-                m_sAnimations.m_pASprSpiderIdle->SetX(spiderX);
-                m_sAnimations.m_pASprSpiderIdle->SetY(spiderY);
-                m_sAnimations.m_pASprSpiderIdle->Draw(renderer, m_bFlipHorizontally, false);
+                m_bAttack = false;
+                m_bIsAnimating = false;
             }
         }
         else
@@ -251,6 +251,12 @@ Spider::Draw(Renderer& renderer, Camera& camera)
             m_sAnimations.m_pASprSpiderIdle->SetY(spiderY);
             m_sAnimations.m_pASprSpiderIdle->Draw(renderer, m_bFlipHorizontally, false);
         }
+    }
+    else
+    {
+        m_sAnimations.m_pASprSpiderIdle->SetX(spiderX);
+        m_sAnimations.m_pASprSpiderIdle->SetY(spiderY);
+        m_sAnimations.m_pASprSpiderIdle->Draw(renderer, m_bFlipHorizontally, false);
     }
 }
 
@@ -463,6 +469,12 @@ void Spider::SetPlayer(Player* player)
 {
     m_pEntCharacter = player;
 }
+
+Healthbar* Spider::getEnemyHealth()
+{
+    return healthBar;
+}
+
 
 //void
 //Spider::DebugDraw()

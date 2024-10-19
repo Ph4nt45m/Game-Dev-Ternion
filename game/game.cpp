@@ -63,6 +63,7 @@ Game::Game()
 	, soundManager(0)
 	, alphabet(0)
 	, soundEffectsVolume(0)
+	, difficulty(1)
 {
 
 }
@@ -457,4 +458,9 @@ void Game::setsoundEffectsVolume(int SoundVol)
 int Game::getsoundEffectsVolume()
 {
 	return soundEffectsVolume;
+}
+
+void Game::incrementDiffeculty()
+{
+	difficulty++;
 }

@@ -8,6 +8,7 @@
 #include "animatedsprite.h"
 #include "../imgui/imgui.h"
 #include "player.h"
+#include "game.h"
 #include "MyContactListener.h"
 
 // Library includes:
@@ -82,7 +83,7 @@ Skeleton::Initialise(Renderer& renderer)
     m_fAttackRangeMax = 96 / SCALE;
     m_bAlive = true;
 
-    healthBar = new Healthbar(renderer, 20.0f);
+    healthBar = new Healthbar(renderer, 20.0f * Game::GetInstance().difficulty);
     if (m_pWorld)
     {
         m_vPosition.x = 2000.0f;
@@ -204,6 +205,12 @@ Skeleton::Process(float deltaTime, InputSystem& inputSystem)
 
     m_sAnimations.m_pASprSkelIdle->SetX(m_pBody->GetPosition().x * SCALE);
     m_sAnimations.m_pASprSkelIdle->SetY(m_pBody->GetPosition().y * SCALE);
+
+    if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
+    {
+        m_bAlive = false;
+    }
+
 }
 
 void

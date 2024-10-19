@@ -9,6 +9,7 @@
 #include "Terrain.h"
 #include "Camera.h"
 #include "LevelBuilder.h"
+#include "enemy.h"
 #include <vector>
 //Box2D
 #include <Box2D.h>
@@ -65,7 +66,6 @@ protected:
 	NightBackGround m_sFogFrameOne;
 	NightBackGround m_sFogFrameTwo; // Changes made by Karl - End
 	Golem* m_pGolem;
-	Mushroom* m_pMushroom;
 	Skeleton* m_pSkeleton; // Changes made by Karl
 	Spider* m_pSpider;
 	Player* m_pCharacter;
@@ -79,7 +79,7 @@ protected:
 	int m_iBackground;
 	float m_fLoopRange;
 private:
-	std::vector<Terrain*> m_terrainSegments;
+	std::vector<Enemy*> m_vEnemies;
 };
 
 #endif // FORESTTEST_H

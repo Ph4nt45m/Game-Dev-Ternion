@@ -8,6 +8,7 @@
 #include "animatedsprite.h"
 #include "../imgui/imgui.h"
 #include "player.h"
+#include "game.h"
 #include "MyContactListener.h"
 
 // Library includes:
@@ -57,6 +58,7 @@ Mushroom::~Mushroom()
     {
         m_pWorld->DestroyBody(m_pBody);
         m_pBody = nullptr;
+        printf("Mushroom deleted");
     }
     if (m_pHeadButt != nullptr)
     {
@@ -119,7 +121,7 @@ Mushroom::Initialise(Renderer& renderer)
         m_sAnimations.m_pASprMushIdle->SetY((int)m_pBody->GetPosition().y * SCALE);
 
     }
-    healthBar = new Healthbar(renderer, 20.0f);//Changes made by kyle
+    healthBar = new Healthbar(renderer, 20.0f * Game::GetInstance().difficulty);//Changes made by kyle
 
     return true;
 }
@@ -210,7 +212,6 @@ Mushroom::Process(float deltaTime, InputSystem& inputSystem)
     m_sAnimations.m_pASprMushIdle->SetY(m_pBody->GetPosition().y * SCALE);
     if (getEnemyHealth()->GetCurrentHealth() <= 0.0f)
     {
-        DeleteBody();
         m_bAlive = false;
     }
 

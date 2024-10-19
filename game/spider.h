@@ -29,7 +29,7 @@ class Spider : public Enemy
     // Member methods:
 public:
     Spider(b2World* world);
-    ~Spider();
+    ~Spider() override;
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;

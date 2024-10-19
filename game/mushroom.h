@@ -29,7 +29,7 @@ class Mushroom : public Enemy
     // Member methods:
 public:
     Mushroom(b2World* world);
-    ~Mushroom();
+    ~Mushroom() override;
 
     bool Initialise(Renderer& renderer) override;
     void Process(float deltaTime, InputSystem& inputSystem) override;

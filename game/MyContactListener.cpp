@@ -113,6 +113,7 @@ void MyContactListener::BeginContact(b2Contact* contact)
     }
     if (fixtureBIsSensor && userDataA->type == SPIDER && userDataB->type == PLAYER_SP_ATTACK)
     {
+        printf("Hit spider");
         if (static_cast<Player*>(userDataB->object)->GetCharactertype() == 0)
         {
             PlayerDamage = 20.0f;
@@ -129,6 +130,7 @@ void MyContactListener::BeginContact(b2Contact* contact)
     }
     else if (fixtureAIsSensor && userDataA->type == PLAYER_SP_ATTACK && userDataB->type == SPIDER)
     {
+        printf("Hit spider");
         if (static_cast<Player*>(userDataA->object)->GetCharactertype() == 0)
         {
             PlayerDamage = 20.0f;
@@ -182,73 +184,73 @@ void MyContactListener::BeginContact(b2Contact* contact)
         //Game::GetInstance().GetCharacter()->IsGodmode(); // Changes made by Karl - Check for godmode
         //Changes made by Kyle
         //Just to test
-        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(10);
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(10 + Game::GetInstance().difficulty);
         //Changes ended
     }
     else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == GOLEM_SLASH)
     {
-        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(10);
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(10 + Game::GetInstance().difficulty);
 
     }
     if (fixtureAIsSensor && userDataA->type == GOLEM_SLAM && userDataB->type == PLAYER)
     {
-        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(20);
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(20 + Game::GetInstance().difficulty);
     }
     else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == GOLEM_SLAM)
     {
-        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(20);
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(20 + Game::GetInstance().difficulty);
     }
 
     //Minion walking damage
     if (fixtureAIsSensor && userDataA->type == MUSHROOM && userDataB->type == PLAYER)
     {
-        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(3);
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(3 + Game::GetInstance().difficulty);
     }
     else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == MUSHROOM)
     {
-        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(3);
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(3 + Game::GetInstance().difficulty);
     }
     if (fixtureAIsSensor && userDataA->type == SKELETON && userDataB->type == PLAYER)
     {
-        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(3);
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(3 + Game::GetInstance().difficulty);
     }
     else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == SKELETON)
     {
-        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(3);
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(3 + Game::GetInstance().difficulty);
     }
     if (fixtureAIsSensor && userDataA->type == SPIDER && userDataB->type == PLAYER)
     {
-        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(5);
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(5 + Game::GetInstance().difficulty);
     }
     else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == SPIDER)
     {
-        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(5);
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(5 + Game::GetInstance().difficulty);
     }
 
     //Minion attack damage
     if (userDataA->type == MUSHROOM_HEAD && userDataB->type == PLAYER)
     {
-        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(5);
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(5 + Game::GetInstance().difficulty);
     }
     else if (userDataA->type == PLAYER && userDataB->type == MUSHROOM_HEAD)
     {
-        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(5);
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(5 + Game::GetInstance().difficulty);
     }
     if (userDataA->type == SPIDER_BITE && userDataB->type == PLAYER)
     {
-        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(7);
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(7 + Game::GetInstance().difficulty);
     }
     else if (userDataA->type == PLAYER && userDataB->type == SPIDER_BITE)
     {
-        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(7);
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(7 + Game::GetInstance().difficulty);
     }
     if (userDataA->type == SKELETON_ATTACK && userDataB->type == PLAYER)
     {
-        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(5);
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(5 + Game::GetInstance().difficulty);
     }
     else if (userDataA->type == PLAYER && userDataB->type == SKELETON_ATTACK)
     {
-        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(5);
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(5 + Game::GetInstance().difficulty);
     }
 
     // Check for terrain collisions

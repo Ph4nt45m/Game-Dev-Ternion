@@ -115,7 +115,7 @@ Golem::Initialise(Renderer& renderer)
         m_pEntProjectile->SetTimeToTarget(1.5f);
     }
 
-    healthBar = new Healthbar(renderer, 100.0f);//Changes made by kyle
+    healthBar = new Healthbar(renderer, 100.0f * Game::GetInstance().difficulty);//Changes made by kyle
     //Changes made by Rauen
 
     // Create the Box2D body for the Golem

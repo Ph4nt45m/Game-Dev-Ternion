@@ -17,3 +17,7 @@ Enemy::~Enemy()
 {
 
 }
+bool Enemy::GetAlive()
+{
+	return m_bAlive;
+}

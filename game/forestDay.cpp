@@ -34,7 +34,6 @@ ForestDay::ForestDay(b2World* world, Player* character)
 	, m_sFogFrameTwo{ 0, 0, 0 } // Changes made by Karl - End
 	, m_pGolem(0)
 	, m_pMushroom(0)
-	, m_pSkeleton(0) // Changes made by Karl
 	, m_pSpider(0)
 	, m_pWorld(world)
 	, camera()
@@ -45,6 +44,7 @@ ForestDay::ForestDay(b2World* world, Player* character)
 	, m_fWindowHeight(0.0f)
 	, m_iBackground(0)
 	, m_fLoopRange(0.0f)
+	, m_vEnemies(0)
 {
 
 }
@@ -90,18 +90,19 @@ ForestDay::~ForestDay()
 	delete m_pGolem;
 	m_pGolem = 0;
 
-	delete m_pMushroom;
-	m_pMushroom = 0;
+	for (Enemy* enemy : m_vEnemies)
+	{
+		delete enemy;
+		enemy = nullptr;
+	}
 
-	delete m_pSkeleton;
-	m_pSkeleton = 0;
+	m_vEnemies.clear();
 
-	delete m_pSpider;
-	m_pSpider = 0;
+	delete ground;
+	ground = nullptr;
 
 	delete level;
-	level = nullptr;
-	
+	level = nullptr;	
 }
 
 bool
@@ -136,7 +137,6 @@ ForestDay::Initialise(Renderer& renderer)
 
 	// Create the ground object, converting width/height to meters
 	ground = new Terrain(m_pWorld, 0.0f, m_fWindowHeight /SCALE, worldWidth, terrainHeight, GROUND);
-	m_terrainSegments.push_back(ground);  // Ground
 	ground->Initialise(renderer);
 
 	level = new LevelBuilder(m_pWorld, worldWidth, worldHeight, 5);
@@ -153,7 +153,8 @@ ForestDay::Process(float deltaTime, InputSystem& inputSystem)
 {	// Changes made by Karl - Deleted old unused character process call
 	if (!m_pGolem->getIsAlive())
 	{
-		SceneManager::GetInstance().ChangeScene(4);
+		Game::GetInstance().incrementDiffeculty();
+		SceneManager::GetInstance().ChangeScene(3);
 		return;
 	}
 	// Update background sprite positions
@@ -162,9 +163,18 @@ ForestDay::Process(float deltaTime, InputSystem& inputSystem)
 	// Changes made by Karl - End
 	m_pCharacter->Process(deltaTime, inputSystem);
 	m_pGolem->Process(deltaTime, inputSystem);
-	m_pMushroom->Process(deltaTime, inputSystem);
-	m_pSkeleton->Process(deltaTime, inputSystem); // Changes made by Karl
-	m_pSpider->Process(deltaTime, inputSystem);
+
+	for (auto it = m_vEnemies.begin(); it != m_vEnemies.end(); ) {
+		Enemy* enemy = *it;
+		if (enemy->GetAlive()) {
+			enemy->Process(deltaTime, inputSystem);
+			++it;  // Move to the next element
+		}
+		else {
+			delete enemy;  // Free memory
+			it = m_vEnemies.erase(it);  // Erase and update iterator to the next element
+		}
+	}
 	camera.Update(*m_pCharacter);
 	
 	//printf("char: %f\n", m_pCharacter->GetPosition().x - platform->GetPosition().x);
@@ -204,17 +214,23 @@ ForestDay::Draw(Renderer& renderer)
 	}
 	// Changes made by Karl - End
 	m_pCharacter->DrawWithCam(renderer, camera);
-	
 
-	for (auto* terrain : m_terrainSegments) {
-		terrain->Draw(renderer, camera);  // Pass the camera object to adjust positions based on the camera's position
-	}
+	ground->Draw(renderer, camera);  // Pass the camera object to adjust positions based on the camera's position
 
 	level->Draw(renderer, camera);
 	m_pGolem->Draw(renderer, camera);
-	m_pMushroom->Draw(renderer, camera);
-	m_pSkeleton->Draw(renderer, camera); // Changes made by Karl
-	m_pSpider->Draw(renderer, camera);
+	
+	for (auto it = m_vEnemies.begin(); it != m_vEnemies.end(); ) {
+		Enemy* enemy = *it;
+		if (enemy->GetAlive()) {
+			enemy->Draw(renderer, camera);
+			++it;  // Move to the next element
+		}
+		else {
+			delete enemy;  // Free memory
+			it = m_vEnemies.erase(it);  // Erase and update iterator to the next element
+		}
+	}
 }
 
 //Testing stuff with enemies for later
@@ -231,36 +247,30 @@ ForestDay::SetEnemies(Renderer& renderer)
 		return false;
 	}
 
-	m_pMushroom = new Mushroom(m_pWorld);
-	m_pMushroom->SetCamera(&camera);
-	m_pMushroom->SetPlayer(m_pCharacter);
-
-	if (!(m_pMushroom->Initialise(renderer)))
+	for (int i = 0; i < Game::GetInstance().difficulty; i++)
 	{
-		LogManager::GetInstance().Log("Mushroom failed to initialise!");
-		return false;
+		m_pMushroom = new Mushroom(m_pWorld);
+		m_vEnemies.push_back(m_pMushroom);
+		m_pMushroom->SetCamera(&camera);
+		m_pMushroom->SetPlayer(m_pCharacter);
+
+		if (!(m_pMushroom->Initialise(renderer)))
+		{
+			LogManager::GetInstance().Log("Mushroom failed to initialise!");
+			return false;
+		}
+
+		m_pSpider = new Spider(m_pWorld);
+		m_vEnemies.push_back(m_pSpider);
+		m_pSpider->SetCamera(&camera);
+		m_pSpider->SetPlayer(m_pCharacter);
+
+		if (!(m_pSpider->Initialise(renderer)))
+		{
+			LogManager::GetInstance().Log("Spider failed to initialise!");
+			return false;
+		}
 	}
-	
-	m_pSkeleton = new Skeleton(m_pWorld);
-	m_pSkeleton->SetCamera(&camera);
-	m_pSkeleton->SetPlayer(m_pCharacter);
-
-	if (!(m_pSkeleton->Initialise(renderer)))
-	{
-		LogManager::GetInstance().Log("Skeleton failed to initialise!");
-		return false;
-	}
-
-	m_pSpider = new Spider(m_pWorld);
-	m_pSpider->SetCamera(&camera);
-	m_pSpider->SetPlayer(m_pCharacter);
-
-	if (!(m_pSpider->Initialise(renderer)))
-	{
-		LogManager::GetInstance().Log("Spider failed to initialise!");
-		return false;
-	}
-
 	return true;
 }
 // Changes made by Karl - Start
