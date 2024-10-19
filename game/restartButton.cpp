@@ -4,6 +4,7 @@
 #include "game.h"
 #include "renderer.h"
 #include "logmanager.h"
+#include "player.h"
 
 // Libs
 #include <utility>

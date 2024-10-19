@@ -9,6 +9,10 @@
 #include <cassert>
 
 Player::Player()
+	: m_pStaticDeath(nullptr)
+	, m_bDoubleJump(true)
+	, m_bAnimateDeath(false)
+	, m_bGodmode(false)
 {
 
 }

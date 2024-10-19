@@ -54,6 +54,9 @@ public:
 
     //Kyle changes
     Healthbar* getPlayerHealthbar() override;
+    // Changes made by Karl
+    virtual void SetAlive(bool alive) override;
+    virtual bool IsGodmode() override;
 
     //void DebugDraw() override;
 
@@ -77,7 +80,6 @@ protected:
     Healthbar* m_pHealthbar;
     int m_iCharacterType;
     float m_fAngleOfAttack;
-    bool m_bDoubleJump;
     bool m_bDefined;
 
     //Box2D verables

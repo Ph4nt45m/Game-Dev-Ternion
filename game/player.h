@@ -21,6 +21,7 @@ typedef struct
 	AnimatedSprite* m_pASpriteRun;
 	AnimatedSprite* m_pASpriteJump;
 	AnimatedSprite* m_pASpriteAttack;
+	AnimatedSprite* m_pASpriteDeath;
 } Actions;
 
 // Class declaration: 
@@ -38,6 +39,9 @@ public:
 
 	//Kyle
 	virtual Healthbar* getPlayerHealthbar() = 0;
+	// Changes made by Karl
+	virtual void SetAlive(bool alive) = 0;
+	virtual bool IsGodmode() = 0;
 	//virtual void DebugDraw() = 0;
 
 protected:
@@ -51,7 +55,10 @@ public:
 
 
 protected:
-
+	Sprite* m_pStaticDeath;
+	bool m_bDoubleJump;
+	bool m_bAnimateDeath;
+	bool m_bGodmode; // Changes made by Karl
 
 private:
 

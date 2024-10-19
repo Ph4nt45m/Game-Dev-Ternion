@@ -5,6 +5,8 @@
 // Local includes: 
 #include "sceneManager.h"
 #include "button.h"
+#include <Box2D.h>
+#include "Camera.h"
 
 //Libs
 #include <string>
@@ -14,12 +16,13 @@ class Scene;
 class Renderer;
 class InputSystem;
 class Game;
+class Player;
 
 class DeathScene : public Scene
 {
     // Member methods:
 public:
-    DeathScene();
+    DeathScene(b2World* world, Player* character);
     virtual ~DeathScene();
 
     virtual bool Initialise(Renderer& renderer) override;
@@ -34,6 +37,10 @@ private:
 
     // Member data:
 protected:
+    b2World* m_pWorld;
+    Player* m_pCharacter;
+    Camera m_camera;
+
     Sprite* m_splashScene;  // Pointer to the splash image sprite
     float m_fElapsedTime;     // To track how long the splash screen has been displayed
 

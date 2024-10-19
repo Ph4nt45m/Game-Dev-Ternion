@@ -12,6 +12,7 @@
 #include "healthbar.h"
 #include "game.h"
 #include "MyContactListener.h"
+#include "sceneManager.h"
 
 // Library includes:
 #include <cassert>
@@ -30,7 +31,6 @@ Archer::Archer(b2World* world)
     , m_iCharacterType(0)
     , m_pHealthbar(0)
     , m_fAngleOfAttack(0.0f)
-    , m_bDoubleJump(false)
     , m_bDefined(false)
     , m_fHeadBodyOffset(0.0f)
     , m_fLengthFootToBody(0.0f)
@@ -42,7 +42,7 @@ Archer::Archer(b2World* world)
     , m_pWorld(world)
     , m_pSPAttackBody(nullptr) // Changes made by Karl
     , m_jumpTimer(0.0f)
-    , m_sActions{ 0, 0, 0, 0 }
+    , m_sActions{ 0, 0, 0, 0, 0 }
     , m_fOffset(0.0f)
     , m_fPlayerWidth(0.0f) // Changes made by Karl
     , m_fPlayerHeight(0.0f)
@@ -92,6 +92,12 @@ Archer::~Archer()
 
     delete m_sActions.m_pASpriteAttack;
     m_sActions.m_pASpriteAttack = 0;
+
+    delete m_sActions.m_pASpriteDeath;
+    m_sActions.m_pASpriteDeath = nullptr;
+
+    delete m_pStaticDeath;
+    m_pStaticDeath = nullptr;
     // Changes made by Karl
     m_pWorld->DestroyBody(m_pBody);
     m_pBody = nullptr;
@@ -122,6 +128,22 @@ bool Archer::Initialise(Renderer& renderer)
 
 void Archer::Process(float deltaTime, InputSystem& inputSystem)
 {
+    if (!m_bAlive)
+    {
+        if (!m_bAnimateDeath)
+        {
+            m_sActions.m_pASpriteDeath->Animate();
+            m_bAnimateDeath = true;
+            SceneManager::GetInstance().ChangeScene(6);
+        }
+        else if (m_sActions.m_pASpriteDeath->IsAnimating())
+        {
+            m_sActions.m_pASpriteDeath->Process(deltaTime);
+        }
+
+        return;
+    }
+
     // Handle user input for movement
     HandleInput(deltaTime, inputSystem);
     ProcessActions(deltaTime); // Changes made by Karl
@@ -169,61 +191,76 @@ void Archer::Process(float deltaTime, InputSystem& inputSystem)
     {
         m_pHealthbar->Process(deltaTime, inputSystem);
     }
+    if (getPlayerHealthbar()->GetCurrentHealth() <= 0)
+    {
+        m_bAlive = false;
+    }
 }
 
 void Archer::DrawWithCam(Renderer& renderer, Camera& camera)
 {
-    // Get the camera offset
-    Vector2* cameraOffset = camera.GetOffset();
-
-    // Adjust the character position based on the camera offset
-    int adjustedX = m_sActions.m_pASpriteIdle->GetX() - cameraOffset->x;
-
-    // Update sprite position
-    m_sActions.m_pASpriteIdle->SetX(adjustedX);
-    m_sActions.m_pASpriteRun->SetX(adjustedX);
-    m_sActions.m_pASpriteJump->SetX(adjustedX);
-    m_sActions.m_pASpriteAttack->SetX(adjustedX); // Changes made by Karl
-
-    // Draw character sprite with adjusted position
-    if (m_bMovingX || m_bJumping || m_bDoubleJump || m_bSlash)
+    if (m_bAlive)
     {
-        if (m_bJumping || m_bDoubleJump)
+        // Get the camera offset
+        Vector2* cameraOffset = camera.GetOffset();
+
+        // Adjust the character position based on the camera offset
+        int adjustedX = m_sActions.m_pASpriteIdle->GetX() - cameraOffset->x;
+
+        // Update sprite position
+        m_sActions.m_pASpriteIdle->SetX(adjustedX);
+        m_sActions.m_pASpriteRun->SetX(adjustedX);
+        m_sActions.m_pASpriteJump->SetX(adjustedX);
+        m_sActions.m_pASpriteAttack->SetX(adjustedX); // Changes made by Karl
+
+        // Draw character sprite with adjusted position
+        if (m_bMovingX || !m_bJumping || !m_bDoubleJump || m_bSlash) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
         {
-            m_sActions.m_pASpriteJump->Draw(renderer, m_bFlipHorizontally, false);
+            if (!m_bJumping || !m_bDoubleJump) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
+            {
+                m_sActions.m_pASpriteJump->Draw(renderer, m_bFlipHorizontally, false);
+            }
+            else if (m_bSlash)
+            {
+                m_sActions.m_pASpriteAttack->Draw(renderer, m_bFlipHorizontally, false);
+            }
+            else if (m_bMovingX)
+            {
+                m_sActions.m_pASpriteRun->Draw(renderer, m_bFlipHorizontally, false);
+            }
         }
-        else if (m_bSlash)
+        else
         {
-            m_sActions.m_pASpriteAttack->Draw(renderer, m_bFlipHorizontally, false);
+            m_sActions.m_pASpriteIdle->Draw(renderer, m_bFlipHorizontally, false);
         }
-        else if (m_bMovingX)
+
+        //// Draw weapon
+        //if (m_pASprWeapAttack->IsAnimating())
+        //{
+        //    m_pASprWeapAttack->SetX(adjustedX);
+        //    m_pASprWeapAttack->SetY(adjustedY - 15);
+        //    m_pASprWeapAttack->Draw(renderer, m_bFlipHorizontally, false);
+        //}
+        //else
+        //{
+        //    m_pSprWeapon->SetX(adjustedX);
+        //    m_pSprWeapon->SetY(adjustedY - 15);
+        //    m_pSprWeapon->Draw(renderer, m_bFlipHorizontally, true);
+        //}
+
+        // If the character has a health bar, draw it adjusted as well
+        if (m_pHealthbar)
         {
-            m_sActions.m_pASpriteRun->Draw(renderer, m_bFlipHorizontally, false);
+            m_pHealthbar->Draw(renderer);
         }
+    }
+    else if (m_sActions.m_pASpriteDeath->IsAnimating())
+    {
+        m_sActions.m_pASpriteDeath->Draw(renderer, false, false);
     }
     else
     {
-        m_sActions.m_pASpriteIdle->Draw(renderer, m_bFlipHorizontally, false);
-    }
-
-    //// Draw weapon
-    //if (m_pASprWeapAttack->IsAnimating())
-    //{
-    //    m_pASprWeapAttack->SetX(adjustedX);
-    //    m_pASprWeapAttack->SetY(adjustedY - 15);
-    //    m_pASprWeapAttack->Draw(renderer, m_bFlipHorizontally, false);
-    //}
-    //else
-    //{
-    //    m_pSprWeapon->SetX(adjustedX);
-    //    m_pSprWeapon->SetY(adjustedY - 15);
-    //    m_pSprWeapon->Draw(renderer, m_bFlipHorizontally, true);
-    //}
-
-    // If the character has a health bar, draw it adjusted as well
-    if (m_pHealthbar)
-    {
-        m_pHealthbar->Draw(renderer);
+        m_pStaticDeath->Draw(renderer, false, true);
     }
 }
 // Changes made by Karl
@@ -231,6 +268,12 @@ void
 Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
 {
     b2Vec2 velocity = m_pBody->GetLinearVelocity();
+
+    // Toggle godmode
+    if (inputSystem.GetKeyState(SDL_SCANCODE_L) == BS_PRESSED)
+    {
+        m_bGodmode = !m_bGodmode;
+    }
 
     // Move right when pressing D
     if (inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_PRESSED || inputSystem.GetKeyState(SDL_SCANCODE_D) == BS_HELD)
@@ -310,7 +353,7 @@ Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
     // Attack logic
     if (inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT) == BS_PRESSED)
     {   // Allow attack only when on the ground
-        if (!m_bJumping && !m_bDoubleJump && !m_bSlash)
+        if (m_bJumping && m_bDoubleJump && !m_bSlash) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
         {   // Changes made by Karl
             m_bSlash = true;
 
@@ -343,11 +386,11 @@ Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
     // Jumping logic
     if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED)
     {
-        if (!m_bJumping && !m_bSlash)
+        if (m_bJumping && !m_bSlash) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
         {
             // First jump
-            velocity.y = -3.0f;  // Apply upward force
-            m_bJumping = true;        // Character is now jumping
+            velocity.y = -2.0f;  // Apply upward force
+            m_bJumping = false;   // Character is now jumping // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
 
             if (m_sActions.m_pASpriteIdle->IsAnimating())
             {
@@ -366,21 +409,21 @@ Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
                 m_sActions.m_pASpriteJump->Animate();
             }
         }
-        else if (m_bJumping && !m_bDoubleJump) {
+        else if (!m_bJumping && m_bDoubleJump) {
             // Double jump
-            velocity.y = -3.0f;  // Apply upward force
-            m_bDoubleJump = true;     // Double jump has been used
+            velocity.y = -2.0f;  // Apply upward force
+            m_bDoubleJump = false;     // Double jump has been used // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
             m_sActions.m_pASpriteJump->Restart();
             m_sActions.m_pASpriteJump->Animate();
         }
     }
 
     // If the player is jumping, update the jump timer
-    if (m_bJumping || m_bDoubleJump) { // Changes made by Karl
+    if (!m_bJumping || !m_bDoubleJump) { // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
         m_jumpTimer += deltaTime;
-        if (m_jumpTimer >= (m_bDoubleJump ? 1.2f : 0.8f)) {
-            m_bJumping = false;  // Reset jump
-            m_bDoubleJump = false;
+        if (m_jumpTimer >= (!m_bDoubleJump ? 1.2f : 0.8f)) {
+            m_bJumping = true;  // Reset jump
+            m_bDoubleJump = true;
             m_jumpTimer = 0.0f;  // Reset the timer
             // Changes made by Karl - Disable jump animation, enable animation based on current input
             if (m_sActions.m_pASpriteJump->IsAnimating())
@@ -505,6 +548,34 @@ Archer::SetBodySprites(Renderer& renderer)
         m_fAttackHeight = 286 / SCALE;
     }
 
+    m_sActions.m_pASpriteDeath = renderer.CreateAnimatedSprite("..\\Sprites\\characters\\archer\\anim8archdeath.png");
+
+    if (!m_sActions.m_pASpriteDeath)
+    {
+        LogManager::GetInstance().Log("Player death failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_sActions.m_pASpriteDeath->SetupFrames(515, 286);
+        m_sActions.m_pASpriteDeath->SetFrameDuration(0.15f);
+        m_sActions.m_pASpriteDeath->SetX(sm_fBoundaryWidth * 0.5f);
+        m_sActions.m_pASpriteDeath->SetY(sm_fBoundaryHeight * 0.59f);
+    }
+
+    m_pStaticDeath = renderer.CreateSprite("..\\Sprites\\characters\\archer\\staticdeath.png");
+
+    if (!m_pStaticDeath)
+    {
+        LogManager::GetInstance().Log("Player static death failed to initialise!");
+        return false;
+    }
+    else
+    {
+        m_pStaticDeath->SetX(sm_fBoundaryWidth * 0.5f);
+        m_pStaticDeath->SetY(sm_fBoundaryHeight * 0.59f);
+    }
+
     return true;
 }
 
@@ -543,7 +614,7 @@ Archer::DefineCharacter(Renderer& renderer)
     }
 
     // Initialize healthbar
-    m_pHealthbar = new Healthbar(renderer, 100.0f);
+    m_pHealthbar = new Healthbar(renderer, 200.0f);
 
     // Box2D Body Initialization (Changes made by Rauen)
 
@@ -674,6 +745,18 @@ Archer::SetProjAlive(bool alive)
 Healthbar* Archer::getPlayerHealthbar()
 {
     return m_pHealthbar;
+}
+
+void
+Archer::SetAlive(bool alive)
+{
+    m_bAlive = alive;
+}
+
+bool
+Archer::IsGodmode()
+{
+    return m_bGodmode;
 }
 
 
