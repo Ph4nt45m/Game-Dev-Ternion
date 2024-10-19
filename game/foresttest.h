@@ -8,6 +8,7 @@
 #include "inputsystem.h"
 #include "Terrain.h"
 #include "Camera.h"
+#include "LevelBuilder.h"
 #include <vector>
 //Box2D
 #include <Box2D.h>
@@ -70,9 +71,8 @@ protected:
 	Player* m_pCharacter;
 	Camera camera;
 	Terrain* ground;
-	Terrain* leftWall;
-	Terrain* rightWall;
-	Terrain* platform;
+
+	LevelBuilder* level;
 
 	float m_fWindowWidth;
 	float m_fWindowHeight;

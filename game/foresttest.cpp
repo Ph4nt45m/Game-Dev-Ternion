@@ -16,6 +16,7 @@
 #include "mushroom.h"
 #include "skeleton.h" // Changes made by Karl
 #include "spider.h"
+#include "LevelBuilder.h"
 
 // Library includes:
 #include <iostream>
@@ -38,9 +39,7 @@ ForestTest::ForestTest(b2World* world, Player* character)
 	, camera()
 	, m_pCharacter(character)
 	, ground(nullptr)
-	, leftWall(nullptr)
-	, rightWall(nullptr)
-	, platform(nullptr)
+	, level(nullptr)
 	, m_fWindowWidth(0.0f) // Changes made by Karl
 	, m_fWindowHeight(0.0f)
 	, m_iBackground(0)
@@ -123,10 +122,10 @@ ForestTest::Initialise(Renderer& renderer)
 	float wallWidth = 100.0f / SCALE;  // Thin wall, converted to meters
 	float wallHeight = 10000.0f / SCALE;  // Wall height in meters
 	float worldWidth = 500000.0f / SCALE;  // World width converted to meters
-	float worldHeight = 10000.0f / SCALE;  // World height converted to meters
 	m_fWindowHeight = renderer.GetHeight(); // Changes made by Karl - made width and height class variables
 	m_fWindowWidth = renderer.GetWidth();
 	m_fLoopRange = m_sDayFrameOne.m_pBackground->GetWidth() * 2.0f;
+	float worldHeight = m_fWindowHeight / SCALE;  // World height converted to meters
 
 	// Set the Y position to the bottom of the window and convert to meters
 	//float groundY = (windowHeight - terrainHeight) / SCALE;  // Convert to meters
@@ -136,22 +135,8 @@ ForestTest::Initialise(Renderer& renderer)
 	m_terrainSegments.push_back(ground);  // Ground
 	ground->Initialise(renderer);
 
-	//platform = new Terrain(m_pWorld, 1200.0 / SCALE, groundY - terrainHeight, terrainWidth, terrainHeight);
-	//m_terrainSegments.push_back(platform);  // Another platform
-	//platform->SetSprite(renderer, PLATFORM, terrainWidth * SCALE, terrainHeight * SCALE);
-
-	// Add a left wall
-	//leftWall = new Terrain(m_pWorld, 0.0f, 0.0f, wallWidth, wallHeight);
-	//m_terrainSegments.push_back(leftWall);  // Left boundary
-	//leftWall->SetSprite(renderer, LEFT_WALL, wallWidth * SCALE, wallHeight * 2* SCALE);
-
-	//// Add a right wall 
-	//rightWall = new Terrain(m_pWorld, worldWidth, 0.0f, wallWidth, wallHeight);
-	//m_terrainSegments.push_back(rightWall);  // Right boundary
-	//rightWall->SetSprite(renderer, RIGHT_WALL, wallWidth * SCALE, wallHeight * SCALE);
-
-	//m_terrainSegments.push_back(new Terrain(m_pWorld, 450.0f, 450.0f, terrainWidth, terrainHeight));  // Elevated platform
-
+	level = new LevelBuilder(m_pWorld, worldWidth, worldHeight, 5);
+	level->BuildLevel(renderer);
 
 	camera.SetCamera(m_fWindowWidth, m_fWindowHeight, worldWidth, worldHeight);
 	SetEnemies(renderer);
@@ -210,12 +195,13 @@ ForestTest::Draw(Renderer& renderer)
 	}
 	// Changes made by Karl - End
 	m_pCharacter->DrawWithCam(renderer, camera);
-	//printf("Char: %f\n", m_pCharacter->GetPosition().x);
+	
 
 	for (auto* terrain : m_terrainSegments) {
 		terrain->Draw(renderer, camera);  // Pass the camera object to adjust positions based on the camera's position
 	}
 
+	level->Draw(renderer, camera);
 	m_pGolem->Draw(renderer, camera);
 	m_pMushroom->Draw(renderer, camera);
 	//m_pSkeleton->Draw(renderer, camera); // Changes made by Karl

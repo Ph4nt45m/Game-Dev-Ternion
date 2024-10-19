@@ -73,7 +73,7 @@ void Terrain::Draw(Renderer& renderer, Camera& camera)
     m_sprite->SetY(yPos);
 
     // Draw the terrain sprite
-    m_sprite->Draw(renderer, false, false);
+    m_sprite->Draw(renderer, false, true);
 }
 
 
@@ -81,16 +81,10 @@ void Terrain::SetSprite(Renderer& renderer, TerrainType m_type)
 {
     switch (m_type) {
     case TerrainType::GROUND:
-        m_sprite = renderer.CreateSprite("Sprites\\terrainbase3D\\platform.png");
+        m_sprite = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\ground.png");
         break;
     case TerrainType::PLATFORM:
-        m_sprite = renderer.CreateSprite("Sprites\\terrainbase3D\\platform.png");
-        break;
-    case TerrainType::LEFT_WALL:
-        m_sprite = renderer.CreateSprite("Sprites\\terrainbase3D\\leftwall.png");
-        break;
-    case TerrainType::RIGHT_WALL:
-        m_sprite = renderer.CreateSprite("Sprites\\terrainbase3D\\rightwall.png");
+        m_sprite = renderer.CreateSprite("..\\Sprites\\terrainforest2D\\platform.png");
         break;
     }
 }
