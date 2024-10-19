@@ -97,6 +97,9 @@ ForestTest::~ForestTest()
 
 	delete m_pSpider;
 	m_pSpider = 0;
+
+	delete level;
+	level = nullptr;
 	
 }
 

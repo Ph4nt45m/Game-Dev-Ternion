@@ -9,6 +9,11 @@
 #include "character.h"  
 #include "terrain.h"
 
+
+#define CATEGORY_PLAYER 0x0001  
+#define CATEGORY_GOLEM  0x0002  
+#define CATEGORY_WALL   0x0004  
+
 void MyContactListener::BeginContact(b2Contact* contact)
 {
     b2Fixture* fixtureA = contact->GetFixtureA();
@@ -23,7 +28,6 @@ void MyContactListener::BeginContact(b2Contact* contact)
     b2Body* bodyB = fixtureB->GetBody();
     
     if (!bodyA || !bodyB) {
-        printf("No body\n");
         return;
     }
 
@@ -32,7 +36,6 @@ void MyContactListener::BeginContact(b2Contact* contact)
     userData* userDataB = static_cast<userData*>(fixtureB->GetBody()->GetUserData());
 
     if (!userDataA || !userDataB) {
-        printf("No userData\n");
         return; 
     }
 
@@ -41,11 +44,9 @@ void MyContactListener::BeginContact(b2Contact* contact)
 
     if (!fixtureAIsSensor && !fixtureBIsSensor)
     {
-        printf("No sensor %d, %d\n", fixtureAIsSensor, fixtureBIsSensor);
         return;
     }
 
-    printf("Check contact\n");
 
     //Player Attacking enemies.
     if (fixtureBIsSensor && userDataA->type == GOLEM && userDataB->type == PLAYER_SP_ATTACK)
