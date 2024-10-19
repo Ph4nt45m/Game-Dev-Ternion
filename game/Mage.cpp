@@ -519,7 +519,29 @@ void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
 void
 Mage::ProcessActions(float deltaTime)
 {
-    // Still needs projectile logic
+    // Check if attack 
+    if (m_bSlash)
+    {
+        m_fElapsedTime += deltaTime;
+
+        if (m_fElapsedTime >= 0.7f)
+        {
+            if (m_pSPAttackBody == nullptr)
+            {
+                CreateSPAttack();
+            }
+        }
+    }
+
+    // Check if attack animation has finished
+    if (!m_bSlash)
+    {
+        if (m_pSPAttackBody != nullptr)
+        {
+            DeleteSPAttack();
+            m_fElapsedTime = 0.0f;
+        }
+    }
 }
 
 bool
@@ -728,7 +750,8 @@ Mage::CreateSPAttack()
     m_pSPAttackBody->SetActive(true);
 
     // Set user data to identify this body as a Golem
-   // m_pSPAttackBody->SetUserData((void*)PLAYER_SP_ATTACK);
+    userData* attackData = new userData{ PLAYER_SP_ATTACK, static_cast<void*>(this) };
+    m_pSPAttackBody->SetUserData(static_cast<void*>(attackData));
 }
 
 void
