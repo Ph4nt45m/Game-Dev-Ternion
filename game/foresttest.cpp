@@ -157,8 +157,8 @@ ForestTest::Process(float deltaTime, InputSystem& inputSystem)
 	m_pCharacter->Process(deltaTime, inputSystem);
 	m_pGolem->Process(deltaTime, inputSystem);
 	m_pMushroom->Process(deltaTime, inputSystem);
-	//m_pSkeleton->Process(deltaTime, inputSystem); // Changes made by Karl
-	//m_pSpider->Process(deltaTime, inputSystem);
+	m_pSkeleton->Process(deltaTime, inputSystem); // Changes made by Karl
+	m_pSpider->Process(deltaTime, inputSystem);
 	camera.Update(*m_pCharacter);
 	
 	//printf("char: %f\n", m_pCharacter->GetPosition().x - platform->GetPosition().x);
@@ -207,8 +207,8 @@ ForestTest::Draw(Renderer& renderer)
 	level->Draw(renderer, camera);
 	m_pGolem->Draw(renderer, camera);
 	m_pMushroom->Draw(renderer, camera);
-	//m_pSkeleton->Draw(renderer, camera); // Changes made by Karl
-	//m_pSpider->Draw(renderer, camera);
+	m_pSkeleton->Draw(renderer, camera); // Changes made by Karl
+	m_pSpider->Draw(renderer, camera);
 }
 
 //Testing stuff with enemies for later
@@ -234,7 +234,7 @@ ForestTest::SetEnemies(Renderer& renderer)
 		LogManager::GetInstance().Log("Mushroom failed to initialise!");
 		return false;
 	}
-	/*
+	
 	m_pSkeleton = new Skeleton(m_pWorld);
 	m_pSkeleton->SetCamera(&camera);
 	m_pSkeleton->SetPlayer(m_pCharacter);
@@ -253,7 +253,7 @@ ForestTest::SetEnemies(Renderer& renderer)
 	{
 		LogManager::GetInstance().Log("Spider failed to initialise!");
 		return false;
-	}*/
+	}
 
 	return true;
 }

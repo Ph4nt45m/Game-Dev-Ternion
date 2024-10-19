@@ -3,7 +3,7 @@
 #include "renderer.h"
 
 Terrain::Terrain(b2World* world, float x, float y,float width, float height, TerrainType type)
-    : m_type(GROUND)
+    : m_type(type)
     , m_sprite(nullptr)
     , m_pWorld(world)
     , xPos(x)
@@ -41,6 +41,13 @@ bool Terrain::Initialise(Renderer& renderer)
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &boxShape;
     fixtureDef.friction = 0.6f;
+
+    if (m_type == PLATFORM)
+    {
+        fixtureDef.filter.categoryBits = CATEGORY_TERRAIN;
+        fixtureDef.filter.maskBits = CATEGORY_PLAYER; 
+    }
+
     m_pBody->CreateFixture(&fixtureDef);
 
     // set user data to recognize the terrain

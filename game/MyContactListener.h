@@ -3,6 +3,9 @@
 
 #include <Box2D.h>
 
+#define CATEGORY_PLAYER      0x0001  
+#define CATEGORY_TERRAIN     0x0002 
+
 typedef struct {
     int type;  // Object type identifier
     void* object;  // Pointer to the game object (e.g., Golem*, Character*)

@@ -10,11 +10,6 @@
 #include "character.h"  
 #include "terrain.h"
 
-
-#define CATEGORY_PLAYER 0x0001  
-#define CATEGORY_GOLEM  0x0002  
-#define CATEGORY_WALL   0x0004  
-
 void MyContactListener::BeginContact(b2Contact* contact)
 {
     b2Fixture* fixtureA = contact->GetFixtureA();
