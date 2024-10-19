@@ -789,6 +789,16 @@ Mage::IsGodmode()
 void Mage::Draw(Renderer& renderer, Camera& camera)
 {}
 
+void Mage::setCharacterPos()
+{
+    m_vPosition.x = 100.0f;  // Position in pixels
+    m_vPosition.y = 0.0f; // Position in pixels
+    m_fPlayerWidth = 56.0f; // Changes made by Karl
+    m_fPlayerHeight = 120.0f;
+    m_fOffset = 82.0f; // Y offset in pixels
+}
+
+
 //void
 //Mage::DebugDraw()
 //{

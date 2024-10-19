@@ -9,11 +9,11 @@
 #include "game.h"
 
 // Scenes
-#include "forestscene.h"
+#include "forestNight.h"
 #include "AUTSplashScene.h"
 #include "TernionMenu.h"
 #include "CharacterSelect.h"
-#include "foresttest.h"
+#include "forestDay.h"
 #include "SettingsMenu.h"
 #include "deathScene.h"
 #include "CreditScene.h"
@@ -187,12 +187,12 @@ Scene* SceneManager::CreateSceneByID(int sceneID)
 	case 3://Foreset Scene(Dev Test Level)
 		m_pRenderer->SetClearColour(255, 255, 255);
 		//newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
-		newScene = new ForestTest(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
+		newScene = new ForestDay(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
 		break;
 	case 4://Foreset Scene(first level)
 		m_pRenderer->SetClearColour(255, 255, 255);
 		//newScene = new ForestScene(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
-		newScene = new ForestTest(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
+		newScene = new ForestNight(Game::GetInstance().GetWorld(), Game::GetInstance().GetCharacter());
 		break;
 	case 5:
 		newScene = new SettingScene();

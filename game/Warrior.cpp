@@ -118,7 +118,7 @@ bool Warrior::Initialise(Renderer& renderer)
     Entity::SetWindowBoundaries(renderer);
     // Changes made by Karl
     m_vPosition.x = 100.0f;  // Position in pixels
-    m_vPosition.y = 500.0f; // Position in pixels
+    m_vPosition.y = 0.0f; // Position in pixels
     m_fPlayerWidth = 56.0f; // Changes made by Karl
     m_fPlayerHeight = 120.0f;
     m_fOffset = 82.0f; // Y offset in pixels
@@ -766,6 +766,23 @@ bool
 Warrior::IsGodmode()
 {
     return m_bGodmode;
+}
+
+void Warrior::setCharacterPos()
+{
+    m_vPosition.x = 110.0f;  // Position in pixels
+    m_vPosition.y = 0.0f; // Position in pixels
+    m_fPlayerWidth = 56.0f; // Changes made by Karl
+    m_fPlayerHeight = 120.0f;
+    m_fOffset = 82.0f; // Y offset in pixels
+    if (m_pBody != nullptr)
+    {
+        b2Vec2 newPosition(m_vPosition.x / SCALE, m_vPosition.y);
+        float currentAngle = m_pBody->GetAngle();
+
+        m_pBody->SetTransform(newPosition, currentAngle);
+    }
+
 }
 
 //void

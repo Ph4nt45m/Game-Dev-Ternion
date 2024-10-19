@@ -48,12 +48,12 @@ void MyContactListener::BeginContact(b2Contact* contact)
     if (fixtureBIsSensor && userDataA->type == GOLEM && userDataB->type == PLAYER_SP_ATTACK)
     {
         printf("Golem hit with special\n");
-        static_cast<Golem*>(userDataA->object)->getEnemyHealth()->Damage(20.0f);
+        static_cast<Golem*>(userDataA->object)->getEnemyHealth()->Damage(200.0f);
     }
     else if (fixtureAIsSensor && userDataA->type == PLAYER_SP_ATTACK && userDataB->type == GOLEM)
     {
         printf("Golem hit with special (reverse)\n");
-        static_cast<Golem*>(userDataB->object)->getEnemyHealth()->Damage(20.0f);
+        static_cast<Golem*>(userDataB->object)->getEnemyHealth()->Damage(200.0f);
     }
     if (fixtureBIsSensor && userDataA->type == MUSHROOM && userDataB->type == PLAYER_SP_ATTACK)
     {
@@ -75,7 +75,7 @@ void MyContactListener::BeginContact(b2Contact* contact)
         printf("Player hit with slash\n");
         //Changes made by Kyle
         //Just to test
-        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(100);
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(10);
         //Changes ended
     }
     else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == GOLEM_SLASH)
@@ -83,7 +83,7 @@ void MyContactListener::BeginContact(b2Contact* contact)
         printf("Player hit with slash (reverse)\n");
         //Changes made by Kyle
 //Just to test
-        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(100);
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(10);
         //Changes ended
 
     }
@@ -91,12 +91,12 @@ void MyContactListener::BeginContact(b2Contact* contact)
     if (fixtureAIsSensor && userDataA->type == GOLEM_SLAM && userDataB->type == PLAYER)
     {
         printf("Player hit with slam\n");
-        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(100);
+        static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(20);
     }
     else if (fixtureBIsSensor && userDataA->type == PLAYER && userDataB->type == GOLEM_SLAM)
     {
         printf("Player hit with slam (reverse)\n");
-        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(100);
+        static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(20);
     }
 
     //mushroom Body

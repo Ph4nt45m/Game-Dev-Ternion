@@ -42,6 +42,7 @@ public:
 	// Changes made by Karl
 	virtual void SetAlive(bool alive) = 0;
 	virtual bool IsGodmode() = 0;
+	virtual void setCharacterPos() = 0;
 	//virtual void DebugDraw() = 0;
 
 protected:

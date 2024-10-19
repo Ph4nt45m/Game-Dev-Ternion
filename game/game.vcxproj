@@ -176,8 +176,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="forest.cpp" />
-    <ClCompile Include="forestscene.cpp" />
-    <ClCompile Include="foresttest.cpp" />
+    <ClCompile Include="forestNight.cpp" />
+    <ClCompile Include="forestDay.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="golem.cpp" />
     <ClCompile Include="healthbar.cpp" />
@@ -250,8 +250,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="forest.h" />
-    <ClInclude Include="forestscene.h" />
-    <ClInclude Include="foresttest.h" />
+    <ClInclude Include="forestNight.h" />
+    <ClInclude Include="forestDay.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="golem.h" />
     <ClInclude Include="healthbar.h" />
