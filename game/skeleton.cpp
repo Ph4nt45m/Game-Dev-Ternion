@@ -52,6 +52,17 @@ Skeleton::~Skeleton()
 
     delete healthBar;
     healthBar = nullptr;
+
+    if (m_pBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pBody);
+        m_pBody = nullptr;
+    }
+    if (m_pSlash != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pSlash);
+        m_pSlash = nullptr;
+    }
 }
 
 bool

@@ -52,6 +52,17 @@ Mushroom::~Mushroom()
 
     delete healthBar;
     healthBar = nullptr;
+
+    if (m_pBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pBody);
+        m_pBody = nullptr;
+    }
+    if (m_pHeadButt != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pHeadButt);
+        m_pHeadButt = nullptr;
+    }
 }
 
 bool

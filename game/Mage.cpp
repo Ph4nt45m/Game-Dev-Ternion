@@ -99,9 +99,11 @@ Mage::~Mage()
     delete m_pStaticDeath;
     m_pStaticDeath = nullptr;
     // Changes made by Karl
-    m_pWorld->DestroyBody(m_pBody);
-    m_pBody = nullptr;
-
+    if (m_pBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pBody);
+        m_pBody = nullptr;
+    }
     if (m_pSPAttackBody != nullptr)
     {
         m_pWorld->DestroyBody(m_pSPAttackBody);

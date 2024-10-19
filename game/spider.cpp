@@ -52,6 +52,17 @@ Spider::~Spider()
 
     delete healthBar;
     healthBar = nullptr;
+
+    if (m_pBody != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pBody);
+        m_pBody = nullptr;
+    }
+    if (m_pBite != nullptr)
+    {
+        m_pWorld->DestroyBody(m_pBite);
+        m_pBite = nullptr;
+    }
 }
 
 bool
