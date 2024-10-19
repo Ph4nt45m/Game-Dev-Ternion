@@ -6,6 +6,7 @@
 #include "enemy.h"
 #include "vector2.h"
 #include "inputsystem.h"
+#include "healthbar.h"
 
 #include <Box2D.h>
 
@@ -48,6 +49,8 @@ public:
     void Action();
     void ProcessAction();
 
+    Healthbar* getEnemyHealth();//Changes made by Kyle
+
     //void DebugDraw() override;
 
 protected:
@@ -61,6 +64,7 @@ protected:
     Player* m_pEntCharacter;
     Sprite* m_pSprSpriteBody;
     Vector2 m_vStartingPos;
+    Healthbar* healthBar;
     SkelAnimations m_sAnimations;
     int m_iNumSegments;
     int m_iNumWalkableSegs;

@@ -31,6 +31,7 @@ Spider::Spider(b2World* world)
     , m_bRun(false)
     , m_pWorld(world)
     , m_pBite(nullptr)
+    , healthBar(nullptr)
 {
 
 }
@@ -48,6 +49,9 @@ Spider::~Spider()
 
     delete m_sAnimations.m_pASprSpiderAttack;
     m_sAnimations.m_pASprSpiderAttack = 0;
+
+    delete healthBar;
+    healthBar = nullptr;
 }
 
 bool
@@ -67,7 +71,7 @@ Spider::Initialise(Renderer& renderer)
     m_fAttackRangeMax = 80 / SCALE;
     m_bAlive = true;
 
-
+    healthBar = new Healthbar(renderer, 30.0f);
     if (m_pWorld)
     {
         m_vPosition.x = 2000.0f;

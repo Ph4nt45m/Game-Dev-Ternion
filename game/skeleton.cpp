@@ -31,6 +31,7 @@ Skeleton::Skeleton(b2World* world)
     , m_bRun(false)
     , m_pWorld(world)
     , m_pSlash(nullptr)
+    , healthBar(nullptr)
 {
 
 }
@@ -48,6 +49,9 @@ Skeleton::~Skeleton()
 
     delete m_sAnimations.m_pASprSkelAttack;
     m_sAnimations.m_pASprSkelAttack = 0;
+
+    delete healthBar;
+    healthBar = nullptr;
 }
 
 bool
@@ -67,7 +71,7 @@ Skeleton::Initialise(Renderer& renderer)
     m_fAttackRangeMax = 96 / SCALE;
     m_bAlive = true;
 
-
+    healthBar = new Healthbar(renderer, 20.0f);
     if (m_pWorld)
     {
         m_vPosition.x = 2000.0f;
@@ -448,6 +452,12 @@ void Skeleton::SetPlayer(Player* player)
 {
     m_pEntCharacter = player;
 }
+//Changes made by Kyle
+Healthbar* Skeleton::getEnemyHealth()
+{
+    return healthBar;
+}
+
 
 //void
 //Skeleton::DebugDraw()

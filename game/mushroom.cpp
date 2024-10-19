@@ -31,6 +31,7 @@ Mushroom::Mushroom(b2World* world)
     , m_bRun(false)
     , m_pWorld(world)
     , m_pHeadButt(nullptr)
+    , healthBar(nullptr)
 {
 
 }
@@ -48,6 +49,9 @@ Mushroom::~Mushroom()
 
     delete m_sAnimations.m_pASprMushAttack;
     m_sAnimations.m_pASprMushAttack = 0;
+
+    delete healthBar;
+    healthBar = nullptr;
 }
 
 bool
