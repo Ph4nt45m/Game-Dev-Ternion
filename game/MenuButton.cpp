@@ -88,6 +88,7 @@ void MenuButton::Update(float deltaTime, InputSystem& inputSystem)
     {
         if (Game::GetInstance().GetCharacter())
         {
+            Game::GetInstance().difficulty = 1;
             Game::GetInstance().DeleteCharacter();
         }
 

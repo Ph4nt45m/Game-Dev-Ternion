@@ -156,6 +156,8 @@ ForestDay::Process(float deltaTime, InputSystem& inputSystem)
 	if (!m_pGolem->getIsAlive())
 	{
 		Game::GetInstance().incrementDiffeculty();
+		delete m_pGolem;
+		m_pGolem = nullptr;
 		SceneManager::GetInstance().ChangeScene(3);
 		return;
 	}

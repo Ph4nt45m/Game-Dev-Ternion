@@ -155,6 +155,9 @@ ForestNight::Process(float deltaTime, InputSystem& inputSystem)
 {	// Changes made by Karl - Deleted old unused character process call
 	if (!m_pGolem->getIsAlive())
 	{
+		Game::GetInstance().incrementDiffeculty();
+		delete m_pGolem;
+		m_pGolem = nullptr;
 		SceneManager::GetInstance().ChangeScene(4);
 		return;
 	}

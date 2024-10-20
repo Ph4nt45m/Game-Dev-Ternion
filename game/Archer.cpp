@@ -785,6 +785,13 @@ void Archer::setCharacterPos()
     m_fPlayerWidth = 56.0f; // Changes made by Karl
     m_fPlayerHeight = 120.0f;
     m_fOffset = 82.0f; // Y offset in pixels
+    if (m_pBody != nullptr)
+    {
+        b2Vec2 newPosition(m_vPosition.x / SCALE, m_vPosition.y);
+        float currentAngle = m_pBody->GetAngle();
+
+        m_pBody->SetTransform(newPosition, currentAngle);
+    }
 }
 
 //void

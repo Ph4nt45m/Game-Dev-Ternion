@@ -89,6 +89,7 @@ void CreditsButton::Update(float deltaTime, InputSystem& inputSystem)
         if (SceneManager::GetInstance().getpauseBool())
         {
             SceneManager::GetInstance().setpauseBool(!SceneManager::GetInstance().getpauseBool());
+            Game::GetInstance().difficulty = 1;
             Game::GetInstance().DeleteCharacter();
         }
 

@@ -102,6 +102,7 @@ bool Game::Initialise()
 	world = new b2World{ m_gravity };
 	world->SetContactListener(&m_contactListener);
 
+
 	//Renderder
 	m_pRenderer = new Renderer();
 	if (!m_pRenderer->Initialise(true, bbWidth, bbHeight)) // true = windowed, false = fullscreen
