@@ -411,6 +411,8 @@ void Mage::HandleInput(float deltaTime, InputSystem& inputSystem)
         if (m_bJumping && m_bDoubleJump && !m_bSlash) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
         {   // Changes made by Karl
             m_bSlash = true;
+            SceneManager::GetInstance().GetSounds()->loadSound("bounce", "..\\Sprites\\sounds\\soundEffects\\Water Splash-SoundBible.com-800223477.wav");
+            SceneManager::GetInstance().GetSounds()->playSound("bounce", 0, SceneManager::GetInstance().getsoundEffectsVolume());
 
             // Disable all other animations
             if (m_sActions.m_pASpriteIdle->IsAnimating())

@@ -303,7 +303,7 @@ void SceneManager::setSongPlayListMenus()
 		songSceneCurrentlyLive = 1;
 		soundManager->loadMusic("1", "..\\Sprites\\sounds\\Music\\JoshWoodward-Circles-NoVox.mp3");
 		soundManager->loadMusic("2", "..\\Sprites\\sounds\\Music\\MenuSound2.mp3");
-		soundManager->playMusic("1", 0);
+//		soundManager->playMusic("1", 0);
 	}
 }
 void SceneManager::setSongPlayListGames()
@@ -313,7 +313,7 @@ void SceneManager::setSongPlayListGames()
 		songSceneCurrentlyLive = 2;
 		soundManager->loadMusic("1", "..\\Sprites\\sounds\\Music\\inGameSoundOne.mp3");
 		soundManager->loadMusic("2", "..\\Sprites\\sounds\\Music\\MenuSound2.mp3");
-		soundManager->playMusic("1", 0);
+//		soundManager->playMusic("1", 0);
 	}
 }
 void SceneManager::setSongPlayListDeath()
@@ -323,6 +323,6 @@ void SceneManager::setSongPlayListDeath()
 		songSceneCurrentlyLive = 2;
 		soundManager->loadMusic("1", "..\\Sprites\\sounds\\Music\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
 		soundManager->loadMusic("2", "..\\Sprites\\sounds\\Music\\MenuSound2.mp3");
-		soundManager->playMusic("1", 0);
+//		soundManager->playMusic("1", 0);
 	}
 }

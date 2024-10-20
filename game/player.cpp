@@ -23,6 +23,12 @@ Player::~Player()
 
 void Player::setPlayerJump()
 {
-	m_bDoubleJump = !m_bDoubleJump;
-	m_bJumping = !m_bJumping;
+	if (!m_bJumping)
+	{
+		m_bJumping = !m_bJumping;
+	}
+	if (!m_bDoubleJump)
+	{
+		m_bDoubleJump = !m_bDoubleJump;
+	}
 }

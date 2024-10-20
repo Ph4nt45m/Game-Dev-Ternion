@@ -8,6 +8,7 @@
 #include "mushroom.h"
 #include "skeleton.h"
 #include "spider.h"
+#include "SceneManager.h"
 
 #include "character.h"  
 #include "terrain.h"
@@ -18,7 +19,6 @@ void MyContactListener::BeginContact(b2Contact* contact)
     b2Fixture* fixtureB = contact->GetFixtureB();
 
     if (!fixtureA || !fixtureB) {
-        printf("No fixture\n");
         return;
     }
 
@@ -72,6 +72,9 @@ void MyContactListener::BeginContact(b2Contact* contact)
         {
             PlayerDamage = 15.0f;
         }
+        SceneManager::GetInstance().GetSounds()->loadSound("bounce", "..\\Sprites\\sounds\\soundEffects\\Drop Sword-SoundBible.com-768774345.wav");
+        SceneManager::GetInstance().GetSounds()->playSound("bounce", 0, SceneManager::GetInstance().getsoundEffectsVolume());
+
         static_cast<Golem*>(userDataA->object)->getEnemyHealth()->Damage(PlayerDamage);
     }
     else if (fixtureAIsSensor && userDataA->type == PLAYER_SP_ATTACK && userDataB->type == GOLEM)
@@ -88,6 +91,9 @@ void MyContactListener::BeginContact(b2Contact* contact)
         {
             PlayerDamage = 15.0f;
         }
+        SceneManager::GetInstance().GetSounds()->loadSound("bounce", "..\\Sprites\\sounds\\soundEffects\\Drop Sword-SoundBible.com-768774345.wav");
+        SceneManager::GetInstance().GetSounds()->playSound("bounce", 0, SceneManager::GetInstance().getsoundEffectsVolume());
+
         static_cast<Golem*>(userDataB->object)->getEnemyHealth()->Damage(PlayerDamage);
     }
     if (fixtureBIsSensor && userDataA->type == MUSHROOM && userDataB->type == PLAYER_SP_ATTACK)
@@ -124,7 +130,6 @@ void MyContactListener::BeginContact(b2Contact* contact)
     }
     if (fixtureBIsSensor && userDataA->type == SPIDER && userDataB->type == PLAYER_SP_ATTACK)
     {
-        printf("Hit spider");
         if (static_cast<Player*>(userDataB->object)->GetCharactertype() == 0)
         {
             PlayerDamage = 20.0f;
@@ -141,7 +146,6 @@ void MyContactListener::BeginContact(b2Contact* contact)
     }
     else if (fixtureAIsSensor && userDataA->type == PLAYER_SP_ATTACK && userDataB->type == SPIDER)
     {
-        printf("Hit spider");
         if (static_cast<Player*>(userDataA->object)->GetCharactertype() == 0)
         {
             PlayerDamage = 20.0f;

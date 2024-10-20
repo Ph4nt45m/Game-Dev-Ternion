@@ -61,7 +61,7 @@ void IncreaseButton::Update(float deltaTime, InputSystem& inputSystem)
     Button::Update(deltaTime, inputSystem);
     if (m_isReleased)
     {
-        SceneManager::GetInstance().GetSounds()->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
+        SceneManager::GetInstance().GetSounds()->loadSound("bounce", "..\\Sprites\\sounds\\soundEffects\\Bounce-SoundBible.com-12678623.wav");
         SceneManager::GetInstance().GetSounds()->playSound("bounce", 0, SceneManager::GetInstance().getsoundEffectsVolume());
         soundVolume();
     }

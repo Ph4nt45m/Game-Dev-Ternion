@@ -48,6 +48,8 @@ Archer::Archer(b2World* world)
     , m_fPlayerHeight(0.0f)
     , m_fAttackWidth(0.0f)
     , m_fAttackHeight(0.0f)
+    , m_bShot(false)
+    , arrowEffectTime(0.0f)
 {
 
 }
@@ -145,7 +147,18 @@ void Archer::Process(float deltaTime, InputSystem& inputSystem)
 
         return;
     }
+    if (m_bShot)
+    {
+        arrowEffectTime += deltaTime;
+    }
 
+    if (arrowEffectTime >= 0.9f)
+    {
+        arrowEffectTime = 0.0f;
+        m_bShot = false;
+        SceneManager::GetInstance().GetSounds()->loadSound("bounce", "..\\Sprites\\sounds\\soundEffects\\fire_bow_sound-mike-koenig.wav");
+        SceneManager::GetInstance().GetSounds()->playSound("bounce", 0, SceneManager::GetInstance().getsoundEffectsVolume());
+    }
     // Handle user input for movement
     HandleInput(deltaTime, inputSystem);
     ProcessActions(deltaTime); // Changes made by Karl
@@ -351,13 +364,15 @@ Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
             m_bMovingX = false;
         }
     }
-    // Changes made by Karl
     // Attack logic
     if (inputSystem.GetMouseButtonState(SDL_BUTTON_LEFT) == BS_PRESSED)
     {   // Allow attack only when on the ground
-        if (m_bJumping && m_bDoubleJump && !m_bSlash) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
-        {   // Changes made by Karl
+        if (m_bJumping && m_bDoubleJump && !m_bSlash)
+        {
             m_bSlash = true;
+            m_bShot = true;
+            SceneManager::GetInstance().GetSounds()->loadSound("bounce", "..\\Sprites\\sounds\\soundEffects\\string_tension-mike-koenig.wav");
+            SceneManager::GetInstance().GetSounds()->playSound("bounce", 0, SceneManager::GetInstance().getsoundEffectsVolume());
 
             // Disable all other animations
             if (m_sActions.m_pASpriteIdle->IsAnimating())
@@ -388,11 +403,11 @@ Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
     // Jumping logic
     if (inputSystem.GetKeyState(SDL_SCANCODE_SPACE) == BS_PRESSED)
     {
-        if (m_bJumping && !m_bSlash) // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
+        if (m_bJumping && !m_bSlash)
         {
             // First jump
             velocity.y = -2.0f;  // Apply upward force
-            m_bJumping = false;   // Character is now jumping // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
+            m_bJumping = false;   // Character is now jumping
 
             if (m_sActions.m_pASpriteIdle->IsAnimating())
             {
@@ -414,7 +429,7 @@ Archer::HandleInput(float deltaTime, InputSystem& inputSystem)
         else if (!m_bJumping && m_bDoubleJump) {
             // Double jump
             velocity.y = -2.0f;  // Apply upward force
-            m_bDoubleJump = false;     // Double jump has been used // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
+            m_bDoubleJump = false;     // Double jump has been used
             m_sActions.m_pASpriteJump->Restart();
             m_sActions.m_pASpriteJump->Animate();
         }

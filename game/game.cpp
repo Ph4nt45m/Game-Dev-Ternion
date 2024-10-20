@@ -152,11 +152,6 @@ bool Game::Initialise()
 	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 
-	for (b2Body* body = world->GetBodyList(); body != nullptr; body = body->GetNext()) {
-		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
-	}
-
-
 	return true;
 }
 
@@ -204,13 +199,7 @@ Game::Process(float deltaTime)
 {
 	ProcessFrameCounting(deltaTime);
 	m_elapsedTime += deltaTime;
-/*	// TODO: Add game objects to process here!
-	if (m_elapsedTime > 3.0f)
-	{
-		soundManager->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
-		soundManager->playSound("bounce", 0, getsoundEffectsVolume());
-		m_elapsedTime = 0;
-	}*/
+	// TODO: Add game objects to process here!
 	// Box2D time step
 	const float32 timeStep = 1.0f / 60.0f;  // 60Hz update rate
 	const int32 velocityIterations = 6;     // Box2D velocity solver iterations

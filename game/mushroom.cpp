@@ -58,7 +58,6 @@ Mushroom::~Mushroom()
     {
         m_pWorld->DestroyBody(m_pBody);
         m_pBody = nullptr;
-        printf("Mushroom deleted");
     }
     if (m_pHeadButt != nullptr)
     {

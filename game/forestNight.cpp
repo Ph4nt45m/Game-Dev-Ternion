@@ -176,7 +176,6 @@ ForestNight::Process(float deltaTime, InputSystem& inputSystem)
 		}
 	}	camera.Update(*m_pCharacter);
 
-	//printf("char: %f\n", m_pCharacter->GetPosition().x - platform->GetPosition().x);
 }
 
 void

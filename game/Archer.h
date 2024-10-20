@@ -103,6 +103,8 @@ private:
     float m_fPlayerHeight;
     float m_fAttackWidth;
     float m_fAttackHeight;
+    bool m_bShot;
+    float arrowEffectTime;
 };
 
 #endif // !ARCHER_H
