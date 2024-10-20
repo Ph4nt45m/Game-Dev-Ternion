@@ -43,6 +43,7 @@ public:
 	virtual void SetAlive(bool alive) = 0;
 	virtual bool IsGodmode() = 0;
 	virtual void setCharacterPos() = 0;
+	void setPlayerJump();
 	//virtual void DebugDraw() = 0;
 
 protected:

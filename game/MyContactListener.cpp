@@ -33,8 +33,19 @@ void MyContactListener::BeginContact(b2Contact* contact)
     userData* userDataA = static_cast<userData*>(fixtureA->GetBody()->GetUserData());
     userData* userDataB = static_cast<userData*>(fixtureB->GetBody()->GetUserData());
 
+
     if (!userDataA || !userDataB) {
         return; 
+    }
+
+    // Check for terrain collisions
+    if (userDataA->type == PLAYER && userDataB->type == TERRAIN) {
+        // Player collided with terrain
+        static_cast<Player*>(userDataA->object)->setPlayerJump();
+    }
+    else if (userDataA->type == TERRAIN && userDataB->type == PLAYER) {
+        // Reverse case: terrain collided with player
+        static_cast<Player*>(userDataB->object)->setPlayerJump();
     }
 
     bool fixtureAIsSensor = fixtureA->IsSensor();
@@ -178,10 +189,12 @@ void MyContactListener::BeginContact(b2Contact* contact)
         static_cast<Skeleton*>(userDataB->object)->getEnemyHealth()->Damage(PlayerDamage);
     }
 
+    if (!Game::GetInstance().GetCharacter()->IsGodmode()) // Changes made by Karl - Check for godmode
+    {
+
     //Player takes Boss Battle Damage
     if (fixtureAIsSensor && userDataA->type == GOLEM_SLASH && userDataB->type == PLAYER)
     {
-        //Game::GetInstance().GetCharacter()->IsGodmode(); // Changes made by Karl - Check for godmode
         //Changes made by Kyle
         //Just to test
         static_cast<Player*>(userDataB->object)->getPlayerHealthbar()->Damage(10 + Game::GetInstance().difficulty);
@@ -252,24 +265,13 @@ void MyContactListener::BeginContact(b2Contact* contact)
     {
         static_cast<Player*>(userDataA->object)->getPlayerHealthbar()->Damage(5 + Game::GetInstance().difficulty);
     }
+    }
 
-    // Check for terrain collisions
-    if (userDataA->type == PLAYER && userDataB->type == TERRAIN) {
-        // Player collided with terrain
-        //printf("Player collided with terrain!\n");
-    }
-    else if (userDataA->type == TERRAIN && userDataB->type == PLAYER) {
-        // Reverse case: terrain collided with player
-        //printf("Player collided with terrain (reverse case)!\n");
-        
-    }
     if (userDataA->type == PLAYER && userDataB->type == GOLEM) {
         //if we want contact damage
-        printf("Touch\n");
     }
     else if (userDataA->type == GOLEM && userDataB->type == PLAYER) {
         //if we want contact damage
-        printf("Touch\n");
     }
     // Check for terrain collisions
     if (userDataA->type == GOLEM && userDataB->type == TERRAIN) {

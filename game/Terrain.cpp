@@ -48,6 +48,7 @@ bool Terrain::Initialise(Renderer& renderer)
         fixtureDef.filter.maskBits = CATEGORY_PLAYER; 
     }
 
+    fixtureDef.isSensor = false;
     m_pBody->CreateFixture(&fixtureDef);
 
     // set user data to recognize the terrain

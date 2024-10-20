@@ -10,7 +10,7 @@
 
 Player::Player()
 	: m_pStaticDeath(nullptr)
-	, m_bDoubleJump(true)
+	, m_bDoubleJump(false)
 	, m_bAnimateDeath(false)
 	, m_bGodmode(false)
 {
@@ -19,4 +19,10 @@ Player::Player()
 
 Player::~Player()
 {
+}
+
+void Player::setPlayerJump()
+{
+	m_bDoubleJump = !m_bDoubleJump;
+	m_bJumping = !m_bJumping;
 }

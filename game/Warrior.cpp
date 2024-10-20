@@ -425,8 +425,6 @@ Warrior::HandleInput(float deltaTime, InputSystem& inputSystem)
     if (!m_bJumping || !m_bDoubleJump) { // Changes made by Karl - Reversed logic for Kyle's toggle in contact listener
         m_jumpTimer += deltaTime;
         if (m_jumpTimer >= (!m_bDoubleJump ? 1.2f : 0.8f)) {
-            m_bJumping = true;  // Reset jump
-            m_bDoubleJump = true;
             m_jumpTimer = 0.0f;  // Reset the timer
             // Changes made by Karl - Disable jump animation, enable animation based on current input
             if (m_sActions.m_pASpriteJump->IsAnimating())
