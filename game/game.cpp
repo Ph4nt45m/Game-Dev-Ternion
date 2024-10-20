@@ -133,6 +133,7 @@ bool Game::Initialise()
 
 	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
+	m_pInputSystem->ShowMouseCursor(m_bShowDebugWindow);
 
 	return true;
 }
