@@ -5,13 +5,10 @@
 // Local includes:
 #include "renderer.h" 
 #include "logmanager.h"
-#include "scenecheckerboards.h"
-#include "scenebouncingballs.h"
 #include "../imgui/imgui_impl_sdl2.h"
 #include "../imgui/imgui_impl_opengl3.h"
 #include "inputsystem.h"
 #include "SDL_scancode.h"
-#include "character.h"
 #include "animatedsprite.h"
 #include "vector2.h"
 #include "sceneManager.h"
@@ -53,7 +50,6 @@ Game::Game()
 	, m_pCursor()
 	, m_pScForestScene(0)
 	, m_pEntCharacter(0)
-	, m_pASprAnimatedSprite(0)
 	, m_sprCursorBodySprite(0)
 	, m_sprCursorBorderSprite(0)
 	, m_bShowDebugWindow(0)
@@ -70,9 +66,6 @@ Game::~Game()
 {
 	delete m_pRenderer; 
 	m_pRenderer = 0;
-
-	delete m_pASprAnimatedSprite;
-	m_pASprAnimatedSprite = 0;
 
 	delete m_sprCursorBorderSprite;
 	m_sprCursorBorderSprite = 0;
@@ -138,18 +131,6 @@ bool Game::Initialise()
 	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
 
-	m_pASprAnimatedSprite = m_pRenderer->CreateAnimatedSprite("Sprites\\explosion.png");
-	if (!m_pASprAnimatedSprite)
-	{
-		LogManager::GetInstance().Log("AnimatedSprite failed to initialise!");
-		return false;
-	}
-	else
-	{
-		m_pASprAnimatedSprite->SetupFrames(64, 64);
-		m_pASprAnimatedSprite->SetFrameDuration(0.08f);
-	}
-
 	m_sprCursorBorderSprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 	m_sprCursorBodySprite = m_pRenderer->CreateSprite("Sprites\\cursor.png");
 
@@ -213,15 +194,7 @@ Game::Process(float deltaTime)
 
 	//Checks which scene, if scene is legal and runs process for scene.
 	SceneManager::GetInstance().Process(deltaTime, *m_pInputSystem);
-
-	//I think this runs player character
-	/*if (m_pEntCharacter->IsDefined()) // Changes made by Karl
-	{
-		m_pEntCharacter->Process(deltaTime, *m_pInputSystem);
-	}*/
 	
-	m_pASprAnimatedSprite->Process(deltaTime);
-
 	//Cursor that follows mouse and explodes when presses
 	if (m_sprCursorBorderSprite)
 	{
@@ -233,13 +206,6 @@ Game::Process(float deltaTime)
 		m_sprCursorBodySprite->Process(deltaTime);
 
 		m_iMouseState = m_pInputSystem->GetMouseButtonState(SDL_BUTTON_LEFT);
-
-		if (m_iMouseState == BS_PRESSED)
-		{
-			m_pASprAnimatedSprite->SetX((int)m_pCursor.GetX());
-			m_pASprAnimatedSprite->SetY((int)m_pCursor.GetY());
-			m_pASprAnimatedSprite->Animate();
-		}
 	}
 
 }
@@ -253,11 +219,6 @@ Game::Draw(Renderer& renderer)
 
 	// TODO: Add game objects to draw here!
 	SceneManager::GetInstance().Draw(renderer);
-
-	if (m_pASprAnimatedSprite->IsAnimating())
-	{
-		m_pASprAnimatedSprite->Draw(renderer, false, false);
-	}
 
 	if (m_sprCursorBorderSprite)
 	{

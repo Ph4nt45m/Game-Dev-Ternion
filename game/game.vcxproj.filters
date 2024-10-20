@@ -57,16 +57,7 @@
     <ClCompile Include="scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="scenecheckerboards.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="scenebouncingballs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="vector2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ball.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="inputsystem.cpp">
@@ -99,16 +90,7 @@
     <ClCompile Include="animatedsprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="forestscene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="character.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="forest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="golem.cpp">
@@ -174,9 +156,6 @@
     <ClCompile Include="Warrior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="foresttest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Mage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -193,6 +172,57 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="spider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="alphabet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreditsButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreditScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreditScene.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="deathScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DecreaseButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DecreaseSoundEffectButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="forestNight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="forestDay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IncreaseButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IncreaseSoundEffectButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelBulder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pause.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="restartButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="resumeButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -227,19 +257,10 @@
     <ClInclude Include="scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="scenecheckerboards.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="scenebouncingballs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inlinehelpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vector2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ball.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inputsystem.h">
@@ -278,16 +299,7 @@
     <ClInclude Include="animatedsprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="forestscene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="character.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="forest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="golem.h">
@@ -347,9 +359,6 @@
     <ClInclude Include="player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="foresttest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Mage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -366,6 +375,51 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="spider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="alphabet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreditsButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deathScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="decreaseButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DecreaseSoundEffectButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="forestNight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="forestDay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IncreaseButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IncreaseSoundEffectButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pause.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="restartButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resumeButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,5 @@
 #include "Camera.h"
-#include "character.h"
-#include "player.h" // Changes made by Karl
+#include "player.h"
 #include "Warrior.h"
 #include <stdio.h>
 

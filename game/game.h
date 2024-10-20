@@ -99,7 +99,6 @@ protected:
 
 private:
 	//Sprite* m_pCheckerboard;
-	AnimatedSprite* m_pASprAnimatedSprite;
 	Sprite* m_sprCursorBodySprite;
 	Sprite* m_sprCursorBorderSprite;
 	int m_iMouseState;

@@ -9,8 +9,6 @@
 #include "renderer.h"
 #include "inputsystem.h"
 #include "sprite.h"
-#include "forest.h"
-#include "character.h"
 #include "player.h"
 #include "golem.h"
 #include "mushroom.h"

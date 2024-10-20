@@ -2,7 +2,6 @@
 
 // Local Include
 #include "game.h"
-#include "character.h" // Changes made by Karl
 #include "player.h"
 #include "renderer.h"
 #include "logmanager.h"

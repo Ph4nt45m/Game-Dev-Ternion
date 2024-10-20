@@ -10,7 +10,6 @@
 #include "spider.h"
 #include "SceneManager.h"
 
-#include "character.h"  
 #include "terrain.h"
 
 void MyContactListener::BeginContact(b2Contact* contact)

@@ -104,15 +104,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\Studio5Resources\SDL2-2.0.22\include\;$(SolutionDir)..\..\Studio5Resources\SDL2_image-2.6.1\include\;$(SolutionDir)..\..\Studio5Resources\glew-2.1.0\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Studio5Resources\SDL2-2.0.22\include\;$(SolutionDir)\Studio5Resources\SDL2_image-2.6.1\include\;$(SolutionDir)\Studio5Resources\glew-2.1.0\include\;$(SolutionDir)\Studio5Resources\SDL2_mixer-2.6.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\Studio5Resources\SDL2-2.0.22\lib\x86\;$(SolutionDir)..\..\Studio5Resources\SDL2_image-2.6.1\lib\x86\;$(SolutionDir)..\..\Studio5Resources\glew-2.1.0\lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Studio5Resources\SDL2-2.0.22\lib\x86\;$(SolutionDir)\Studio5Resources\SDL2_image-2.6.1\lib\x86\;$(SolutionDir)\Studio5Resources\glew-2.1.0\lib\x86\;$(SolutionDir)\Studio5Resources\SDL2_mixer-2.6.3\lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -156,10 +156,8 @@
     <ClCompile Include="Archer.cpp" />
     <ClCompile Include="AUTSplashScene.cpp" />
     <ClCompile Include="AUTSplashScene.h" />
-    <ClCompile Include="ball.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="character.cpp" />
     <ClCompile Include="CharacterOne.cpp" />
     <ClCompile Include="CharacterSelect.cpp" />
     <ClCompile Include="CharacterThree.cpp" />
@@ -175,7 +173,6 @@
     <ClCompile Include="ExitButton.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="forest.cpp" />
     <ClCompile Include="forestNight.cpp" />
     <ClCompile Include="forestDay.cpp" />
     <ClCompile Include="game.cpp" />
@@ -199,8 +196,6 @@
     <ClCompile Include="restartButton.cpp" />
     <ClCompile Include="resumeButton.cpp" />
     <ClCompile Include="scene.cpp" />
-    <ClCompile Include="scenebouncingballs.cpp" />
-    <ClCompile Include="scenecheckerboards.cpp" />
     <ClCompile Include="sceneManager.cpp" />
     <ClCompile Include="SettingsButton.cpp" />
     <ClCompile Include="SettingsMenu.cpp" />
@@ -232,10 +227,8 @@
     <ClInclude Include="alphabet.h" />
     <ClInclude Include="animatedsprite.h" />
     <ClInclude Include="Archer.h" />
-    <ClInclude Include="ball.h" />
     <ClInclude Include="button.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="character.h" />
     <ClInclude Include="CharacterOne.h" />
     <ClInclude Include="CharacterSelect.h" />
     <ClInclude Include="CharacterThree.h" />
@@ -249,7 +242,6 @@
     <ClInclude Include="ExitButton.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="forest.h" />
     <ClInclude Include="forestNight.h" />
     <ClInclude Include="forestDay.h" />
     <ClInclude Include="game.h" />
@@ -273,8 +265,6 @@
     <ClInclude Include="restartButton.h" />
     <ClInclude Include="resumeButton.h" />
     <ClInclude Include="scene.h" />
-    <ClInclude Include="scenebouncingballs.h" />
-    <ClInclude Include="scenecheckerboards.h" />
     <ClInclude Include="sceneManager.h" />
     <ClInclude Include="SettingsButton.h" />
     <ClInclude Include="SettingsMenu.h" />

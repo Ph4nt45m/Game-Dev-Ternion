@@ -2,7 +2,6 @@
 #define COLLISION_H
 
 #include "Sprite.h" 
-#include "character.h"
 #include "animatedsprite.h"
 
 class Collision {

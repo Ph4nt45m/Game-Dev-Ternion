@@ -8,7 +8,6 @@
 #include "sprite.h"
 #include "animatedsprite.h"
 #include "../imgui/imgui.h"
-#include "character.h"
 #include "player.h" // Changes made by Karl
 #include "projectile.h"
 #include "collision.h"

@@ -10,7 +10,6 @@
 #include "scene.h"
 
 #include "inputsystem.h"
-#include "character.h"
 
 // Buttons
 #include "CharacterOne.h"
