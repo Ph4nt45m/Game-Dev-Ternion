@@ -62,8 +62,8 @@ void DecreaseButton::Update(float deltaTime, InputSystem& inputSystem)
     Button::Update(deltaTime, inputSystem);
     if (m_isReleased)
     {
-        Game::GetInstance().GetSounds()->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
-        Game::GetInstance().GetSounds()->playSound("bounce", 0, Game::GetInstance().getsoundEffectsVolume());
+        SceneManager::GetInstance().GetSounds()->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
+        SceneManager::GetInstance().GetSounds()->playSound("bounce", 0, SceneManager::GetInstance().getsoundEffectsVolume());
         soundVolume();
     }
 }
@@ -76,10 +76,10 @@ void DecreaseButton::Draw(Renderer& renderer)
 void DecreaseButton::soundVolume()
 {
     // Increase volume by 12
-    int MusicVolume = Game::GetInstance().GetSounds()->getMusicVolume() - 13;
+    int MusicVolume = SceneManager::GetInstance().GetSounds()->getMusicVolume() - 13;
 
     // Ensure it stays within the range [0, 100]
     MusicVolume = std::min(128, std::max(0, MusicVolume));
 
-    Game::GetInstance().GetSounds()->setMusicVolume(MusicVolume);
+    SceneManager::GetInstance().GetSounds()->setMusicVolume(MusicVolume);
 }

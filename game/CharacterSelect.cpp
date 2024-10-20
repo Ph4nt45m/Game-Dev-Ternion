@@ -87,6 +87,8 @@ bool CharacterSelectScene::Initialise(Renderer& renderer)
     MainMenu = new MenuButton(menuButtonX, menuButtonY);
     MainMenu->Initialise(renderer);
 
+    SceneManager::GetInstance().setSongPlayListMenus();
+
     return (m_ChrSelectScene != nullptr);
 }
 

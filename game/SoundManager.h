@@ -39,9 +39,15 @@ public:
     int getMusicVolume();
     int getSoundVolume(const std::string& id);
 
+    void cleanMusic();
+    static void musicFinishedCallback();
+
+    static bool soundShifter;
+
 private:
     std::map<std::string, Mix_Chunk*> soundEffects; // For sound effects
     std::map<std::string, Mix_Music*> musicTracks;  // For music tracks
+
 };
 
 #endif

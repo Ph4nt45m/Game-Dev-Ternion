@@ -6,7 +6,6 @@
 #include "vector2.h"
 #include "inputsystem.h"
 #include "MyContactListener.h"
-#include "SoundManager.h"
 #include "alphabet.h"
 
 // Library includes:
@@ -44,11 +43,6 @@ public:
 	//Character* GetCharacter() const; // Changes made by Karl
 	Player* GetCharacter() const;
 	b2World* GetWorld() const;
-
-	SoundManager* GetSounds();
-	void setsoundEffectsVolume(int SoundVol);
-	int getsoundEffectsVolume();
-
 protected:
 	void Process(float deltaTime);
 	void Draw(Renderer& renderer);
@@ -109,11 +103,9 @@ private:
 	Sprite* m_sprCursorBodySprite;
 	Sprite* m_sprCursorBorderSprite;
 	int m_iMouseState;
-	int soundEffectsVolume;
 
 	float m_elapsedTime;
 
-	SoundManager* soundManager;
 	Alphabet* alphabet;
 
 	MyContactListener m_contactListener;

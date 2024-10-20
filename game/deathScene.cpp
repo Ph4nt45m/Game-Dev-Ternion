@@ -87,6 +87,8 @@ bool DeathScene::Initialise(Renderer& renderer)
     alphabet = new Alphabet();
     alphabet->Initialize(renderer);
 
+    SceneManager::GetInstance().setSongPlayListDeath();
+
     return (m_splashScene != nullptr);
 }
 

@@ -22,7 +22,6 @@ SplashScene::SplashScene()
 }//destruct
 SplashScene::~SplashScene()
 {
-
     delete m_splashScene;
     m_splashScene = nullptr;
 }
@@ -30,6 +29,9 @@ SplashScene::~SplashScene()
 bool SplashScene::Initialise(Renderer& renderer)
 {
     SceneManager::GetInstance().LoadImage(renderer, m_splashScene, "..\\Sprites\\AUT-Logo-1.png");
+
+    SceneManager::GetInstance().setSongPlayListMenus();
+
     return (m_splashScene != nullptr);
 }
 

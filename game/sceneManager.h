@@ -5,6 +5,7 @@
 
 // Forward declarations:
 #include "pause.h"
+#include "SoundManager.h"
 
 //libs
 #include <string>
@@ -31,6 +32,14 @@ public:
 	bool getpauseBool();
 	void setpauseBool(bool setPause);
 
+	SoundManager* GetSounds();
+	void setsoundEffectsVolume(int SoundVol);
+	int getsoundEffectsVolume();
+
+	void setSongPlayListMenus();
+	void setSongPlayListGames();
+	void setSongPlayListDeath();
+
 protected:
 	SceneManager();
 	virtual ~SceneManager();
@@ -48,6 +57,7 @@ private:
 	Scene* CreateSceneByID(int sceneID);
 	bool m_isTransitionPending = false;
 	int m_pendingSceneID = -1; // ID of the scene to switch to
+	SoundManager* soundManager;
 public:
 
 protected:
@@ -62,6 +72,9 @@ private:
 	std::vector<Sprite*> m_sprites; // Store allocated sprites
 	bool pause;
 	PauseScene* pauseScene;
+	int soundEffectsVolume;
+	int songSceneCurrentlyLive;
+
 };
 
 #endif // !__SCENEMANAGER_H_

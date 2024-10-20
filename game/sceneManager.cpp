@@ -54,6 +54,8 @@ SceneManager::SceneManager()
 	, m_iBlue(0)
 	, pause(false)
 	, pauseScene(nullptr)
+	, soundManager(nullptr)
+	, songSceneCurrentlyLive(0)
 {
     // Constructor code here
 }
@@ -63,12 +65,16 @@ SceneManager::~SceneManager()
     // Destructor code here
     // Clean up all allocated sprites
 	delete pauseScene;
+	pauseScene = nullptr;
 
     for (Sprite* sprite : m_sprites)
     {
         delete sprite;
     }
-    m_sprites.clear();
+	m_sprites.clear();
+
+	delete soundManager;
+	soundManager = nullptr;
 }
 
 bool SceneManager::Initialise(Renderer& renderer)
@@ -79,6 +85,29 @@ bool SceneManager::Initialise(Renderer& renderer)
     // Add more scene or resource initialization here
 	pauseScene = new PauseScene();
 	pauseScene->Initialise(renderer);
+
+	// Initialize the SoundManager
+	soundManager = new SoundManager();
+
+	// Initialize SDL_mixer
+	if (!soundManager->init()) {
+		return false;
+	}
+
+	// Initialize the SoundManager
+	soundManager = new SoundManager();
+
+	// Initialize SDL_mixer
+	if (!soundManager->init()) {
+		return false;
+	}
+
+	setSongPlayListMenus();
+
+	// Play the background music (loop infinitely)
+	soundManager->setMusicVolume(80);
+	setsoundEffectsVolume(80);
+
     return true; // Return false if initialization fails
 }
 
@@ -250,4 +279,50 @@ bool SceneManager::getpauseBool()
 void SceneManager::setpauseBool(bool setPause)
 {
 	pause = setPause;
+}
+
+
+SoundManager* SceneManager::GetSounds()
+{
+	return soundManager;
+}
+
+void SceneManager::setsoundEffectsVolume(int SoundVol)
+{
+	soundEffectsVolume = SoundVol;
+}
+int SceneManager::getsoundEffectsVolume()
+{
+	return soundEffectsVolume;
+}
+
+void SceneManager::setSongPlayListMenus()
+{
+	if (songSceneCurrentlyLive != 1)
+	{
+		songSceneCurrentlyLive = 1;
+		soundManager->loadMusic("1", "..\\Sprites\\sounds\\Music\\JoshWoodward-Circles-NoVox.mp3");
+		soundManager->loadMusic("2", "..\\Sprites\\sounds\\Music\\MenuSound2.mp3");
+		soundManager->playMusic("1", 0);
+	}
+}
+void SceneManager::setSongPlayListGames()
+{
+	if (songSceneCurrentlyLive != 2)
+	{
+		songSceneCurrentlyLive = 2;
+		soundManager->loadMusic("1", "..\\Sprites\\sounds\\Music\\inGameSoundOne.mp3");
+		soundManager->loadMusic("2", "..\\Sprites\\sounds\\Music\\MenuSound2.mp3");
+		soundManager->playMusic("1", 0);
+	}
+}
+void SceneManager::setSongPlayListDeath()
+{
+	if (songSceneCurrentlyLive != 3)
+	{
+		songSceneCurrentlyLive = 2;
+		soundManager->loadMusic("1", "..\\Sprites\\sounds\\Music\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
+		soundManager->loadMusic("2", "..\\Sprites\\sounds\\Music\\MenuSound2.mp3");
+		soundManager->playMusic("1", 0);
+	}
 }

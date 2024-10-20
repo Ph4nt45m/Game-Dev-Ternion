@@ -60,9 +60,7 @@ Game::Game()
 	, m_pInputSystem(0)
 	, m_iMouseState(0)
 	, m_bLooping(true)
-	, soundManager(0)
 	, alphabet(0)
-	, soundEffectsVolume(0)
 	, difficulty(1)
 {
 
@@ -84,11 +82,6 @@ Game::~Game()
 
 	delete m_pEntCharacter;
 	m_pEntCharacter = 0;
-	
-	if (soundManager) {
-		delete soundManager;
-		soundManager = nullptr;
-	}
 }
 
 void Game::Quit()
@@ -140,7 +133,7 @@ bool Game::Initialise()
 		return false;
 	}
 	// Optionally, load the first scene if not using transitions right away
-	sceneManager.ChangeScene(6); // Load initial scene (e.g., splash screen, menu)
+	sceneManager.ChangeScene(0); // Load initial scene (e.g., splash screen, menu)
 	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
 
@@ -163,24 +156,6 @@ bool Game::Initialise()
 		printf("Body: %p, UserData: %p\n", (void*)body, body->GetUserData());
 	}
 
-	//Kyle code
-	// Initialize the SoundManager
-	soundManager = new SoundManager();
-
-	// Initialize SDL_mixer
-	if (!soundManager->init()) {
-		return false;
-	}
-	//// Load sounds and music
-	soundManager->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
-	soundManager->loadMusic("background", "..\\Sprites\\sounds\\JoshWoodward-Circles-NoVox.mp3");
-	//// Load and play the new music
-	soundManager->loadMusic("newBackground", "..\\Sprites\\sounds\\JoshWoodward-AttS-07-WordsFallApart-NoVox.mp3");
-
-	// Play the background music (loop infinitely)
-	soundManager->playMusic("background", -1);	//Kyle end
-	soundManager->setMusicVolume(80);
-	setsoundEffectsVolume(80);	//Kyle code end
 
 	return true;
 }
@@ -436,20 +411,6 @@ void Game::SetGravity(float x, float y)
 {
 	m_gravity.x = x;
 	m_gravity.y = y;
-}
-
-SoundManager* Game::GetSounds()
-{
-	return soundManager;
-}
-
-void Game::setsoundEffectsVolume(int SoundVol)
-{
-	soundEffectsVolume = SoundVol;
-}
-int Game::getsoundEffectsVolume()
-{
-	return soundEffectsVolume;
 }
 
 void Game::incrementDiffeculty()

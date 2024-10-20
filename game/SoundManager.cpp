@@ -1,13 +1,15 @@
 #include "SoundManager.h"
-#include "game.h"
+
+#include "sceneManager.h"
 
 #include <iostream>
 
-SoundManager::SoundManager() {}
+SoundManager::SoundManager(){}
 
 SoundManager::~SoundManager() {
     cleanup(); // Ensure everything is cleaned up on destruction
 }
+bool SoundManager::soundShifter = false;
 
 bool SoundManager::init() {
     // Initialize SDL_mixer
@@ -25,6 +27,16 @@ void SoundManager::cleanup() {
     }
     soundEffects.clear();
 
+    // Free all loaded music tracks
+    for (auto& music : musicTracks) {
+        Mix_FreeMusic(music.second);
+    }
+    musicTracks.clear();
+
+    // Close SDL_mixer
+    Mix_CloseAudio();
+}
+void SoundManager::cleanMusic() {
     // Free all loaded music tracks
     for (auto& music : musicTracks) {
         Mix_FreeMusic(music.second);
@@ -100,6 +112,8 @@ void SoundManager::playMusic(const std::string& id, int loops) {
     auto it = musicTracks.find(id);
     if (it != musicTracks.end()) {
         Mix_PlayMusic(it->second, loops);
+        // Set the callback for when the current music finishes
+        Mix_HookMusicFinished(SoundManager::musicFinishedCallback);
     }
     else {
         std::cerr << "Music ID not found: " << id << std::endl;
@@ -160,4 +174,21 @@ void SoundManager::setMusicVolume(int volume) {
 
 int SoundManager::getMusicVolume() {
     return Mix_VolumeMusic(-1);  // Get the current music volume
+}
+
+// Callback function when music finishes
+void SoundManager::musicFinishedCallback() {
+    std::cout << "Music finished! Playing next track..." << std::endl;
+
+    // Assuming the Game instance manages sound
+    SoundManager* soundManager = SceneManager::GetInstance().GetSounds();
+
+    if (soundShifter) {
+        soundManager->playMusic("1", 0); // Play song 1 again
+    }
+    else {
+        soundManager->playMusic("2", 0); // Play song 2
+    }
+    soundShifter = !soundShifter;
+
 }

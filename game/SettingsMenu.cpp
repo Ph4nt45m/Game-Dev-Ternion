@@ -129,7 +129,7 @@ void SettingScene::Process(float deltaTime, InputSystem& inputSystem)
     {
         MainMenu->Update(deltaTime, inputSystem);
     }
-    std::string sentence = std::to_string(Game::GetInstance().GetSounds()->getMusicVolume());
+    std::string sentence = std::to_string(SceneManager::GetInstance().GetSounds()->getMusicVolume());
 
     alphabet->Process(sentence, 1.0f, 1.0f, 1.0f);
 }
@@ -161,8 +161,8 @@ void SettingScene::Draw(Renderer& renderer)
     {
         decreaseSound->Draw(renderer);
     }
-    std::string MusicSentence = std::to_string(Game::GetInstance().GetSounds()->getMusicVolume());
-    std::string SoundSentence = std::to_string(Game::GetInstance().GetSounds()->getSoundVolume("bounce"));
+    std::string MusicSentence = std::to_string(SceneManager::GetInstance().GetSounds()->getMusicVolume());
+    std::string SoundSentence = std::to_string(SceneManager::GetInstance().GetSounds()->getSoundVolume("bounce"));
     std::string Music = "Music";
     std::string Sound = "Sound";
 

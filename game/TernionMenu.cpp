@@ -67,6 +67,7 @@ bool MenuScene::Initialise(Renderer& renderer)
     m_pExitButton = new ExitButton(exitButtonX, exitButtonY);
     m_pExitButton->Initialise(renderer);
 
+    SceneManager::GetInstance().setSongPlayListMenus();
 
     return (m_BackGroundScene != nullptr);
 }

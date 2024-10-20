@@ -145,6 +145,8 @@ ForestDay::Initialise(Renderer& renderer)
 	camera.SetCamera(m_fWindowWidth, m_fWindowHeight, worldWidth, worldHeight);
 	SetEnemies(renderer);
 
+	SceneManager::GetInstance().setSongPlayListGames();
+
 	return true;
 }
 

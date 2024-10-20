@@ -61,8 +61,8 @@ void IncreaseSoundButton::Update(float deltaTime, InputSystem& inputSystem)
     Button::Update(deltaTime, inputSystem);
     if (m_isPressed)
     {
-        Game::GetInstance().GetSounds()->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
-        Game::GetInstance().GetSounds()->playSound("bounce", 0, Game::GetInstance().getsoundEffectsVolume());
+        SceneManager::GetInstance().GetSounds()->loadSound("bounce", "..\\Sprites\\sounds\\Bounce-SoundBible.com-12678623.wav");
+        SceneManager::GetInstance().GetSounds()->playSound("bounce", 0, SceneManager::GetInstance().getsoundEffectsVolume());
     }
     if (m_isReleased)
     {
@@ -78,10 +78,10 @@ void IncreaseSoundButton::Draw(Renderer& renderer)
 void IncreaseSoundButton::soundVolume()
 {
     // Increase volume by 12
-    int SoundVolume = Game::GetInstance().getsoundEffectsVolume() + 13;
+    int SoundVolume = SceneManager::GetInstance().getsoundEffectsVolume() + 13;
 
     // Ensure it stays within the range [0, 100]
     SoundVolume = std::min(128, std::max(0, SoundVolume));
 
-    Game::GetInstance().setsoundEffectsVolume(SoundVolume);
+    SceneManager::GetInstance().setsoundEffectsVolume(SoundVolume);
 }

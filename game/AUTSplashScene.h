@@ -4,6 +4,7 @@
 
 // Local includes: 
 #include "sceneManager.h"
+#include "SoundManager.h"
 
 //Libs
 #include <string>
