@@ -131,14 +131,6 @@ bool Game::Initialise()
 		return false;
 	}
 
-	//Character made
-	/*m_pEntCharacter = new Character(world); // Changes made by Karl
-	if (!m_pEntCharacter->Initialise(*m_pRenderer))
-	{
-		LogManager::GetInstance().Log("Character failed to initialise!");
-		return false;
-	}*/
-
 	//Scene
 	// Initialize SceneManager and the first scene
 	SceneManager& sceneManager = SceneManager::GetInstance();
@@ -148,7 +140,7 @@ bool Game::Initialise()
 		return false;
 	}
 	// Optionally, load the first scene if not using transitions right away
-	sceneManager.ChangeScene(0); // Load initial scene (e.g., splash screen, menu)
+	sceneManager.ChangeScene(6); // Load initial scene (e.g., splash screen, menu)
 	sceneManager.PerformSceneTransition(); // Perform the transition to the first scene
 
 

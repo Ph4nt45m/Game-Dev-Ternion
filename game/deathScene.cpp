@@ -33,6 +33,7 @@ DeathScene::DeathScene(b2World* world, Player* character)
     , m_RollCredits(nullptr)
     , m_RestartButton(nullptr)
     , m_ExitButton(nullptr)
+    , alphabet(nullptr)
     , m_fElapsedTime(0.0f)
 {
 }//destruct
@@ -52,6 +53,9 @@ DeathScene::~DeathScene()
 
     delete m_ExitButton;
     m_ExitButton = nullptr;
+
+    delete alphabet;
+    alphabet = nullptr;
 }
 
 bool DeathScene::Initialise(Renderer& renderer)
@@ -80,6 +84,8 @@ bool DeathScene::Initialise(Renderer& renderer)
     m_ExitButton = new ExitButton(exitButtonX, exitButtonY);
     m_ExitButton->Initialise(renderer);
 
+    alphabet = new Alphabet();
+    alphabet->Initialize(renderer);
 
     return (m_splashScene != nullptr);
 }
@@ -116,6 +122,11 @@ void DeathScene::Draw(Renderer& renderer)
     if (m_splashScene)
     {
         m_splashScene->Draw(renderer, true, false);
+    }
+    if (alphabet)
+    {
+        std::string words = "you reached level " + std::to_string(Game::GetInstance().difficulty);
+        alphabet->DrawTextW(renderer, words, 0.5f, 0.2f, 3.0f);
     }
     if (m_pCharacter)
     {

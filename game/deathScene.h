@@ -7,6 +7,7 @@
 #include "button.h"
 #include <Box2D.h>
 #include "Camera.h"
+#include "alphabet.h"
 
 //Libs
 #include <string>
@@ -40,6 +41,8 @@ protected:
     b2World* m_pWorld;
     Player* m_pCharacter;
     Camera m_camera;
+
+    Alphabet* alphabet;
 
     Sprite* m_splashScene;  // Pointer to the splash image sprite
     float m_fElapsedTime;     // To track how long the splash screen has been displayed
